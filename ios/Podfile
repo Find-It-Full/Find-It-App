@@ -32,8 +32,7 @@ target 'FindIt' do
 
 
 
-  permissions_path = '../node_modules/react-native-permissions/ios'
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+
   post_install do |installer|
     react_native_post_install(
       installer,
