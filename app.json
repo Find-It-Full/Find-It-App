@@ -18,13 +18,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
-        "NSPhotoLibraryUsageDescription": "Your message to user when the photo library is accessed for the first time",
-        "NSMicrophoneUsageDescription": "Your message to user when the photo library is accessed for the first time"
-      },
-      "bundleIdentifier": "com.anonymous.Find-It"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
