@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "199074098912",
+    "project_id": "whereisit-d66b1",
+    "storage_bucket": "whereisit-d66b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199074098912:android:c8c8ce6ac6649bc0b8ea85",
+        "android_client_info": {
+          "package_name": "com.whereisit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCdOph1FqRHjuTRwy3P0zp4-zoiqeZYz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "199074098912-iui4ms5i3jcnr9sooqll7ovbm92di023.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gobilabsllc.FindIt"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
