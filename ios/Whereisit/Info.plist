@@ -6,6 +6,8 @@
   <array>
     <string>https://gobilabsllc.page.link</string>
   </array>
+  <key>NSCameraUsageDescription</key>
+  <string>Access your camera</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

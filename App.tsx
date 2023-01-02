@@ -1,15 +1,10 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-
-import React from 'react';
-import type { Node } from 'react';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import  { useState, useEffect } from 'react';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import {
     SafeAreaView,
     ScrollView,
@@ -19,6 +14,7 @@ import {
     Button,
     useColorScheme,
     View,
+    AppRegistry,
 } from 'react-native';
 
 import {
@@ -28,52 +24,39 @@ import {
     LearnMoreLinks,
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AddScan from './features/adding/scanAdd';
+import HomeScreen from './features/account/homeScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import detailsAdd from './features/adding/detailsAdd';
+export const uid = "Ethan"
+
+
+const Stack = createNativeStackNavigator();
 
 
 
 
 
 
-const App: () => Node = () => {
-    async function onGoogleButtonPress() {
-        // Check if your device supports Google Play
-        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-        // Get the users ID token
-        const { idToken } = await GoogleSignin.signIn();
-
-        // Create a Google credential with the token
-        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-        // Sign-in the user with the credential
-        return auth().signInWithCredential(googleCredential);
-    }
-    const isDarkMode = useColorScheme() === 'dark';
-
-
-    GoogleSignin.configure({
-        webClientId: '199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com',
-    });
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+export default function App() {
 
     return (
-       
-                <View
-                    style={{
-                        backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                    }}>
-                    
-                    <Text>Hello world</Text>
-            <Button
-                title="Google Sign-In"
-                onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
-            />
-                </View>
+        <NavigationContainer >
+            <Stack.Navigator>
+                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="AddScan" component={AddScan} />
+                <Stack.Screen name="DetailsAdd" component={detailsAdd} />
+            </Stack.Navigator>
+        </NavigationContainer>
             
-       
+
+           
+        
     );
+    
 };
+
 
 const styles = StyleSheet.create({
     sectionContainer: {
@@ -94,4 +77,3 @@ const styles = StyleSheet.create({
     },
 });
 
-export default App;

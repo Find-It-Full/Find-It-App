@@ -4,6 +4,10 @@ platform :ios, '12.4’
 
 target 'Whereisit' do
   config = use_native_modules!
+   permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-AppTrackingTransparency', :path => "#{permissions_path}/AppTrackingTransparency"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   
 
 
@@ -12,7 +16,7 @@ target 'Whereisit' do
   use_react_native!(
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
-    :hermes_enabled => true
+    :hermes_enabled => false
   )
 
   target 'WhereisitTests' do
