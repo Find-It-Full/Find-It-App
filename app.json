@@ -1,39 +1,4 @@
 {
-  "expo": {
-    "name": "Find-It",
-    "slug": "Find-It",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
-        "NSPhotoLibraryUsageDescription": "Your message to user when the photo library is accessed for the first time",
-        "NSMicrophoneUsageDescription": "Your message to user when the photo library is accessed for the first time"
-      },
-      "bundleIdentifier": "com.anonymous.Find-It"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+    "name": "Whereisit",
+    "displayName": "Whereisit"
 }
