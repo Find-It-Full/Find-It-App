@@ -47,6 +47,7 @@ export default function App() {
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="AddScan" component={AddScan} />
                 <Stack.Screen name="DetailsAdd" component={detailsAdd} />
+                
             </Stack.Navigator>
         </NavigationContainer>
             
