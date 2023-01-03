@@ -18,6 +18,8 @@ project.xcworkspace
 
 # Android/IntelliJ
 #
+ios/
+android/
 build/
 .idea
 .gradle
