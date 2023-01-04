@@ -2,11 +2,17 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import { uid } from "../App"
-import { itemAdd, itemDetails, userId, userInfo } from "./databaseTypes"
+import {
+    foundSheet,
+    itemAdd,
+    itemDetails,
+    userId,
+    userInfo,
+} from "./databaseTypes"
 enum CollectionNames {
     Users = "users",
     Items = "items",
-    FoundSheets = "foundsheets",
+    FoundSheets = "foundSheets",
     Messages = "messages",
 }
 export class FirestoreBackend {
@@ -21,6 +27,7 @@ export class FirestoreBackend {
     private static foundsheets() {
         return firestore().collection(CollectionNames.FoundSheets)
     }
+
     private static messages() {
         return firestore().collection(CollectionNames.Messages)
     }
@@ -31,11 +38,41 @@ export class FirestoreBackend {
             name: data.name,
             pictureURL: data.pictureURL,
             owner: uid,
+            lost: false,
             dateAdded: new Date().getTime(),
+            lastFound: new Date().getTime(),
         })
         await this.users()
             .doc(uid)
             .set({ items: { [data.codeID]: true } }, { merge: true })
+    }
+
+    public static async removeItemToFirestore(itemId: string) {
+        await this.items().doc(itemId).delete()
+        await this.users()
+            .doc(uid)
+            .set(
+                { items: { [itemId]: firestore.FieldValue.delete() } },
+                { merge: true }
+            )
+    }
+
+    public static async markItemLost(data: itemAdd) {
+        await this.items().doc(data.codeID).set(
+            {
+                lost: true,
+                lastLost: new Date().getTime(),
+            },
+            { merge: true }
+        )
+    }
+
+    public static async markItemFound(itemId: string) {
+        await this.items().doc(itemId).set({
+            lost: false,
+            lastFound: new Date().getTime(),
+            foundSheets: {},
+        })
     }
 
     public static async getItems(): Promise<itemDetails[]> {
@@ -52,37 +89,12 @@ export class FirestoreBackend {
         return (await this.users().doc(uid).get()).data() as userInfo
     }
 
-    public static async watchForNewMessage(props: any) {
-        const query = this.messages().where("owner", "==", uid)
-        return this.attachListenerForNewMessages(props, query)
-    }
-
+    //TODO FIX THIS
     public static async watchForNewFoundSheet(props: any) {
-        const query = this.messages().where("owner", "==", uid)
+        const query = this.foundsheets().where("owner", "==", uid)
         return this.attachListenerForNewFoundSheets(props, query)
     }
-
-    public static async attachListenerForNewMessages(
-        props: any,
-        query: FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>
-    ) {
-        const unsubscribe = query.onSnapshot({
-            next: (snapshot) => {
-                if (
-                    snapshot.metadata.hasPendingWrites &&
-                    snapshot.docChanges()
-                ) {
-                    props.onNewSentMessage(props, snapshot.docChanges())
-                } else {
-                    props.onNewRecievedMessage(props, snapshot.docChanges())
-                }
-            },
-            error: (error) => props.onError(error),
-        })
-
-        return () => unsubscribe()
-    }
-
+    //TODO FIX THIS
     public static async attachListenerForNewFoundSheets(
         props: any,
         query: FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>
@@ -101,5 +113,32 @@ export class FirestoreBackend {
         })
 
         return () => unsubscribe()
+    }
+
+    public static async deleteFoundSheet(foundSheetId: string, itemId: string) {
+        await this.items()
+            .doc(itemId)
+            .set(
+                {
+                    foundSheets: {
+                        [foundSheetId]: firestore.FieldValue.delete(),
+                    },
+                },
+                { merge: true }
+            )
+    }
+
+    //-------
+    //The following will be used both in app and website
+    //-------
+
+    ///TODO: cloud function to add foundsheet to user profile and item data
+    public static async sendFoundSheet(data: foundSheet) {
+        await this.foundsheets()
+            .doc()
+            .set({
+                ...data,
+                timeSent: new Date().getTime(),
+            })
     }
 }

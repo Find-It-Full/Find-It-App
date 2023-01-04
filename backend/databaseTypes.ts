@@ -32,6 +32,7 @@ export interface foundSheet {
     latitude: number
     longitude: number
     message: string
+    contactInfo: string
 }
 
 export interface userInfo {
