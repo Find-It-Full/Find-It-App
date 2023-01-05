@@ -1,16 +1,9 @@
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore"
 
-export interface NewItem {
-    itemID: ItemID
-    name: string
-    pictureURL: string
-}
-
 export interface Item {
     itemID: ItemID
     name: string
     icon: string
-    pictureURL: URL
     reports: Set<ReportID>
     isMissing: boolean
 }

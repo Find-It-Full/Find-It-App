@@ -1,36 +1,46 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import {
-    foundSheet,
-    itemDetails,
-    messageDetails,
-    userInfo,
-} from "../backend/databaseTypes"
+import { Item } from "../backend/databaseTypes"
 import { FirestoreBackend } from "../backend/firestoreBackend"
 
-export interface itemState {
-    items: { [itemId: string]: itemDetails }
-}
-const initialState: itemState = {
-    items: {},
+export interface ItemsData {
+    items: { [itemID: string]: Item }
 }
 
-const chatsSlice = createSlice({
+const initialState: ItemsData = {
+    items: {}
+}
+
+export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item): Promise<Item> => {
+    await FirestoreBackend.addItem(item)
+    return item
+})
+
+const itemsSlice = createSlice({
     name: "items",
     initialState,
     reducers: {
-        addItemToProfile(
-            state,
-            action: PayloadAction<{ itemId: string; data: itemDetails }>
-        ) {
-            state.items[action.payload.itemId] = action.payload.data
-        },
+
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(addNewItem.fulfilled, (state, action) => {
+                state.items[action.payload.itemID] = action.payload
+            })
+    }
+})
+
+export const { } = itemsSlice.actions
+export default itemsSlice.reducer
+
+/*
         removeItemFromProfile(
             state,
             action: PayloadAction<{ itemId: string }>
         ) {
             delete state.items[action.payload.itemId]
-        },
-        addMessageToItem(
+        }
+
+addMessageToItem(
             state,
             action: PayloadAction<{
                 itemId: string
@@ -71,8 +81,5 @@ const chatsSlice = createSlice({
                 action.payload.foundSheetId
             ]
         },
-    },
-})
 
-export const { addItemToProfile, removeItemFromProfile } = chatsSlice.actions
-export default chatsSlice.reducer
+*/

@@ -2,7 +2,7 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import { uid } from "../App"
-import { DocChanges, Item, ItemID, NewItem, Report, UserProfile } from "./databaseTypes"
+import { DocChanges, Item, ItemID, Report, UserProfile } from "./databaseTypes"
 
 enum CollectionNames {
     Users = "users",
@@ -22,11 +22,10 @@ export class FirestoreBackend {
         return firestore().collection(CollectionNames.Reports)
     }
 
-    public static async addItem(item: NewItem) {
+    public static async addItem(item: Item) {
         await this.items().doc(item.itemID).set({
             itemID: item.itemID,
             name: item.name,
-            pictureURL: item.pictureURL,
             ownerID: uid,
             isMissing: false,
             dateAdded: new Date().getTime()

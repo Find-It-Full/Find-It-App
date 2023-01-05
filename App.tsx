@@ -5,6 +5,8 @@ import { useEffect, useState } from "react"
 import DynamicLinkDelegate from "./components/DynamicLinkDelegate"
 import { Text } from "react-native"
 import Navigator from "./screens/Navigator"
+import store from "./store"
+import { Provider } from "react-redux"
 
 export const uid = "Ethan"
 
@@ -27,10 +29,12 @@ export default function App() {
     }, [isAuthenticated])
 
     return (
-        <SafeAreaProvider>
-            <DynamicLinkDelegate>
-                <Navigator isAuthenticated={isAuthenticated} />
-            </DynamicLinkDelegate>
-        </SafeAreaProvider>
+        <Provider store={store}>
+            <SafeAreaProvider>
+                <DynamicLinkDelegate>
+                    <Navigator isAuthenticated={isAuthenticated} />
+                </DynamicLinkDelegate>
+            </SafeAreaProvider>
+        </Provider>
     )
 }
