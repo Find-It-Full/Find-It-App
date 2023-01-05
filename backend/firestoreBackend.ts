@@ -26,6 +26,7 @@ export class FirestoreBackend {
         await this.items().doc(item.itemID).set({
             itemID: item.itemID,
             name: item.name,
+            icon: item.icon,
             ownerID: uid,
             isMissing: false,
             dateAdded: new Date().getTime()

@@ -4,7 +4,7 @@ export interface Item {
     itemID: ItemID
     name: string
     icon: string
-    reports: Set<ReportID>
+    reports: { [key: ReportID]: boolean }
     isMissing: boolean
 }
 
