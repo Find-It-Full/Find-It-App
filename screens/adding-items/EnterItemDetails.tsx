@@ -5,13 +5,12 @@ import {
     View,
     TextInput,
 } from "react-native"
+import { EnterItemDetailsProps } from "./AddItemFlowContainer"
 
-
-import { addToFirestore } from "./add"
-export default function detailsAdd(props: any) {
+export default function EnterItemDetails(props: EnterItemDetailsProps) {
     const [cont, setCont] = useState(false)
     const [name, setName] = useState("")
-    const codeId = props.route.params.id
+    // const codeId = props.route.params.id
 
     return (
         <View style={{ flex: 1 }}>
@@ -28,7 +27,7 @@ export default function detailsAdd(props: any) {
                 title="Submit"
                 disabled={!cont}
                 onPress={async () => {
-                    await addToFirestore(codeId, name, "URL")
+                    // await addToFirestore(codeId, name, "URL")
                 }}
             />
         </View>
