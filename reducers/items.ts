@@ -15,16 +15,34 @@ export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item
     return item
 })
 
+export const fetchAllItems = createAsyncThunk('items/fetchAllItems', async (): Promise<Item[]> => {
+    const result = await FirestoreBackend.getItems()
+    return result
+})
+
 const itemsSlice = createSlice({
     name: "items",
     initialState,
     reducers: {
-
+        directlyAddItem(state, action: PayloadAction<Item>) {
+            state.items[action.payload.itemID] = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
             .addCase(addNewItem.fulfilled, (state, action) => {
                 state.items[action.payload.itemID] = action.payload
+            })
+            .addCase(addNewItem.rejected, (_, action) => {
+                console.error(action.error)
+            })
+            .addCase(fetchAllItems.fulfilled, (state, action) => {
+                for (const item of action.payload) {
+                    state.items[item.itemID] = item
+                }
+            })
+            .addCase(fetchAllItems.rejected, (_, action) => {
+                console.error(action.error)
             })
     }
 })
