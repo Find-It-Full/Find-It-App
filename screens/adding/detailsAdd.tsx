@@ -1,29 +1,12 @@
-import React, { useState, useEffect } from "react"
+import * as React from "react"
+import { useState } from "react"
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
     Button,
-    useColorScheme,
     View,
-    AppRegistry,
-    TouchableOpacity,
     TextInput,
 } from "react-native"
 
-import {
-    Colors,
-    DebugInstructions,
-    Header,
-    LearnMoreLinks,
-    ReloadInstructions,
-} from "react-native/Libraries/NewAppScreen"
 
-import QRCodeScanner from "react-native-qrcode-scanner"
-import { RNCamera } from "react-native-camera"
-import { check, PERMISSIONS, RESULTS } from "react-native-permissions"
 import { addToFirestore } from "./add"
 export default function detailsAdd(props: any) {
     const [cont, setCont] = useState(false)

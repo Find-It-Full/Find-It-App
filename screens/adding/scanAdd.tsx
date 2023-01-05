@@ -1,28 +1,11 @@
 import React, { useState, useEffect } from "react"
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
-    Button,
-    useColorScheme,
-    View,
-    AppRegistry,
-    TouchableOpacity,
 } from "react-native"
-
-import {
-    Colors,
-    DebugInstructions,
-    Header,
-    LearnMoreLinks,
-    ReloadInstructions,
-} from "react-native/Libraries/NewAppScreen"
-
 import QRCodeScanner from "react-native-qrcode-scanner"
-import { RNCamera } from "react-native-camera"
 import { check, PERMISSIONS, RESULTS } from "react-native-permissions"
+
 export default function AddScan(props: any) {
     const [scaned, setScanned] = useState("")
     const [allowed, setAllowed] = useState(false)
@@ -42,8 +25,9 @@ export default function AddScan(props: any) {
         }
     }
     useEffect(() => {
-        return () => conf()
+        conf()
     }, [])
+
     props.navigation.navigate("DetailsAdd", { id: "abc123" })
     return (
         <QRCodeScanner
