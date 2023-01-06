@@ -2,13 +2,16 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import { uid } from "../App"
-import { DocChanges, Item, ItemID, Report, UserProfile } from "./databaseTypes"
+import { DocChanges, Item, ItemID, RegisterTagResult, Report, UserProfile } from "./databaseTypes"
+import functions from "@react-native-firebase/functions"
 
 enum CollectionNames {
-    Users = "users",
-    Items = "items",
-    Reports = "reports",
+    Users = 'users',
+    Items = 'items',
+    Reports = 'reports',
+    Tags = 'tags'
 }
+
 export class FirestoreBackend {
     private static users() {
         return firestore().collection(CollectionNames.Users)
@@ -22,18 +25,48 @@ export class FirestoreBackend {
         return firestore().collection(CollectionNames.Reports)
     }
 
-    public static async addItem(item: Item) {
-        await this.items().doc(item.itemID).set({
-            itemID: item.itemID,
+    private static tags() {
+        return firestore().collection(CollectionNames.Tags)
+    }
+
+    public static async addItem(item: Item): Promise<RegisterTagResult> {
+
+        // 1. Attempt to register tag associated with item
+        const registerTag = functions().httpsCallable('registerTag')
+        const result: RegisterTagResult = (await registerTag({ tagID: item.tagID })).data
+
+        if ( ! result) {
+            return 'internal'
+        }
+
+        if (result !== 'success') {
+            return result
+        }
+
+        // 2. Create an item
+        const itemRef = this.items().doc()
+        this.items().add({
+            itemID: itemRef.id,
+            tagID: item.tagID,
             name: item.name,
             icon: item.icon,
             ownerID: uid,
             isMissing: false,
             dateAdded: new Date().getTime()
         })
+
+        // 3. Associate the tag with the new item
+        this.tags().doc(item.tagID).update({
+            isAssociatedWithItem: true,
+            associatedItemID: itemRef.id
+        })
+
+        // 4. Add the new item to the user's record
         await this.users()
             .doc(uid)
             .set({ items: { [item.itemID]: true } }, { merge: true })
+
+        return 'success'
     }
 
     public static async removeItem(itemID: ItemID) {

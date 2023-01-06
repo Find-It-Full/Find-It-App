@@ -2,6 +2,7 @@ import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore"
 
 export interface Item {
     itemID: ItemID
+    tagID: TagID
     name: string
     icon: string
     reports: { [key: ReportID]: boolean }
@@ -94,11 +95,16 @@ export interface UserProfile {
     userID: UserID
     firstName: string
     lastName: string
+    items: { [key: ItemID]: boolean }
+    tags: { [key: TagID]: boolean }
 }
 
 export type UserID = string
 export type ItemID = string
+export type TagID = string
 export type ReportID = string
 export type URL = string
 export type MessageID = string
 export type DocChanges = FirebaseFirestoreTypes.DocumentChange<FirebaseFirestoreTypes.DocumentData>[]
+
+export type RegisterTagResult = 'no-such-tag' | 'internal' | 'registered-to-caller' | 'registered-to-other' | 'success'

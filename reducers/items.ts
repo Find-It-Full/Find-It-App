@@ -11,7 +11,12 @@ const initialState: ItemsData = {
 }
 
 export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item): Promise<Item> => {
-    await FirestoreBackend.addItem(item)
+    const result = await FirestoreBackend.addItem(item)
+
+    if (result !== 'success') {
+        throw new Error(result)
+    }
+
     return item
 })
 

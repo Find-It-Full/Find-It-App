@@ -4,7 +4,8 @@ import {
     Button,
     View,
     TextInput,
-    Text
+    Text,
+    Alert
 } from "react-native"
 import { EnterItemDetailsProps } from "./AddItemFlowContainer"
 import { useAppDispatch } from "../../store/hooks"
@@ -17,7 +18,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
     const [name, setName] = useState("")
     const [icon, setIcon] = useState("")
     
-    const itemID = route.params.itemID
+    const tagID = route.params.tagID
 
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
@@ -25,7 +26,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
     return (
         <View style={{ flex: 1 }}>
 
-            <Text>{`ID: ${itemID}`}</Text>
+            <Text>{`ID: ${tagID}`}</Text>
             <TextInput
                 placeholder={"Name"}
                 onChangeText={(text: string) => {
@@ -45,7 +46,8 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                 onPress={async () => {
                     try {
                         await dispatch(addNewItem({
-                            itemID,
+                            tagID,
+                            itemID: '',
                             name,
                             icon,
                             isMissing: false,
@@ -55,7 +57,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                         navigation.navigate('Home')
 
                     } catch (error) {
-                        console.log('Failed to add item.')
+                        Alert.alert('Failed to add item', error.message)
                     }
                 }}
             />

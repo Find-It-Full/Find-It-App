@@ -14,7 +14,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     function onSuccess(data: BarCodeReadEvent) {
         console.log(`Scanned QR code with data: ${data.data}`)
         const url = data.data.substring(30)
-        navigation.navigate('EnterItemDetails', { itemID: url })
+        navigation.navigate('EnterItemDetails', { tagID: url })
     }
 
     async function checkForCameraPermission() {
@@ -38,7 +38,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
 
     useEffect(() => {
         setTimeout(() => {
-            navigation.navigate('EnterItemDetails', { itemID: Math.round(Math.random() * 10000).toString() })
+            navigation.navigate('EnterItemDetails', { tagID: 'bHBE8KHnDdkEiATsv8GE' })
         }, 1000)
     }, [])
 

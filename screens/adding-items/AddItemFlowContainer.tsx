@@ -6,7 +6,7 @@ import { AddItemFlowProps } from "../Navigator"
 
 type AddItemStackParamList = {
     ScanCode: undefined
-    EnterItemDetails: { itemID: string }
+    EnterItemDetails: { tagID: string }
     Home: undefined
 }
 
