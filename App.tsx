@@ -7,6 +7,7 @@ import { Text } from "react-native"
 import Navigator from "./screens/Navigator"
 import store from "./store"
 import { Provider } from "react-redux"
+import SubscriptionManager from "./backend/SubscriptionManager"
 
 export const uid = "Ethan"
 
@@ -32,7 +33,9 @@ export default function App() {
         <Provider store={store}>
             <SafeAreaProvider>
                 <DynamicLinkDelegate>
-                    <Navigator isAuthenticated={isAuthenticated} />
+                    <SubscriptionManager>
+                        <Navigator isAuthenticated={isAuthenticated} />
+                    </SubscriptionManager>
                 </DynamicLinkDelegate>
             </SafeAreaProvider>
         </Provider>

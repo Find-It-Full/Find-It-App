@@ -6,7 +6,7 @@ export default function DynamicLinkDelegate(props: { children: ReactElement }) {
     useEffect(() => {
         Linking
             .getInitialURL()
-            .then((link) => {console.warn(link)})
+            .then((link) => { if (link) console.warn(link)} )
     }, [])
 
     useEffect(() => {

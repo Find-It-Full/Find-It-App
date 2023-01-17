@@ -4,15 +4,19 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import SignIn from './account/SignIn'
 import AddItemFlowContainer from './adding-items/AddItemFlowContainer'
 import Home from './tabs/Home'
+import { Item } from '../backend/databaseTypes'
+import ItemDetails from './item-details/ItemDetails'
 
-type RootStackParamList = {
+export type RootStackParamList = {
     Home: undefined
+    ItemDetails: { item: Item }
     SignIn: undefined
     AddItemFlow: undefined
 }
 
 export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
 export type AddItemFlowProps = NativeStackScreenProps<RootStackParamList, 'AddItemFlow'>
+export type ItemDetailsProps = NativeStackScreenProps<RootStackParamList, 'ItemDetails'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -28,6 +32,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                         <>
                             <RootStack.Group>
                                 <RootStack.Screen name='Home' component={Home} />
+                                <RootStack.Screen name='ItemDetails' component={ItemDetails} options={{ animation: 'slide_from_right' }} />
                             </RootStack.Group>
                             <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
                                 <RootStack.Screen name="AddItemFlow" component={AddItemFlowContainer} />

@@ -39,34 +39,39 @@ export class FirestoreBackend {
             return 'internal'
         }
 
-        if (result !== 'success') {
+        if (result !== 'success' && result !== 'registered-to-caller') {
             return result
         }
 
-        // 2. Create an item
+        console.log('Creating item...')
+
         const itemRef = this.items().doc()
-        this.items().add({
-            itemID: itemRef.id,
-            tagID: item.tagID,
-            name: item.name,
-            icon: item.icon,
-            ownerID: uid,
-            isMissing: false,
-            dateAdded: new Date().getTime()
+
+        return firestore().runTransaction(async (transaction) => {
+            // 2. Create an item
+            transaction.set(itemRef, {
+                itemID: itemRef.id,
+                tagID: item.tagID,
+                name: item.name,
+                icon: item.icon,
+                ownerID: uid,
+                isMissing: false,
+                dateAdded: new Date().getTime()
+            })
+
+            // 3. Associate the tag with the new item
+            transaction.update(this.tags().doc(item.tagID), {
+                isAssociatedWithItem: true,
+                associatedItemID: itemRef.id
+            })
+
+            // 4. Add the new item to the user's record
+            transaction.set(this.users().doc(uid), {
+                items: { [itemRef.id]: true }
+            }, { merge: true })
+
+            return 'success'
         })
-
-        // 3. Associate the tag with the new item
-        this.tags().doc(item.tagID).update({
-            isAssociatedWithItem: true,
-            associatedItemID: itemRef.id
-        })
-
-        // 4. Add the new item to the user's record
-        await this.users()
-            .doc(uid)
-            .set({ items: { [item.itemID]: true } }, { merge: true })
-
-        return 'success'
     }
 
     public static async removeItem(itemID: ItemID) {
@@ -97,13 +102,12 @@ export class FirestoreBackend {
         return (await this.users().doc(uid).get()).data() as UserProfile
     }
 
-    //TODO FIX THIS
-    public static async attachItemReportListener(
+    public static attachItemReportListener(
         itemID: ItemID, 
         onNewReportData: (docs: DocChanges) => void,
-        onError: (error: Error) => void) 
+        onError: (error: Error) => void): () => void
     {
-        const query = this.items().doc(itemID).collection('reports')
+        const query = this.reports().where('itemID', '==', itemID)
 
         return query.onSnapshot({
             next: (snapshot) => {

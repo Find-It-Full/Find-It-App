@@ -1,6 +1,0 @@
-
-interface DataManagerInterface {
-    subscriptions: {
-        
-    }
-}
