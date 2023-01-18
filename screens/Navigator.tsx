@@ -32,7 +32,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                         <>
                             <RootStack.Group>
                                 <RootStack.Screen name='Home' component={Home} />
-                                <RootStack.Screen name='ItemDetails' component={ItemDetails} options={{ animation: 'slide_from_right' }} />
+                                <RootStack.Screen name='ItemDetails' component={ItemDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                             </RootStack.Group>
                             <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
                                 <RootStack.Screen name="AddItemFlow" component={AddItemFlowContainer} />

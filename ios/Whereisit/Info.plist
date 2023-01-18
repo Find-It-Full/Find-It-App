@@ -83,6 +83,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>SF-Pro.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-Regular.ttf</string>
 	</array>
 </dict>
 </plist>

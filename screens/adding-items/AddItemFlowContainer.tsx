@@ -17,7 +17,7 @@ const AddItemStack = createNativeStackNavigator<AddItemStackParamList>()
 
 export default function AddItemFlowContainer(props: AddItemFlowProps) {
     return (
-        <AddItemStack.Navigator>
+        <AddItemStack.Navigator screenOptions={{ headerShown: false }}>
             <AddItemStack.Screen name='ScanCode' component={ScanCode} />
             <AddItemStack.Screen name='EnterItemDetails' component={EnterItemDetails} />
         </AddItemStack.Navigator>

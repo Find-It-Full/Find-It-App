@@ -14,7 +14,7 @@ import ReportSummary from "./ReportSummary";
 export default function ItemDetails(props: ItemDetailsProps) {
 
     const item = props.route.params.item
-    const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]))
+    const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]) || { })
     const reportsWithLocation = reports.filter((report) => (
         ReportFieldType.EXACT_LOCATION in report.fields
     ))
@@ -32,7 +32,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             </VerticallyCenteringRow>
             <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginVertical: Spacing.Gap }}>
                 <Text style={TextStyles.h2}>{item.icon}</Text>
-                <Spacer size={Spacing.Gap} />
+                <Spacer size={Spacing.HalfGap} />
                 <Text style={TextStyles.h2}>{item.name}</Text>
             </VerticallyCenteringRow>
             <SightingMap locations={locations} />
@@ -90,8 +90,8 @@ async function fetchIPRegion(): Promise<Region | null> {
         return { 
             latitude: data.latitude, 
             longitude: data.longitude,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001
+            latitudeDelta: 0.025,
+            longitudeDelta: 0.025
         }
     }
     return null

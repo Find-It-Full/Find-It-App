@@ -7,6 +7,7 @@ import {
     useColorScheme,
     View,
 } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function SignIn(props: { }) {
 
@@ -31,7 +32,7 @@ export default function SignIn(props: { }) {
     })
 
     return (
-        <View>
+        <SafeAreaView>
             <Button
                 title="Sign In with Google"
                 onPress={() =>
@@ -40,6 +41,6 @@ export default function SignIn(props: { }) {
                     )
                 }
             />
-        </View>
+        </SafeAreaView>
     )
 }
