@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useEffect, useState } from "react";
-import { FlatList, Text, TouchableOpacity } from "react-native";
+import { FlatList, PlatformColor, Text, TouchableOpacity, View } from "react-native";
 import MapView, { LatLng, Marker, Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ExactLocationReportField, ReportFieldType } from "../../backend/databaseTypes";
@@ -10,6 +10,7 @@ import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
 import ReportSummary from "./ReportSummary";
+import Timeline from "./Timeline";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -19,30 +20,38 @@ export default function ItemDetails(props: ItemDetailsProps) {
         ReportFieldType.EXACT_LOCATION in report.fields
     ))
     const locations = reportsWithLocation.map((report) => (report.fields.EXACT_LOCATION as ExactLocationReportField))
+    const [reportSelected, setReportSelected] = useState(reports.length > 0 ? reports[0].reportID : null)
 
     return (
-        <SafeAreaView style={{ padding: Spacing.ScreenPadding }}>
-            <VerticallyCenteringRow>
-                <TouchableOpacity onPress={props.navigation.goBack}>
-                    <Text style={TextStyles.b1}>{'􀆉 Back'}</Text>
+        <SafeAreaView>
+            <VerticallyCenteringRow style={{ paddingTop: Spacing.ScreenPadding, paddingHorizontal: Spacing.ScreenPadding }}>
+                <TouchableOpacity onPress={props.navigation.goBack} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={TextStyles.i2}>􀆉</Text>
+                    <Text style={TextStyles.b1}>{' Back'}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={TextStyles.b1}>{'􀇿 Mark as Lost'}</Text>
+                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={TextStyles.i2}>􀇿</Text>
+                    <Text style={TextStyles.b1}>{' Mark as Lost'}</Text>
                 </TouchableOpacity>
             </VerticallyCenteringRow>
-            <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginVertical: Spacing.Gap }}>
+            <VerticallyCenteringRow style={{ justifyContent: 'flex-start', padding: Spacing.ScreenPadding, backgroundColor: 'rgb(242, 242, 242)', borderRadius: 8, marginBottom: -8, zIndex: 2 }}>
                 <Text style={TextStyles.h2}>{item.icon}</Text>
                 <Spacer size={Spacing.HalfGap} />
                 <Text style={TextStyles.h2}>{item.name}</Text>
             </VerticallyCenteringRow>
             <SightingMap locations={locations} />
-            <Text style={[TextStyles.h3, { marginBottom: Spacing.HalfGap, marginTop: Spacing.Gap }]}>Sightings</Text>
-            <FlatList 
-                data={reports}
-                renderItem={(item) => (
-                    <ReportSummary report={item.item} />
-                )}
-            />
+            <View style={{ paddingHorizontal: Spacing.ScreenPadding, backgroundColor: 'rgb(242, 242, 242)', borderRadius: 8, marginTop: -8 }}>
+                <Text style={[TextStyles.h3, { marginBottom: Spacing.HalfGap, marginTop: Spacing.Gap }]}>Sightings</Text>
+                <FlatList 
+                    data={reports}
+                    renderItem={(item) => (
+                        <ReportSummary report={item.item} selected={reportSelected} onPress={() => setReportSelected(item.item.reportID)} />
+                    )}
+                    horizontal={true}
+                    style={{ zIndex: 2, marginBottom: -5 }}
+                />
+                <Timeline />
+            </View>
         </SafeAreaView>
     )
 }
@@ -75,7 +84,7 @@ function SightingMap(props: { locations: LatLng[] }) {
     }, [region])
 
     return (
-        <MapView style={{ width: '100%', height: 400 }} region={region || defaultRegion}>
+        <MapView style={{ width: '100%', height: '70%' }} region={region || defaultRegion}>
             {
                 props.locations.map((location) => <Marker coordinate={location} key={location.latitude} />)
             }

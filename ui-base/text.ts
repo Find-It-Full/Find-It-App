@@ -37,4 +37,17 @@ export namespace TextStyles {
         fontSize: 24,
         fontWeight: 'bold'
     }
+
+    export const i2: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Regular',
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: PlatformColor('systemBlue'),
+    }
+    
+    export const i3: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Regular',
+        fontSize: 12,
+        fontWeight: 'bold',
+    }
 }
