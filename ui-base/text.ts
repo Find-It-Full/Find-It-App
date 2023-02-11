@@ -20,6 +20,12 @@ export namespace TextStyles {
         fontWeight: 'bold'
     }
 
+    export const h4: StyleProp<TextStyle> = {
+        fontFamily: 'Poppins-Bold',
+        fontSize: 14,
+        fontWeight: 'bold'
+    }
+
     export const p: StyleProp<TextStyle> = {
         fontFamily: 'Poppins-Regular',
         fontSize: 14,
