@@ -1,41 +1,44 @@
 import { PlatformColor, StyleProp, TextStyle } from "react-native";
+import { Colors } from "./colors";
 
 export namespace TextStyles {
 
     export const h1: StyleProp<TextStyle> = {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'SFPro-Bold',
         fontSize: 32,
-        fontWeight: '800'
+        fontWeight: '800',
+        color: Colors.TextColor
     }
 
     export const h2: StyleProp<TextStyle> = {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'SFPro-Bold',
         fontSize: 24,
         fontWeight: 'bold'
     }
 
     export const h3: StyleProp<TextStyle> = {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'SFPro-Bold',
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: Colors.TextColor
     }
 
     export const h4: StyleProp<TextStyle> = {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'SFPro-Bold',
         fontSize: 14,
         fontWeight: 'bold'
     }
 
     export const p: StyleProp<TextStyle> = {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'SFPro-Regular',
         fontSize: 14,
     }
 
     export const b1: StyleProp<TextStyle> = {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'SFPro-Bold',
         fontSize: 16,
         fontWeight: '800',
-        color: PlatformColor('systemBlue'),
+        color: Colors.TextColor,
     }
 
     export const i1: StyleProp<TextStyle> = {

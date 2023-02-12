@@ -9,7 +9,7 @@ import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts";
 import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
-import ReportSummary from "./ReportSummary";
+import ReportSummary from "../../components/items/ReportSummary";
 import Timeline from "./Timeline";
 
 export default function ItemDetails(props: ItemDetailsProps) {
@@ -30,6 +30,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
         const locationField = reports[index].fields.EXACT_LOCATION
         setSelectedLocation(isExactLocation(locationField) ? locationField : null)
     }
+
+    useEffect(() => {
+        handleScroll({ nativeEvent: { contentOffset: { x: 0 } }} as NativeSyntheticEvent<NativeScrollEvent>)
+    }, [])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

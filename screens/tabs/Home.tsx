@@ -5,16 +5,19 @@ import {
     Button,
     FlatList,
     TouchableOpacity,
+    StyleSheet,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { SubscriptionManagerContext } from "../../backend/SubscriptionManager"
-import ItemSummary from "../item-details/ItemSummary"
+import ItemSummary from "../../components/items/ItemSummary"
 import Items, { fetchAllItems } from "../../reducers/items"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { VerticallyCenteringRow } from "../../ui-base/layouts"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import { HomeProps } from "../Navigator"
+import { ScreenBase } from "../../ui-base/containers"
+import { Colors } from "../../ui-base/colors"
 
 export default function Home(props: HomeProps) {
 
@@ -38,15 +41,13 @@ export default function Home(props: HomeProps) {
     }, [items])
 
     return (
-        <SafeAreaView style={{ padding: Spacing.ScreenPadding }}>
+        <ScreenBase>
             <VerticallyCenteringRow style={{ marginBottom: Spacing.Gap }}>
                 <Text style={TextStyles.h1}>Items</Text>
                 <TouchableOpacity
-                    onPress={() => {
-                        props.navigation.navigate('AddItemFlow')
-                    }}
+                    
                 >
-                    <Text style={TextStyles.b1}>+ Add</Text>
+                    <Text style={TextStyles.b1}>􀣌</Text>
                 </TouchableOpacity>
             </VerticallyCenteringRow>
             
@@ -57,7 +58,28 @@ export default function Home(props: HomeProps) {
                     <ItemSummary {...item.item} />
                 )}
             />
+
+            <TouchableOpacity 
+                style={styles.addItemButton}
+                onPress={() => {
+                    props.navigation.navigate('AddItemFlow')
+                }}
+            >
+                <Text style={[TextStyles.h3, { color: Colors.Black }]}>Add Item</Text>
+            </TouchableOpacity>
             
-        </SafeAreaView>
+        </ScreenBase>
     )
 }
+
+const styles = StyleSheet.create({
+    addItemButton: {
+        paddingVertical: Spacing.Gap,
+        paddingHorizontal: Spacing.Gap + 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.White,
+        borderRadius: 100,
+        flexShrink: 1
+    }
+})
