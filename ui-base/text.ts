@@ -26,12 +26,21 @@ export namespace TextStyles {
     export const h4: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
         fontSize: 14,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: Colors.TextColor
     }
 
     export const p: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
         fontSize: 14,
+        color: Colors.TextColor
+    }
+
+    export const p2: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Regular',
+        fontSize: 14,
+        color: Colors.TextColor,
+        opacity: 0.6
     }
 
     export const b1: StyleProp<TextStyle> = {

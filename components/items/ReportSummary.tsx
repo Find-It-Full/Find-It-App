@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { isMessage, MessageReportField, Report } from '../../backend/databaseTypes';
+import { Colors } from '../../ui-base/colors';
 import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
 
@@ -19,7 +20,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     return (
         <View style={[{ width: windowWidth }, styles.container]}>
             <View style={styles.contentContainer}>
-                <Text style={[TextStyles.h4, { marginBottom: 0, color: 'white' }]}>{`${dateString} at ${timeString}`}</Text>
+                <Text style={[TextStyles.h4, { marginBottom: Spacing.QuarterGap, color: 'white' }]}>{`${dateString} at ${timeString}`}</Text>
                 <Text style={[TextStyles.p, { color: 'white', fontStyle: hasMessage ? 'normal' : 'italic' }]}>{message}</Text>
             </View>
         </View>
@@ -29,12 +30,11 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
 const styles = StyleSheet.create({
     container: {
         alignItems: 'flex-start',
-        padding: Spacing.ScreenPadding,
+        paddingHorizontal: Spacing.ScreenPadding,
     },
     contentContainer: {
         width: '100%',
-        height: '100%',
-        backgroundColor: 'black',
+        backgroundColor: Colors.PanelColor,
         padding: Spacing.Gap,
         borderRadius: 10
     }

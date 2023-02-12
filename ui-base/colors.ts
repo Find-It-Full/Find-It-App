@@ -4,5 +4,6 @@ export namespace Colors {
     export const Background = Black
     export const TextColor = White
     export const PanelColor = '#1D1D1D'
+    export const ButtonColor = '#2C2C2C'
     export const ItemBorder = 'rgba(255, 255, 255, 0.1)'
 }

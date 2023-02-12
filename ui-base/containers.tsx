@@ -1,5 +1,5 @@
 import * as React from "react"
-import { View, ViewStyle } from "react-native" 
+import { TouchableOpacity, View, ViewStyle } from "react-native" 
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"
 import { Radii } from "./radii"
@@ -18,5 +18,24 @@ export function ActionCard(props: { children?: React.ReactNode, style?: ViewStyl
         <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...props.style }}>
             {props.children}
         </View>
+    )
+}
+
+export function Panel(props: { children?: React.ReactNode, style?: ViewStyle }) {
+    return (
+        <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.PanelColor, borderRadius: Radii.ItemRadius, ...props.style }}>
+            {props.children}
+        </View>
+    )
+}
+
+export function ActionButton(props: { children?: React.ReactNode, style?: ViewStyle, onPress?: () => void }) {
+    return (
+        <TouchableOpacity 
+            style={{ backgroundColor: Colors.ButtonColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', ...props.style }}
+            onPress={props.onPress}
+        >
+            {props.children}
+        </TouchableOpacity>
     )
 }
