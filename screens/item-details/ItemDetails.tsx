@@ -36,7 +36,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
         setReportSelected(reports[index].reportID)
         const locationField = reports[index].fields.EXACT_LOCATION
         if (isExactLocation(locationField)) {
-            console.log(`Setting location to: ${JSON.stringify(locationField)}`)
             setSelectedLocation(locationField)
         }
         setSelectedReportIndex(index)
@@ -72,37 +71,46 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <Text style={TextStyles.h4}>More</Text>
                     </ActionButton>
                 </VerticallyCenteringRow>
-                <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.BigGap }]}>Sightings</Text>
-                <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>5 in last 30 days</Text>
-                <ScrollView 
-                    horizontal={true}
-                    pagingEnabled
-                    style={{ zIndex: 2, paddingVertical: Spacing.ThreeQuartersGap }}
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={handleScroll}
-                    scrollEventThrottle={36}
-                    ref={scrollRef}
-                    onLayout={() => scrollRef.current?.scrollToEnd()}
-                >
-                    {
-                        reports.map((report) => 
-                            <ReportSummary 
-                                report={report} 
-                                isSelected={reportSelected} 
-                                onPress={() => setReportSelected(report.reportID)} 
-                                key={report.reportID}
-                            />
-                        )
-                    }
-                </ScrollView>
-                <VerticallyCenteringRow style={{ paddingHorizontal: Spacing.ScreenPadding }}>
-                    <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={selectedReportIndex <= 0}>
-                        <Text style={[TextStyles.h4, { opacity: selectedReportIndex <= 0 ? 0.6 : 1 }]}>􀆉 Previous</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={selectedReportIndex >= reports.length - 1}>
-                        <Text style={[TextStyles.h4, { opacity: selectedReportIndex >= reports.length - 1 ? 0.6 : 1 }]}>Next 􀯻</Text>
-                    </TouchableOpacity>
-                </VerticallyCenteringRow>
+                {
+                    reports.length > 0 ?
+                        <>
+                            <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.BigGap }]}>Sightings</Text>
+                            <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>5 in last 30 days</Text>
+                            <ScrollView 
+                                horizontal={true}
+                                pagingEnabled
+                                style={{ zIndex: 2, paddingVertical: Spacing.ThreeQuartersGap }}
+                                showsHorizontalScrollIndicator={false}
+                                onScroll={handleScroll}
+                                scrollEventThrottle={36}
+                                ref={scrollRef}
+                                onLayout={() => scrollRef.current?.scrollToEnd()}
+                            >
+                                {
+                                    reports.map((report) => 
+                                        <ReportSummary 
+                                            report={report} 
+                                            isSelected={reportSelected} 
+                                            onPress={() => setReportSelected(report.reportID)} 
+                                            key={report.reportID}
+                                        />
+                                    )
+                                }
+                            </ScrollView>
+                            <VerticallyCenteringRow style={{ paddingHorizontal: Spacing.ScreenPadding }}>
+                                <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={selectedReportIndex <= 0}>
+                                    <Text style={[TextStyles.h4, { opacity: selectedReportIndex <= 0 ? 0.6 : 1 }]}>􀆉 Previous</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={selectedReportIndex >= reports.length - 1}>
+                                    <Text style={[TextStyles.h4, { opacity: selectedReportIndex >= reports.length - 1 ? 0.6 : 1 }]}>Next 􀯻</Text>
+                                </TouchableOpacity>
+                            </VerticallyCenteringRow>
+                        </> :
+                        <>
+                            <Text style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.BigGap, textAlign: 'center' }]}>Nobody has found this item yet. If you want to be notified when it's found, mark it as lost.</Text>
+                        </>
+                }
+                
             </View>
         </View>
     )
@@ -130,27 +138,21 @@ function SightingMap(props: { location: LatLng | null }) {
 
     const defaultRegion = {
         latitude: 38.648785,
-        longitude: -90.310729,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001
+        longitude: -97.910629,
+        latitudeDelta: 65,
+        longitudeDelta: 65
     }
-
-    console.log(`Rendering map with location: ${JSON.stringify(props.location)}`)
 
     const [region, setRegion] = useState<Region | null>(null)
     const mapRef = useRef<MapView>(null)
-    // const [ipRegion, setIPRegion] = useState<Region | null>(null)
 
     useEffect(() => {
-        console.log(`Props.location did change, to: ${JSON.stringify(props.location)}`)
         if (props.location) {
-            console.log(`Got valid location, animating`)
             setRegion(determineReportRegion([props.location]))
         } else {
             fetchIPRegion()
             .then((newIPRegion) => {
                 if (newIPRegion && ! region) {
-                    console.log(`Got no location, animating to IP`)
                     setRegion(region)
                 }
             })
