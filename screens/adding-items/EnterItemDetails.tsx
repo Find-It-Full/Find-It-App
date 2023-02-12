@@ -5,11 +5,18 @@ import {
     View,
     TextInput,
     Text,
-    Alert
+    Alert,
+    StyleSheet,
+    TouchableOpacity
 } from "react-native"
 import { EnterItemDetailsProps } from "./AddItemFlowContainer"
 import { useAppDispatch } from "../../store/hooks"
 import { addNewItem } from "../../reducers/items"
+import { ScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
+import { Spacing } from "../../ui-base/spacing"
+import { TextStyles } from "../../ui-base/text"
+import { Colors } from "../../ui-base/colors"
+import { Radii } from "../../ui-base/radii"
 
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
@@ -24,25 +31,28 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
     const iconValid = icon.length > 0
 
     return (
-        <View style={{ flex: 1 }}>
+        <ScreenBaseNoInsets style={{ paddingTop: Spacing.BigGap * 2 }}>
 
-            <Text>{`ID: ${tagID}`}</Text>
+            <Text style={TextStyles.h2}>Item Information</Text>
+            <Text style={[TextStyles.p2, { marginVertical: Spacing.Gap }]}>{`ID: ${tagID}`}</Text>
             <TextInput
                 placeholder={"Name"}
+                style={[TextStyles.h3, styles.input]}
                 onChangeText={(text: string) => {
                     setName(text)
                 }}
             />
             <TextInput
                 placeholder={"Icon"}
+                style={[TextStyles.h3, styles.input, { marginBottom: Spacing.BigGap }]}
                 onChangeText={(text: string) => {
                     setIcon(text)
                 }}
             />
 
-            <Button
-                title="Add Item"
+            <TouchableOpacity
                 disabled={ ! nameValid || ! iconValid}
+                style={styles.addItemButton}
                 onPress={async () => {
                     try {
                         await dispatch(addNewItem({
@@ -60,8 +70,30 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                         Alert.alert('Failed to add item', error.message)
                     }
                 }}
-            />
+            >
+                <Text style={[TextStyles.h3, { color: Colors.Black }]}>Add Item</Text>
+            </TouchableOpacity>
 
-        </View>
+        </ScreenBaseNoInsets>
     )
 }
+
+const styles = StyleSheet.create({
+    input: {
+        backgroundColor: Colors.ButtonColor,
+        padding: Spacing.ThreeQuartersGap,
+        borderRadius: Radii.ItemRadius,
+        borderWidth: 1,
+        borderColor: Colors.ItemBorder,
+        marginBottom: Spacing.Gap
+    },
+    addItemButton: {
+        paddingVertical: Spacing.Gap,
+        paddingHorizontal: Spacing.Gap + 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.White,
+        borderRadius: 100,
+        flexShrink: 1
+    }
+})

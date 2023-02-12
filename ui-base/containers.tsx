@@ -13,6 +13,14 @@ export function ScreenBase(props: { children?: React.ReactNode, style?: ViewStyl
     )
 }
 
+export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: ViewStyle }) {
+    return (
+        <View style={{ padding: Spacing.ScreenPadding, backgroundColor: Colors.Background, flex: 1, ...props.style }}>
+            {props.children}
+        </View>
+    )
+}
+
 export function ActionCard(props: { children?: React.ReactNode, style?: ViewStyle }) {
     return (
         <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...props.style }}>
