@@ -12,8 +12,8 @@ export default function ItemProfile({ icon, name }: Item) {
             <View style={{ height: 38, width: 38, backgroundColor: Colors.White, borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={TextStyles.h3}>{icon}</Text>
             </View>
-            <Spacer size={Spacing.HalfGap} />
-            <Text style={TextStyles.h3}>{name}</Text>
+            <Spacer size={Spacing.Gap} />
+            <Text style={TextStyles.h2}>{name}</Text>
         </VerticallyCenteringGroupedRow>
     )
 }

@@ -42,7 +42,7 @@ export default function Home(props: HomeProps) {
 
     return (
         <ScreenBase>
-            <VerticallyCenteringRow style={{ marginBottom: Spacing.Gap }}>
+            <VerticallyCenteringRow style={{ marginBottom: Spacing.BigGap }}>
                 <Text style={TextStyles.h1}>Items</Text>
                 <TouchableOpacity
                     

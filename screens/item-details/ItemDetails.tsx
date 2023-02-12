@@ -35,7 +35,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
         const index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
         setReportSelected(reports[index].reportID)
         const locationField = reports[index].fields.EXACT_LOCATION
-        setSelectedLocation(isExactLocation(locationField) ? locationField : null)
+        if (isExactLocation(locationField)) {
+            console.log(`Setting location to: ${JSON.stringify(locationField)}`)
+            setSelectedLocation(locationField)
+        }
         setSelectedReportIndex(index)
     }
 
@@ -52,7 +55,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 <Text style={TextStyles.h3}>􀆉</Text>
             </TouchableOpacity>
             <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
-                <View style={{ paddingVertical: Spacing.BigGap, paddingHorizontal: Spacing.Gap }}>
+                <View style={{ paddingVertical: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding }}>
                     <ItemProfile {...item} />
                 </View>
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
@@ -69,12 +72,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <Text style={TextStyles.h4}>More</Text>
                     </ActionButton>
                 </VerticallyCenteringRow>
-                <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.Gap }]}>Sightings</Text>
+                <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.BigGap }]}>Sightings</Text>
                 <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>5 in last 30 days</Text>
                 <ScrollView 
                     horizontal={true}
                     pagingEnabled
-                    style={{ zIndex: 2, paddingVertical: Spacing.HalfGap }}
+                    style={{ zIndex: 2, paddingVertical: Spacing.ThreeQuartersGap }}
                     showsHorizontalScrollIndicator={false}
                     onScroll={handleScroll}
                     scrollEventThrottle={36}
@@ -92,7 +95,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         )
                     }
                 </ScrollView>
-                <VerticallyCenteringRow style={{ paddingHorizontal: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }}>
+                <VerticallyCenteringRow style={{ paddingHorizontal: Spacing.ScreenPadding }}>
                     <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={selectedReportIndex <= 0}>
                         <Text style={[TextStyles.h4, { opacity: selectedReportIndex <= 0 ? 0.6 : 1 }]}>􀆉 Previous</Text>
                     </TouchableOpacity>
@@ -132,28 +135,33 @@ function SightingMap(props: { location: LatLng | null }) {
         longitudeDelta: 0.001
     }
 
+    console.log(`Rendering map with location: ${JSON.stringify(props.location)}`)
+
     const [region, setRegion] = useState<Region | null>(null)
     const mapRef = useRef<MapView>(null)
+    // const [ipRegion, setIPRegion] = useState<Region | null>(null)
 
     useEffect(() => {
+        console.log(`Props.location did change, to: ${JSON.stringify(props.location)}`)
         if (props.location) {
+            console.log(`Got valid location, animating`)
             setRegion(determineReportRegion([props.location]))
-            return
-        }
-
-        fetchIPRegion()
-            .then((region) => {
-                if (region) {
+        } else {
+            fetchIPRegion()
+            .then((newIPRegion) => {
+                if (newIPRegion && ! region) {
+                    console.log(`Got no location, animating to IP`)
                     setRegion(region)
                 }
             })
             .catch((error) => {
                 console.error(`Failed to fetch IP region, ${error}`)
             })
+        }
     }, [props.location])
 
     useEffect(() => {
-        mapRef.current?.animateToRegion(region || defaultRegion)
+        mapRef.current?.animateToRegion(region ?? defaultRegion)
     }, [region])
 
     return (

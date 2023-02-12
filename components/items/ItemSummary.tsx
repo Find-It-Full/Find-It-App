@@ -14,7 +14,7 @@ export default function ItemSummary(props: Item) {
     const navigation = useNavigation<ItemDetailsProps['navigation']>()
 
     return (
-        <ActionCard style={{ flexGrow: 1, padding: Spacing.Gap, marginBottom: Spacing.HalfGap }}>
+        <ActionCard style={{ flexGrow: 1, padding: Spacing.Gap, marginBottom: Spacing.Gap }}>
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate('ItemDetails', { item: props })

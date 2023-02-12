@@ -13,7 +13,8 @@ export namespace TextStyles {
     export const h2: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
         fontSize: 24,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: Colors.TextColor
     }
 
     export const h3: StyleProp<TextStyle> = {
