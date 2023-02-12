@@ -1,55 +1,63 @@
 import * as React from "react"
 import { useEffect, useRef, useState } from "react";
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent, PlatformColor, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
-import MapView, { LatLng, Marker, Region } from "react-native-maps";
-import { SafeAreaInsetsContext, SafeAreaView } from "react-native-safe-area-context";
-import { ExactLocationReportField, isExactLocation, ReportFieldType } from "../../backend/databaseTypes";
+import { Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import MapView, { Callout, LatLng, Marker, Region } from "react-native-maps";
+import { SafeAreaInsetsContext } from "react-native-safe-area-context";
+import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
 import { useAppSelector } from "../../store/hooks";
-import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts";
+import { VerticallyCenteringRow } from "../../ui-base/layouts";
 import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
 import ReportSummary from "../../components/items/ReportSummary";
-import Timeline from "./Timeline";
-import { ActionButton, Panel, ScreenBase } from "../../ui-base/containers";
+import { ActionButton, ItemIconContainer } from "../../ui-base/containers";
 import { Colors } from "../../ui-base/colors";
 import ItemProfile from "../../components/items/ItemProfile";
 import { Radii } from "../../ui-base/radii";
+import { Shadows } from "../../ui-base/shadows";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
     const item = props.route.params.item
     const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]) || { })
-    const reportsWithLocation = reports.filter((report) => (
-        ReportFieldType.EXACT_LOCATION in report.fields
-    ))
-    const locations = reportsWithLocation.map((report) => (report.fields.EXACT_LOCATION as ExactLocationReportField))
-    const [reportSelected, setReportSelected] = useState(reports.length > 0 ? reports[reports.length - 1].reportID : null)
-    const [selectedReportIndex, setSelectedReportIndex] = useState(reports.length - 1)
-    const [selectedLocation, setSelectedLocation] = useState<ExactLocationReportField | null>(null)
+    const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
     const scrollRef = useRef<ScrollView>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
-        setReportSelected(reports[index].reportID)
-        const locationField = reports[index].fields.EXACT_LOCATION
-        if (isExactLocation(locationField)) {
-            setSelectedLocation(locationField)
+
+        if (reports.length === 0) {
+            setSelectedReport(null)
         }
-        setSelectedReportIndex(index)
+
+        const index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
+        const locationField = reports[index].fields.EXACT_LOCATION
+        const newSelectedReport = {
+            reportID: reports[index].reportID,
+            reportIndex: index,
+            location: isExactLocation(locationField) ? locationField : null
+        }
+        setSelectedReport(newSelectedReport)
     }
 
     const scrollToOffset = (offset: number) => {
-        const newIndex = Math.max(Math.min(selectedReportIndex + offset, reports.length - 1), 0)
+
+        if ( ! selectedReport) {
+            return
+        }
+
+        const newIndex = Math.max(Math.min(selectedReport.reportIndex + offset, reports.length - 1), 0)
         const position = newIndex * windowWidth
         scrollRef.current?.scrollTo({ x: position, animated: true })
     }
 
+    const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
+    const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
+
     return (
         <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
-            <SightingMap location={selectedLocation} />
+            <SightingMap location={selectedReport ? selectedReport.location : null} itemIcon={item.icon} />
             <TouchableOpacity style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} onPress={props.navigation.goBack}>
                 <Text style={TextStyles.h3}>􀆉</Text>
             </TouchableOpacity>
@@ -63,19 +71,28 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <Text style={TextStyles.h4}>Mark as Lost</Text>
                     </ActionButton>
                     <ActionButton style={styles.buttonContainer}>
-                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀙋</Text>
-                        <Text style={TextStyles.h4}>Directions</Text>
-                    </ActionButton>
-                    <ActionButton style={styles.buttonContainer}>
                         <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀍢</Text>
                         <Text style={TextStyles.h4}>More</Text>
                     </ActionButton>
+                    <ActionButton 
+                        style={styles.buttonContainer}
+                        disabled={ ! selectedReport || ! selectedReport.location}
+                        onPress={() => {
+                            if ( ! selectedReport || ! selectedReport.location) {
+                                return
+                            }
+                            openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
+                        }}
+                    >
+                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀙋</Text>
+                        <Text style={TextStyles.h4}>Directions</Text>
+                    </ActionButton>
                 </VerticallyCenteringRow>
                 {
-                    reports.length > 0 ?
+                    selectedReport ?
                         <>
                             <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.BigGap }]}>Sightings</Text>
-                            <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>5 in last 30 days</Text>
+                            <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>{`${reports.length} total`}</Text>
                             <ScrollView 
                                 horizontal={true}
                                 pagingEnabled
@@ -90,19 +107,18 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                     reports.map((report) => 
                                         <ReportSummary 
                                             report={report} 
-                                            isSelected={reportSelected} 
-                                            onPress={() => setReportSelected(report.reportID)} 
+                                            isSelected={selectedReport?.reportID} 
                                             key={report.reportID}
                                         />
                                     )
                                 }
                             </ScrollView>
                             <VerticallyCenteringRow style={{ paddingHorizontal: Spacing.ScreenPadding }}>
-                                <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={selectedReportIndex <= 0}>
-                                    <Text style={[TextStyles.h4, { opacity: selectedReportIndex <= 0 ? 0.6 : 1 }]}>􀆉 Previous</Text>
+                                <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={ ! canScrollToPrev}>
+                                    <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : 0.6 }]}>􀆉 Previous</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={selectedReportIndex >= reports.length - 1}>
-                                    <Text style={[TextStyles.h4, { opacity: selectedReportIndex >= reports.length - 1 ? 0.6 : 1 }]}>Next 􀯻</Text>
+                                <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={ ! canScrollToNext}>
+                                    <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : 0.6 }]}>Next 􀯻</Text>
                                 </TouchableOpacity>
                             </VerticallyCenteringRow>
                         </> :
@@ -134,7 +150,47 @@ const styles = StyleSheet.create({
     }
 })
 
-function SightingMap(props: { location: LatLng | null }) {
+function getInitialState(reports: Report[]): { reportID: string, reportIndex: number, location: LatLng | null, } | null {
+    // (A) No reports - return nulls
+    if (reports.length === 0) {
+        return null
+    }
+
+    // (B) ≥ 1 report
+    const reversed = [...reports].reverse()
+    let field: ExactLocationReportField | null = null
+    let firstReport: Report = reversed[0]
+    let firstIndex: number = 0
+    reversed.every((report, index) => {
+        if (isExactLocation(report.fields.EXACT_LOCATION)) {
+            field = report.fields.EXACT_LOCATION
+            firstReport = report
+            firstIndex = index
+            return false
+        }
+        return true
+    })
+
+    return { reportID: firstReport.reportID, reportIndex: reversed.length - firstIndex - 1, location: field }
+}
+
+function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
+    const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' })
+    const latLng = `${lat},${lng}`
+    const url = Platform.select({
+        ios: `${scheme}${label}@${latLng}`,
+        android: `${scheme}${latLng}(${label})`
+    })
+
+    if ( ! url) {
+        console.error('could not generate url')
+        return
+    }
+        
+    Linking.openURL(url)
+}
+
+function SightingMap(props: { location: LatLng | null, itemIcon: string }) {
 
     const defaultRegion = {
         latitude: 38.648785,
@@ -169,7 +225,13 @@ function SightingMap(props: { location: LatLng | null }) {
     return (
         <MapView style={{ flexGrow: 1 }} ref={mapRef}>
             {
-                props.location ? <Marker coordinate={props.location} key={props.location.latitude} /> : null
+                props.location ? 
+                    <Marker coordinate={props.location} key={props.location.latitude}>
+                        <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
+                            <Text style={TextStyles.h3}>{props.itemIcon}</Text>
+                        </ItemIconContainer>
+                    </Marker> : 
+                    null
             }
         </MapView>
     )

@@ -37,13 +37,22 @@ export function Panel(props: { children?: React.ReactNode, style?: ViewStyle }) 
     )
 }
 
-export function ActionButton(props: { children?: React.ReactNode, style?: ViewStyle, onPress?: () => void }) {
+export function ActionButton(props: { children?: React.ReactNode, style?: ViewStyle, onPress?: () => void, disabled?: boolean }) {
     return (
         <TouchableOpacity 
-            style={{ backgroundColor: Colors.ButtonColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', ...props.style }}
+            style={{ backgroundColor: Colors.ButtonColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', opacity: props.disabled ? 0.6 : 1, ...props.style }}
             onPress={props.onPress}
+            disabled={!!props.disabled}
         >
             {props.children}
         </TouchableOpacity>
+    )
+}
+
+export function ItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
+    return (
+        <View style={{ height: 38, width: 38, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
+            {props.children}
+        </View>
     )
 }

@@ -28,7 +28,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
     const tagID = route.params.tagID
 
     const nameValid = name.length > 0
-    const iconValid = icon.length > 0
+    const iconValid = icon.length === 1
 
     return (
         <ScreenBaseNoInsets style={{ paddingTop: Spacing.BigGap * 2 }}>
@@ -52,7 +52,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
 
             <TouchableOpacity
                 disabled={ ! nameValid || ! iconValid}
-                style={styles.addItemButton}
+                style={[styles.addItemButton, { opacity: nameValid && iconValid ? 1 : 0.6 }]}
                 onPress={async () => {
                     try {
                         await dispatch(addNewItem({
