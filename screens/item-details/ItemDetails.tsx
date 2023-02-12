@@ -39,12 +39,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
         setSelectedReportIndex(index)
     }
 
-    useEffect(() => {
-        if (scrollRef) {
-            scrollToOffset(0)
-        }
-    }, [scrollRef])
-
     const scrollToOffset = (offset: number) => {
         const newIndex = Math.max(Math.min(selectedReportIndex + offset, reports.length - 1), 0)
         const position = newIndex * windowWidth
@@ -85,6 +79,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     onScroll={handleScroll}
                     scrollEventThrottle={36}
                     ref={scrollRef}
+                    onLayout={() => scrollRef.current?.scrollToEnd()}
                 >
                     {
                         reports.map((report) => 
