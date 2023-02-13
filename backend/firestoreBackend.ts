@@ -74,6 +74,28 @@ export class FirestoreBackend {
         })
     }
 
+    public static async editItem(item: { itemID: string, name: string, icon: string }): Promise<RegisterTagResult> {
+        const itemRef = this.items().doc(item.itemID)
+        console.log('Starting update...')
+        return firestore().runTransaction(async (transaction) => {
+            const itemDoc = await transaction.get(itemRef)
+
+            if ( ! itemDoc.exists) {
+                console.log('Item DNE.')
+                return 'no-such-tag'
+            }
+
+            console.log('Updating...')
+
+            transaction.update(itemRef, {
+                name: item.name,
+                icon: item.icon
+            })
+
+            return 'success'
+        })
+    }
+
     public static async removeItem(itemID: ItemID) {
         await this.items().doc(itemID).delete()
         await this.users()
@@ -126,35 +148,19 @@ export class FirestoreBackend {
         })
     }
 
-    // public static async deleteFoundSheet(foundSheetId: string, itemId: string) {
-    //     await this.items()
-    //         .doc(itemId)
-    //         .set(
-    //             {
-    //                 foundSheets: {
-    //                     [foundSheetId]: firestore.FieldValue.delete(),
-    //                 },
-    //             },
-    //             { merge: true }
-    //         )
-    // }
+    public static attachItemsListener(onNewItemData: (docs: DocChanges) => void, onError: (error: Error) => void): () => void {
+        const query = this.items().where('ownerID', '==', uid)
 
-    //-------
-    //The following will be used both in app and website
-    //-------
+        return query.onSnapshot({
+            next: (snapshot) => {
 
-    ///TODO: cloud function to add foundsheet to user profile and item data
-    public static async sendReport(report: Report) {
-        throw new Error('Not implemented')
+                if ( ! snapshot.docChanges()) {
+                    return
+                }
 
-        // Need to add data shared between all reports
-        // And serialize and add data for each of the types of ReportFields
-
-        // await this.reports()
-        //     .doc()
-        //     .set({
-        //         ...data,
-        //         timeSent: new Date().getTime(),
-        //     })
+                onNewItemData(snapshot.docChanges())
+            },
+            error: onError
+        })
     }
 }

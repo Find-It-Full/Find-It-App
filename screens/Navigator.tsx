@@ -4,19 +4,22 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import SignIn from './account/SignIn'
 import AddItemFlowContainer from './adding-items/AddItemFlowContainer'
 import Home from './tabs/Home'
-import { Item } from '../backend/databaseTypes'
+import { Item, TagID } from '../backend/databaseTypes'
 import ItemDetails from './item-details/ItemDetails'
+import EditItemFlowContainer from './editing-items/EditItemDetails'
 
 export type RootStackParamList = {
     Home: undefined
     ItemDetails: { item: Item }
     SignIn: undefined
     AddItemFlow: undefined
+    EditItemFlow: { item: Item }
 }
 
 export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
 export type AddItemFlowProps = NativeStackScreenProps<RootStackParamList, 'AddItemFlow'>
 export type ItemDetailsProps = NativeStackScreenProps<RootStackParamList, 'ItemDetails'>
+export type EditItemFlowProps = NativeStackScreenProps<RootStackParamList, 'EditItemFlow'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -36,6 +39,9 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                             </RootStack.Group>
                             <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
                                 <RootStack.Screen name="AddItemFlow" component={AddItemFlowContainer} />
+                            </RootStack.Group>
+                            <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
+                                <RootStack.Screen name="EditItemFlow" component={EditItemFlowContainer} />
                             </RootStack.Group>
                         </>
                     ) :

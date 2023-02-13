@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { Item } from "../backend/databaseTypes"
+import { Item, ItemID } from "../backend/databaseTypes"
 import { FirestoreBackend } from "../backend/firestoreBackend"
 
 export interface ItemsData {
@@ -20,6 +20,16 @@ export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item
     return item
 })
 
+export const editItemDetails = createAsyncThunk('items/editItemDetails', async (item: { name: string, icon: string, itemID: string }): Promise<void> => {
+    const result = await FirestoreBackend.editItem(item)
+
+    console.log(`Got result: ${result}`)
+
+    if (result !== 'success') {
+        throw new Error(result)
+    }
+})
+
 export const fetchAllItems = createAsyncThunk('items/fetchAllItems', async (): Promise<Item[]> => {
     const result = await FirestoreBackend.getItems()
     return result
@@ -31,6 +41,12 @@ const itemsSlice = createSlice({
     reducers: {
         directlyAddItem(state, action: PayloadAction<Item>) {
             state.items[action.payload.itemID] = action.payload
+        },
+        updateItem(state, action: PayloadAction<Item>) {
+            state.items[action.payload.itemID] = { ...state.items[action.payload.itemID], ...action.payload }
+        },
+        deleteItem(state, action: PayloadAction<ItemID>) {
+            delete state.items[action.payload]
         }
     },
     extraReducers: (builder) => {
@@ -49,10 +65,13 @@ const itemsSlice = createSlice({
             .addCase(fetchAllItems.rejected, (_, action) => {
                 console.error(action.error)
             })
+            .addCase(editItemDetails.rejected, (_, action) => {
+                console.error(action.error)
+            })
     }
 })
 
-export const { } = itemsSlice.actions
+export const { directlyAddItem, deleteItem, updateItem } = itemsSlice.actions
 export default itemsSlice.reducer
 
 /*

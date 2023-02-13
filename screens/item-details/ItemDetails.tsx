@@ -15,10 +15,11 @@ import { Colors } from "../../ui-base/colors";
 import ItemProfile from "../../components/items/ItemProfile";
 import { Radii } from "../../ui-base/radii";
 import { Shadows } from "../../ui-base/shadows";
+import { ContextMenuButton } from "react-native-ios-context-menu";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
-    const item = props.route.params.item
+    const item = useAppSelector((state) => state.items.items[props.route.params.item.itemID])
     const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]) || { })
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
@@ -70,10 +71,43 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀇿</Text>
                         <Text style={TextStyles.h4}>Mark as Lost</Text>
                     </ActionButton>
-                    <ActionButton style={styles.buttonContainer}>
-                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀍢</Text>
-                        <Text style={TextStyles.h4}>More</Text>
-                    </ActionButton>
+                    <ContextMenuButton
+                        menuConfig={{
+                            menuTitle: '',
+                            menuItems: [{
+                                actionKey: 'edit_item_details',
+                                actionTitle: 'Edit',
+                                icon: {
+                                    type: 'IMAGE_SYSTEM',
+                                    imageValue: {
+                                        systemName: 'pencil',
+                                    },
+                                }
+                            }, {
+                                actionKey: 'delete_item',
+                                actionTitle: 'Remove',
+                                menuAttributes: ['destructive'],
+                                icon: {
+                                    type: 'IMAGE_SYSTEM',
+                                    imageValue: {
+                                        systemName: 'trash.fill',
+                                    },
+                                }
+                            }]
+                        }}
+                        isMenuPrimaryAction={true}
+                        onPressMenuItem={({ nativeEvent }) => {
+                            if (nativeEvent.actionKey === 'edit_item_details') {
+                                props.navigation.navigate('EditItemFlow', { item: item })
+                            }
+                        }}
+                        style={{ flex: 1 }}
+                    >
+                        <ActionButton style={styles.buttonContainer}>
+                            <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀍢</Text>
+                            <Text style={TextStyles.h4}>More</Text>
+                        </ActionButton>
+                    </ContextMenuButton>
                     <ActionButton 
                         style={styles.buttonContainer}
                         disabled={ ! selectedReport || ! selectedReport.location}

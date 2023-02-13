@@ -1,11 +1,13 @@
 import React, { createContext } from "react"
+import { deleteItem, directlyAddItem, updateItem } from "../reducers/items"
 import { addReportToItem, removeReportFromItem } from "../reducers/reports"
 import { useAppDispatch } from "../store/hooks"
-import { DocChanges, isReport, ItemID, Report } from "./databaseTypes"
+import { DocChanges, isReport, Item, ItemID, Report } from "./databaseTypes"
 import { FirestoreBackend } from "./firestoreBackend"
 
 interface SubscriptionManagerInterface {
     subscribeToItemReports: (itemID: ItemID) => (() => void)
+    subscribeToItems: () => (() => void)
 }
 
 const SubscriptionManagerContext = createContext({ } as SubscriptionManagerInterface)
@@ -54,8 +56,37 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
         return unsubscribe
     }
 
+    const subscribeToItems = () => {
+
+        const onNewItemData = (changes: DocChanges) => {
+            changes.forEach((change) => {
+                const data = change.doc.data()
+
+                switch (change.type) {
+                    case 'added':
+                        dispatch(directlyAddItem(data as Item))
+                        break
+                    case 'modified':
+                        dispatch(updateItem(data as Item))
+                        break
+                    case 'removed':
+                        dispatch(deleteItem(data.itemID))
+                }
+            })
+        }
+
+        const onError = (error: Error) => {
+            console.error(`Error when attempting to retrieve item updates: ${JSON.stringify(error)}`)
+        }
+
+        const unsubscribe = FirestoreBackend.attachItemsListener(onNewItemData, onError)
+
+        return unsubscribe
+    }
+
     const subscriptions: SubscriptionManagerInterface = {
-        subscribeToItemReports: subscribeToItemReports
+        subscribeToItemReports: subscribeToItemReports,
+        subscribeToItems: subscribeToItems
     }
 
     return (

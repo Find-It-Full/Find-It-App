@@ -40,6 +40,11 @@ export default function Home(props: HomeProps) {
         return () => { unsubscribeCallbacks.map((cb) => cb()) }
     }, [items])
 
+    useEffect(() => {
+        const unsubscribe = subscriptions.subscribeToItems()
+        return unsubscribe
+    }, [])
+
     return (
         <ScreenBase>
             <VerticallyCenteringRow style={{ marginBottom: Spacing.BigGap }}>
