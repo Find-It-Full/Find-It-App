@@ -7,6 +7,7 @@ import Home from './tabs/Home'
 import { Item, TagID } from '../backend/databaseTypes'
 import ItemDetails from './item-details/ItemDetails'
 import EditItemFlowContainer from './editing-items/EditItemDetails'
+import AccountSettings from './account/AccountSettings'
 
 export type RootStackParamList = {
     Home: undefined
@@ -14,12 +15,14 @@ export type RootStackParamList = {
     SignIn: undefined
     AddItemFlow: undefined
     EditItemFlow: { item: Item }
+    AccountSettings: undefined
 }
 
 export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
 export type AddItemFlowProps = NativeStackScreenProps<RootStackParamList, 'AddItemFlow'>
 export type ItemDetailsProps = NativeStackScreenProps<RootStackParamList, 'ItemDetails'>
 export type EditItemFlowProps = NativeStackScreenProps<RootStackParamList, 'EditItemFlow'>
+export type AccountSettingsProps = NativeStackScreenProps<RootStackParamList, 'AccountSettings'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -36,6 +39,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                             <RootStack.Group>
                                 <RootStack.Screen name='Home' component={Home} />
                                 <RootStack.Screen name='ItemDetails' component={ItemDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
+                                <RootStack.Screen name='AccountSettings' component={AccountSettings} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                             </RootStack.Group>
                             <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
                                 <RootStack.Screen name="AddItemFlow" component={AddItemFlowContainer} />

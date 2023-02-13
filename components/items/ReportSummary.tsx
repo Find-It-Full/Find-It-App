@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Linking, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { isExactLocation, isMessage, Report } from '../../backend/databaseTypes';
 import LocationCoder from '../../backend/LocationCoder';
 import { Colors } from '../../ui-base/colors';
@@ -57,7 +57,14 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                     <Text style={TextStyles.h4}>{`${dateString} at ${timeString}`}</Text>
                     <Text style={TextStyles.h4}>{`${locationString}`}</Text>
                 </VerticallyCenteringRow>
-                
+                <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginBottom: Spacing.QuarterGap }}>
+                    <Text style={TextStyles.p}>Contact: </Text>
+                    <TouchableOpacity
+                        onPress={() => Linking.openURL(`sms://${4156348151}`)}
+                    >
+                        <Text style={[TextStyles.p, { textDecorationLine: 'underline' }]}>+1 (415) 634-8151</Text>
+                    </TouchableOpacity>
+                </VerticallyCenteringRow>
                 <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic' }]}>{message}</Text>
             </View>
         </View>

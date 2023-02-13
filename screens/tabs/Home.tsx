@@ -50,7 +50,8 @@ export default function Home(props: HomeProps) {
             <VerticallyCenteringRow style={{ marginBottom: Spacing.BigGap }}>
                 <Text style={TextStyles.h1}>Items</Text>
                 <TouchableOpacity
-                    
+                    onPress={() => { props.navigation.navigate('AccountSettings') }}
+                    style={{ padding: Spacing.HalfGap, marginRight: -Spacing.HalfGap }}
                 >
                     <Text style={TextStyles.b1}>􀣌</Text>
                 </TouchableOpacity>

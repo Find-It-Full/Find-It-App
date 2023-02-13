@@ -16,6 +16,7 @@ import ItemProfile from "../../components/items/ItemProfile";
 import { Radii } from "../../ui-base/radii";
 import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
+import BackButton from "../../components/BackButton";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -59,9 +60,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     return (
         <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
             <SightingMap location={selectedReport ? selectedReport.location : null} itemIcon={item.icon} />
-            <TouchableOpacity style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} onPress={props.navigation.goBack}>
-                <Text style={TextStyles.h3}>􀆉</Text>
-            </TouchableOpacity>
+            <BackButton />
             <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
                 <View style={{ paddingVertical: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding }}>
                     <ItemProfile {...item} />
@@ -171,16 +170,6 @@ const styles = StyleSheet.create({
         paddingVertical: Spacing.HalfGap, 
         marginLeft: Spacing.Gap, 
         flex: 1 
-    },
-    backButton: {
-        backgroundColor: Colors.Black,
-        height: 38, 
-        width: 38,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        left: Spacing.ScreenPadding,
-        borderRadius: Radii.ItemRadius
     }
 })
 

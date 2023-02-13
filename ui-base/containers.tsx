@@ -21,7 +21,7 @@ export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: 
     )
 }
 
-export function ActionCard(props: { children?: React.ReactNode, style?: ViewStyle }) {
+export function ActionCard(props: { children?: React.ReactNode[], style?: ViewStyle }) {
     return (
         <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...props.style }}>
             {props.children}
