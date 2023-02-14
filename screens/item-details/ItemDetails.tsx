@@ -31,6 +31,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isChangingLostState, setIsChangingLostState] = useState(false)
     const [isClearingSightings, setIsClearingSightings] = useState(false)
 
+    useEffect(() => {
+        if ( ! item.isMissing) {
+            setIsChangingLostState(false)
+        }
+    }, [item.isMissing])
+
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
@@ -109,7 +115,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                         text: 'No',
                                         onPress: async () => {
                                             await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports: false }))
-                                            setIsChangingLostState(false)
                                         }
                                     }
                                 ]

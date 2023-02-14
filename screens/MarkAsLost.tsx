@@ -9,7 +9,7 @@ import { MarkAsLostProps } from './Navigator'
 import CancelButton from '../components/CancelButton'
 import messaging from '@react-native-firebase/messaging'
 import { useEffect, useRef, useState } from 'react'
-import { useAppDispatch } from '../store/hooks'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { setItemIsMissing } from '../reducers/items'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 
