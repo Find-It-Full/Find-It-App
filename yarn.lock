@@ -1641,6 +1641,11 @@
   resolved "https://registry.npmjs.org/@react-native-firebase/functions/-/functions-16.5.0.tgz"
   integrity sha512-pFO2HwtsHU/kNU5EZFWLU/CGaE0gwZUV8tUQZdKeonUYcbo05VQqxifMiECMtSRuJt1nhbCHn32EJLns2tqsHg==
 
+"@react-native-firebase/messaging@^16.5.0":
+  version "16.5.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-16.5.0.tgz"
+  integrity sha512-p2dQ59BhGqQUNuJEjbnMxwSoPh/0c5DjBY6BbVoP6G87XDEU6XqHAU2HI4hZXJvUxXnpf1RhbN4XxTXMH+BvAg==
+
 "@react-native-google-signin/google-signin@^9.0.2":
   version "9.0.2"
   resolved "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-9.0.2.tgz"

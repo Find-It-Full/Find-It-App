@@ -30,6 +30,14 @@ export const editItemDetails = createAsyncThunk('items/editItemDetails', async (
     }
 })
 
+export const setItemIsMissing = createAsyncThunk('items/setItemIsMissing', async (itemID: string) => {
+    await FirestoreBackend.setItemIsMissing(itemID, true)
+})
+
+export const setItemIsFound = createAsyncThunk('items/setItemIsFound', async (itemID: string) => {
+    await FirestoreBackend.setItemIsMissing(itemID, false)
+})
+
 export const fetchAllItems = createAsyncThunk('items/fetchAllItems', async (): Promise<Item[]> => {
     const result = await FirestoreBackend.getItems()
     return result
@@ -66,6 +74,12 @@ const itemsSlice = createSlice({
                 console.error(action.error)
             })
             .addCase(editItemDetails.rejected, (_, action) => {
+                console.error(action.error)
+            })
+            .addCase(setItemIsFound.rejected, (_, action) => {
+                console.error(action.error)
+            })
+            .addCase(setItemIsMissing.rejected, (_, action) => {
                 console.error(action.error)
             })
     }

@@ -1,10 +1,10 @@
 import * as React from "react"
 import { useEffect, useRef, useState } from "react";
-import { Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Alert, Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import MapView, { Callout, LatLng, Marker, Region } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { VerticallyCenteringRow } from "../../ui-base/layouts";
 import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
@@ -17,9 +17,11 @@ import { Radii } from "../../ui-base/radii";
 import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
+import { setItemIsFound } from "../../reducers/items";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
+    const dispatch = useAppDispatch()
     const item = useAppSelector((state) => state.items.items[props.route.params.item.itemID])
     const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]) || { })
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
@@ -66,9 +68,35 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     <ItemProfile {...item} />
                 </View>
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
-                    <ActionButton style={styles.buttonContainer}>
-                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀇿</Text>
-                        <Text style={TextStyles.h4}>Mark as Lost</Text>
+                    <ActionButton style={styles.buttonContainer}
+                        onPress={() => {
+                            if (item.isMissing) {
+                                dispatch(setItemIsFound(item.itemID))
+                                Alert.alert(
+                                    `Great!`,
+                                    `You won't recieve notifications about this item anymore.`,
+                                )
+                                
+                            } else {
+                                props.navigation.navigate('MarkAsLost', { item: item })
+                            }
+                        }}
+                    >
+                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap, color: item.isMissing ? Colors.Green : Colors.Red }]}>{item.isMissing ? '􀇻' : '􀇿'}</Text>
+                        <Text style={[TextStyles.h4, { color: item.isMissing ? Colors.Green : Colors.Red }]}>{item.isMissing ? 'Found It' : 'Mark as Lost'}</Text>
+                    </ActionButton>
+                    <ActionButton 
+                        style={styles.buttonContainer}
+                        disabled={ ! selectedReport || ! selectedReport.location}
+                        onPress={() => {
+                            if ( ! selectedReport || ! selectedReport.location) {
+                                return
+                            }
+                            openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
+                        }}
+                    >
+                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀙋</Text>
+                        <Text style={TextStyles.h4}>Directions</Text>
                     </ActionButton>
                     <ContextMenuButton
                         menuConfig={{
@@ -107,19 +135,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             <Text style={TextStyles.h4}>More</Text>
                         </ActionButton>
                     </ContextMenuButton>
-                    <ActionButton 
-                        style={styles.buttonContainer}
-                        disabled={ ! selectedReport || ! selectedReport.location}
-                        onPress={() => {
-                            if ( ! selectedReport || ! selectedReport.location) {
-                                return
-                            }
-                            openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
-                        }}
-                    >
-                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀙋</Text>
-                        <Text style={TextStyles.h4}>Directions</Text>
-                    </ActionButton>
                 </VerticallyCenteringRow>
                 {
                     selectedReport ?

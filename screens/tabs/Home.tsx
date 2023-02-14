@@ -18,6 +18,7 @@ import { TextStyles } from "../../ui-base/text"
 import { HomeProps } from "../Navigator"
 import { ScreenBase } from "../../ui-base/containers"
 import { Colors } from "../../ui-base/colors"
+import BigButton from "../../components/BigButton"
 
 export default function Home(props: HomeProps) {
 
@@ -64,28 +65,11 @@ export default function Home(props: HomeProps) {
                     <ItemSummary {...item.item} />
                 )}
             />
-
-            <TouchableOpacity 
-                style={styles.addItemButton}
-                onPress={() => {
-                    props.navigation.navigate('AddItemFlow')
-                }}
-            >
-                <Text style={[TextStyles.h3, { color: Colors.Black }]}>Add Item</Text>
-            </TouchableOpacity>
+            
+            <BigButton label='Add Item' isInColumn onPress={() => {
+                props.navigation.navigate('AddItemFlow')
+            }}/>
             
         </ScreenBase>
     )
 }
-
-const styles = StyleSheet.create({
-    addItemButton: {
-        paddingVertical: Spacing.Gap,
-        paddingHorizontal: Spacing.Gap + 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Colors.White,
-        borderRadius: 100,
-        flexShrink: 1
-    }
-})

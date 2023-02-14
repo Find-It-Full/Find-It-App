@@ -11,8 +11,10 @@ import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import { Colors } from "../../ui-base/colors"
 import { Radii } from "../../ui-base/radii"
-import { VerticallyCenteringRow } from "../../ui-base/layouts"
+import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts"
 import { useNavigation } from "@react-navigation/native"
+import CancelButton from "../CancelButton"
+import BigButton from "../BigButton"
 
 export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => void, currentValues?: { name: string, icon: string } }) {
 
@@ -50,21 +52,17 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
             <VerticallyCenteringRow>
                 {
                     props.currentValues ? 
-                        <TouchableOpacity 
-                            style={[styles.addItemButton, { backgroundColor: 'transparent', marginRight: Spacing.BigGap }]}
-                            onPress={() => navigation.goBack()}
-                        >
-                            <Text style={[TextStyles.h3, { paddingHorizontal: Spacing.BigGap }]}>Cancel</Text>
-                        </TouchableOpacity> :
+                        <>
+                            <CancelButton label='Cancel' onPress={() => navigation.goBack()} />
+                            <Spacer size={Spacing.BigGap} />
+                        </> :
                         null
                 }
-                <TouchableOpacity
-                    disabled={ ! nameValid || ! iconValid}
-                    style={[styles.addItemButton, { opacity: nameValid && iconValid ? 1 : 0.6, flex: 1 }]}
+                <BigButton 
+                    label={props.currentValues ? `Save Changes` : `Add Item`} 
+                    disabled={ ! nameValid || ! iconValid} 
                     onPress={() => props.onSubmit(name, icon)}
-                >
-                    <Text style={[TextStyles.h3, { color: Colors.Black }]}>{props.currentValues ? `Save Changes` : `Add Item`}</Text>
-                </TouchableOpacity>
+                />
             </VerticallyCenteringRow>
 
         </ScreenBaseNoInsets>
