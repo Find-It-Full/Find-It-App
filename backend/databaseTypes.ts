@@ -156,3 +156,10 @@ export type MessageID = string
 export type DocChanges = FirebaseFirestoreTypes.DocumentChange<FirebaseFirestoreTypes.DocumentData>[]
 
 export type RegisterTagResult = 'no-such-tag' | 'internal' | 'registered-to-caller' | 'registered-to-other' | 'success'
+
+export type ChangeItemLostStateResult =
+    | "no-such-item"
+    | "not-authorized"
+    | "unauthenticated"
+    | "internal"
+    | "success"

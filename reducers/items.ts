@@ -11,6 +11,8 @@ const initialState: ItemsData = {
 }
 
 export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item): Promise<Item> => {
+    item.icon = item.icon.trim()
+    item.name = item.name.trim()
     const result = await FirestoreBackend.addItem(item)
 
     if (result !== 'success') {
@@ -21,6 +23,8 @@ export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item
 })
 
 export const editItemDetails = createAsyncThunk('items/editItemDetails', async (item: { name: string, icon: string, itemID: string }): Promise<void> => {
+    item.icon = item.icon.trim()
+    item.name = item.name.trim()
     const result = await FirestoreBackend.editItem(item)
 
     console.log(`Got result: ${result}`)
@@ -31,11 +35,11 @@ export const editItemDetails = createAsyncThunk('items/editItemDetails', async (
 })
 
 export const setItemIsMissing = createAsyncThunk('items/setItemIsMissing', async (itemID: string) => {
-    await FirestoreBackend.setItemIsMissing(itemID, true)
+    await FirestoreBackend.setItemIsMissing(itemID, true, false)
 })
 
-export const setItemIsFound = createAsyncThunk('items/setItemIsFound', async (itemID: string) => {
-    await FirestoreBackend.setItemIsMissing(itemID, false)
+export const setItemIsFound = createAsyncThunk('items/setItemIsFound', async (props: { itemID: string, clearRecentReports: boolean }) => {
+    await FirestoreBackend.setItemIsMissing(props.itemID, false, props.clearRecentReports)
 })
 
 export const fetchAllItems = createAsyncThunk('items/fetchAllItems', async (): Promise<Item[]> => {

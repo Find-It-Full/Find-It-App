@@ -13,11 +13,11 @@ import ReportSummary from "../../components/items/ReportSummary";
 import { ActionButton, ItemIconContainer } from "../../ui-base/containers";
 import { Colors } from "../../ui-base/colors";
 import ItemProfile from "../../components/items/ItemProfile";
-import { Radii } from "../../ui-base/radii";
 import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
 import { setItemIsFound } from "../../reducers/items";
+import PrimaryActionButton from "../../components/PrimaryActionButton";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -28,6 +28,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const windowWidth = useWindowDimensions().width
     const scrollRef = useRef<ScrollView>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
+    const [isChangingLostState, setIsChangingLostState] = useState(false)
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
@@ -35,7 +36,16 @@ export default function ItemDetails(props: ItemDetailsProps) {
             setSelectedReport(null)
         }
 
-        const index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
+        let index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
+
+        if ( ! reports[index]) {
+            if (reports.length > 0) {
+                index = 0
+            } else {
+                setSelectedReport(null)
+            }
+        }
+
         const locationField = reports[index].fields.EXACT_LOCATION
         const newSelectedReport = {
             reportID: reports[index].reportID,
@@ -68,25 +78,46 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     <ItemProfile {...item} />
                 </View>
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
-                    <ActionButton style={styles.buttonContainer}
+                    <PrimaryActionButton 
+                        label={item.isMissing ? 'Found It' : 'Mark as Lost'}
+                        icon={item.isMissing ? '􀇻' : '􀇿'}
+                        textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
+                        isLoading={isChangingLostState}
                         onPress={() => {
-                            if (item.isMissing) {
-                                dispatch(setItemIsFound(item.itemID))
-                                Alert.alert(
-                                    `Great!`,
-                                    `You won't recieve notifications about this item anymore.`,
-                                )
-                                
-                            } else {
+
+                            if ( ! item.isMissing) {
                                 props.navigation.navigate('MarkAsLost', { item: item })
+                                return
                             }
+
+                            setIsChangingLostState(true)
+
+                            Alert.alert(
+                                `Great!`,
+                                `Do you want to clear this item's old sightings?`,
+                                [
+                                    {
+                                        text: 'Yes',
+                                        style: 'destructive',
+                                        onPress: async () => {
+                                            await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports: true }))
+                                            setIsChangingLostState(false)
+                                        }
+                                    },
+                                    {
+                                        text: 'No',
+                                        onPress: async () => {
+                                            await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports: false }))
+                                            setIsChangingLostState(false)
+                                        }
+                                    }
+                                ]
+                            )
                         }}
-                    >
-                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap, color: item.isMissing ? Colors.Green : Colors.Red }]}>{item.isMissing ? '􀇻' : '􀇿'}</Text>
-                        <Text style={[TextStyles.h4, { color: item.isMissing ? Colors.Green : Colors.Red }]}>{item.isMissing ? 'Found It' : 'Mark as Lost'}</Text>
-                    </ActionButton>
-                    <ActionButton 
-                        style={styles.buttonContainer}
+                    />
+                    <PrimaryActionButton
+                        label='Directions'
+                        icon='􀙋'
                         disabled={ ! selectedReport || ! selectedReport.location}
                         onPress={() => {
                             if ( ! selectedReport || ! selectedReport.location) {
@@ -94,10 +125,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             }
                             openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
                         }}
-                    >
-                        <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀙋</Text>
-                        <Text style={TextStyles.h4}>Directions</Text>
-                    </ActionButton>
+                    />
                     <ContextMenuButton
                         menuConfig={{
                             menuTitle: '',
@@ -130,10 +158,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         }}
                         style={{ flex: 1 }}
                     >
-                        <ActionButton style={styles.buttonContainer}>
-                            <Text style={[TextStyles.h3, { marginBottom: Spacing.QuarterGap }]}>􀍢</Text>
-                            <Text style={TextStyles.h4}>More</Text>
-                        </ActionButton>
+                        <PrimaryActionButton
+                            label='More'
+                            icon='􀍢'
+                            onPress={() => { }}
+                        />
                     </ContextMenuButton>
                 </VerticallyCenteringRow>
                 {
@@ -171,7 +200,16 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             </VerticallyCenteringRow>
                         </> :
                         <>
-                            <Text style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.BigGap, textAlign: 'center' }]}>Nobody has found this item yet. If you want to be notified when it's found, mark it as lost.</Text>
+                            <Text 
+                                style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.BigGap, textAlign: 'center' }]}
+                            >
+                                {
+                                    item.isMissing ? 
+                                        'Nobody has spotted this item yet.' : 
+                                        `Nobody has spotted this item yet. If you want to be notified when it's spotted, mark it as lost.`
+                                }
+                                
+                            </Text>
                         </>
                 }
                 

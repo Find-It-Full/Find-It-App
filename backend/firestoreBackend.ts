@@ -2,7 +2,7 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import { uid } from "../App"
-import { DocChanges, Item, ItemID, RegisterTagResult, Report, UserProfile } from "./databaseTypes"
+import { ChangeItemLostStateResult, DocChanges, Item, ItemID, RegisterTagResult, Report, UserProfile } from "./databaseTypes"
 import functions from "@react-native-firebase/functions"
 
 enum CollectionNames {
@@ -106,13 +106,11 @@ export class FirestoreBackend {
             )
     }
 
-    public static async setItemIsMissing(itemID: ItemID, isMissing: boolean) {
-        await this.items().doc(itemID).set(
-            {
-                isMissing
-            },
-            { merge: true }
-        )
+    public static async setItemIsMissing(itemID: ItemID, isMissing: boolean, clearRecentReports: boolean) {
+        const changeItemLostState = functions().httpsCallable('changeItemLostState')
+        const result: ChangeItemLostStateResult = (await changeItemLostState({ itemID, isMissing, shouldClearReports: clearRecentReports })).data
+
+        return result
     }
 
     public static async getItems(): Promise<Item[]> {

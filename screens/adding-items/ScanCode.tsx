@@ -7,16 +7,30 @@ import QRCodeScanner from "react-native-qrcode-scanner"
 import { BarCodeReadEvent } from "react-native-camera"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
+import auth from '@react-native-firebase/auth'
 
 export default function ScanCode({ navigation }: ScanCodeProps) {
 
-    const [scanned, setScanned] = useState("")
+    const scannerRef = React.useRef<QRCodeScanner>(null)
     const [cameraAllowed, setCameraAllowed] = useState(false)
     
     function onSuccess(data: BarCodeReadEvent) {
         console.log(`Scanned QR code with data: ${data.data}`)
-        const url = data.data.substring(30)
-        navigation.navigate('EnterItemDetails', { tagID: url })
+        try {
+            const url = data.data
+            const pathSegments = url.split('/')
+
+            if (pathSegments.length !== 5) {
+                throw new Error()
+            }
+
+            const id = pathSegments[4]
+
+            navigation.navigate('EnterItemDetails', { tagID: id })
+        } catch (e) {
+            console.log(`Read invalid URL: ${e}`)
+            scannerRef.current?.reactivate()
+        }
     }
 
     async function checkForCameraPermission() {
@@ -40,7 +54,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
 
     useEffect(() => {
         setTimeout(() => {
-            navigation.navigate('EnterItemDetails', { tagID: 'bHBE8KHnDdkEiATsv8GE' })
+            // navigation.navigate('EnterItemDetails', { tagID: 'bHBE8KHnDdkEiATsv8GE' })
         }, 1000)
     }, [])
 
@@ -61,6 +75,9 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
                     cameraStyle={{ height: '100%' }}
                     cameraContainerStyle={{ width: '100%', height: '100%' }}
                     showMarker={false}
+                    reactivateTimeout={4}
+                    ref={scannerRef}
+                    vibrate={false}
                 />
             </View>
             <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', height: '100%' }}>

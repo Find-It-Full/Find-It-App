@@ -27,10 +27,6 @@ export default function Home(props: HomeProps) {
     const items = useAppSelector(state => state.items.items)
 
     useEffect(() => {
-        dispatch(fetchAllItems())
-    }, [])
-
-    useEffect(() => {
 
         const unsubscribeCallbacks: (() => void)[] = []
 
