@@ -37,6 +37,15 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
     }, [item.isMissing])
 
+    useEffect(() => {
+        if ( ! selectedReport && reports.length) {
+            setSelectedReport(getInitialState(reports))
+        }
+        else if (selectedReport && ! reports.length) {
+            setSelectedReport(null)
+        }
+    }, [reports])
+
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
