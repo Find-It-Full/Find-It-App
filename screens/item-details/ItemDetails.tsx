@@ -16,7 +16,7 @@ import ItemProfile from "../../components/items/ItemProfile";
 import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
-import { setItemIsFound } from "../../reducers/items";
+import { clearReports, setItemIsFound, setItemIsMissing } from "../../reducers/items";
 import PrimaryActionButton from "../../components/PrimaryActionButton";
 
 export default function ItemDetails(props: ItemDetailsProps) {
@@ -29,6 +29,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const scrollRef = useRef<ScrollView>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const [isChangingLostState, setIsChangingLostState] = useState(false)
+    const [isClearingSightings, setIsClearingSightings] = useState(false)
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
@@ -130,6 +131,16 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         menuConfig={{
                             menuTitle: '',
                             menuItems: [{
+                                actionKey: 'clear_sightings',
+                                actionTitle: 'Clear Sightings',
+                                menuAttributes: reports.length > 0 ? [] : ['disabled'],
+                                icon: {
+                                    type: 'IMAGE_SYSTEM',
+                                    imageValue: {
+                                        systemName: 'xmark.square',
+                                    },
+                                }
+                            }, {
                                 actionKey: 'edit_item_details',
                                 actionTitle: 'Edit',
                                 icon: {
@@ -145,7 +156,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 icon: {
                                     type: 'IMAGE_SYSTEM',
                                     imageValue: {
-                                        systemName: 'trash.fill',
+                                        systemName: 'trash',
                                     },
                                 }
                             }]
@@ -155,13 +166,35 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             if (nativeEvent.actionKey === 'edit_item_details') {
                                 props.navigation.navigate('EditItemFlow', { item: item })
                             }
+                            else if (nativeEvent.actionKey === 'clear_sightings') {
+                                Alert.alert(
+                                    'Do you want to clear all sightings?', 
+                                    'You cannot undo this action',
+                                    [
+                                        {
+                                            text: 'Cancel'
+                                        },
+                                        { 
+                                            text: 'Clear',
+                                            style: 'destructive',
+                                            onPress: async () => {
+                                                console.log('clearing')
+                                                setIsClearingSightings(true)
+                                                await dispatch(clearReports({ itemID: item.itemID }))
+                                                setIsClearingSightings(false)
+                                            }
+                                        }
+                                    ])
+                            }
                         }}
                         style={{ flex: 1 }}
+                        enableContextMenu={isClearingSightings}
                     >
                         <PrimaryActionButton
                             label='More'
                             icon='􀍢'
                             onPress={() => { }}
+                            isLoading={isClearingSightings}
                         />
                     </ContextMenuButton>
                 </VerticallyCenteringRow>

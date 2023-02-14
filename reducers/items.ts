@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Item, ItemID } from "../backend/databaseTypes"
 import { FirestoreBackend } from "../backend/firestoreBackend"
+import { RootState } from "../store"
 
 export interface ItemsData {
     items: { [itemID: string]: Item }
@@ -40,6 +41,15 @@ export const setItemIsMissing = createAsyncThunk('items/setItemIsMissing', async
 
 export const setItemIsFound = createAsyncThunk('items/setItemIsFound', async (props: { itemID: string, clearRecentReports: boolean }) => {
     await FirestoreBackend.setItemIsMissing(props.itemID, false, props.clearRecentReports)
+})
+
+export const clearReports = createAsyncThunk('items/clearReports', async (props: { itemID: string }, thunkAPI) => {
+
+    const state = (thunkAPI.getState() as RootState)
+    const item = state.items.items[props.itemID]
+    const isMissing = item.isMissing
+
+    await FirestoreBackend.setItemIsMissing(props.itemID, isMissing, true)
 })
 
 export const fetchAllItems = createAsyncThunk('items/fetchAllItems', async (): Promise<Item[]> => {
@@ -84,6 +94,9 @@ const itemsSlice = createSlice({
                 console.error(action.error)
             })
             .addCase(setItemIsMissing.rejected, (_, action) => {
+                console.error(action.error)
+            })
+            .addCase(clearReports.rejected, (_, action) => {
                 console.error(action.error)
             })
     }
