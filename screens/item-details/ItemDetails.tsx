@@ -166,7 +166,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     </ContextMenuButton>
                 </VerticallyCenteringRow>
                 {
-                    selectedReport ?
+                    selectedReport && reports.length > 0 ?
                         <>
                             <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.BigGap }]}>Sightings</Text>
                             <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>{`${reports.length} total`}</Text>

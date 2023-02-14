@@ -16,10 +16,11 @@ import { useNavigation } from "@react-navigation/native"
 import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 
-export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => void, currentValues?: { name: string, icon: string } }) {
+export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string } }) {
 
     const [name, setName] = useState(props.currentValues?.name ?? '')
     const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
@@ -53,15 +54,20 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                 {
                     props.currentValues ? 
                         <>
-                            <CancelButton label='Cancel' onPress={() => navigation.goBack()} />
+                            <CancelButton label='Cancel' onPress={() => navigation.goBack()} disabled={isSubmitting}/>
                             <Spacer size={Spacing.BigGap} />
                         </> :
                         null
                 }
                 <BigButton 
                     label={props.currentValues ? `Save Changes` : `Add Item`} 
-                    disabled={ ! nameValid || ! iconValid} 
-                    onPress={() => props.onSubmit(name, icon)}
+                    disabled={ ! nameValid || ! iconValid || (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name))} 
+                    isLoading={isSubmitting}
+                    onPress={ async () => {
+                        setIsSubmitting(true)
+                        await props.onSubmit(name, icon)
+                        setIsSubmitting(false)
+                    }}
                 />
             </VerticallyCenteringRow>
 

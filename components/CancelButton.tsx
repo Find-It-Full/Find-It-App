@@ -4,11 +4,12 @@ import { Colors } from '../ui-base/colors'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
 
-export default function CancelButton(props: { label: string, onPress: () => void }) {
+export default function CancelButton(props: { label: string, onPress: () => void, disabled?: boolean }) {
     return (
         <TouchableOpacity 
-            style={styles.buttonStyle}
+            style={[styles.buttonStyle, { opacity: props.disabled ? 0.6 : 1 }]}
             onPress={props.onPress}
+
         >
             <Text style={TextStyles.h3}>{props.label}</Text>
         </TouchableOpacity>

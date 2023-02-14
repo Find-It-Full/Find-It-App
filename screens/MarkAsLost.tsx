@@ -16,9 +16,13 @@ export default function MarkAsLost(props: MarkAsLostProps) {
 
     const appState = useRef(AppState.currentState)
     const dispatch = useAppDispatch()
+    const [isMarkingAsLost, setIsMarkingAsLost] = useState(false)
+    const [didGoToSettings, setDidGoToSettings] = useState(false)
 
     const setIsMissing = async () => {
+        setIsMarkingAsLost(true)
         await dispatch(setItemIsMissing(props.route.params.item.itemID))
+        setIsMarkingAsLost(false)
         props.navigation.goBack()
     }
 
@@ -36,7 +40,7 @@ export default function MarkAsLost(props: MarkAsLostProps) {
                 `Enable notifications in Settings to get notified when your item is spotted. Don't worry, sightings will still show up here regardless.`,
                 [{
                     text: 'Go to Settings',
-                    onPress: () => Linking.openSettings()
+                    onPress: () => { Linking.openSettings(); setDidGoToSettings(true) }
                 },
                 {
                     text: 'OK',
@@ -49,7 +53,8 @@ export default function MarkAsLost(props: MarkAsLostProps) {
         const subscription = AppState.addEventListener('change', nextAppState => {
             if (
                 appState.current.match(/inactive|background/) &&
-                nextAppState === 'active'
+                nextAppState === 'active' &&
+                didGoToSettings
             ) {
                 setIsMissing()
             }
@@ -70,9 +75,9 @@ export default function MarkAsLost(props: MarkAsLostProps) {
             <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
             <Spacer size={Spacing.BigGap} />
             <VerticallyCenteringRow>
-                <CancelButton label='Cancel' onPress={props.navigation.goBack} />
+                <CancelButton label='Cancel' onPress={props.navigation.goBack} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
-                <BigButton label='Get Notified' onPress={requestNotificationPermission}/>
+                <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
             </VerticallyCenteringRow>
         </ScreenBaseNoInsets>
     )
