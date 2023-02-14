@@ -1,7 +1,8 @@
 import * as React from "react"
-import { TouchableOpacity, View, ViewStyle } from "react-native" 
+import { KeyboardAvoidingView, TouchableOpacity, View, ViewStyle } from "react-native" 
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"
+import { Spacer } from "./layouts"
 import { Radii } from "./radii"
 import { Spacing } from "./spacing"
 
@@ -18,6 +19,21 @@ export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: 
         <View style={{ padding: Spacing.ScreenPadding, backgroundColor: Colors.Background, flex: 1, ...props.style }}>
             {props.children}
         </View>
+    )
+}
+
+export function FormScreenBase(props: { children?: React.ReactNode, style?: ViewStyle }) {
+    return (
+        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={64} style={{ 
+            padding: Spacing.ScreenPadding, 
+            backgroundColor: Colors.Background, 
+            flex: 1, 
+            justifyContent: 'center',
+            alignItems: 'stretch',
+            ...props.style 
+        }}>
+            {props.children}
+        </KeyboardAvoidingView>
     )
 }
 

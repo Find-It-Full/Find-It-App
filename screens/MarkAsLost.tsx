@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { ScreenBaseNoInsets } from '../ui-base/containers'
+import { FormScreenBase, ScreenBaseNoInsets } from '../ui-base/containers'
 import { TextStyles } from '../ui-base/text'
-import { Alert, AppState, Linking, Text } from 'react-native'
+import { Alert, AppState, Linking, Text, View } from 'react-native'
 import { Spacer, VerticallyCenteringRow } from '../ui-base/layouts'
 import { Spacing } from '../ui-base/spacing'
 import BigButton from '../components/BigButton'
@@ -11,11 +11,13 @@ import messaging from '@react-native-firebase/messaging'
 import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch } from '../store/hooks'
 import { setItemIsMissing } from '../reducers/items'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 
 export default function MarkAsLost(props: MarkAsLostProps) {
 
     const appState = useRef(AppState.currentState)
     const dispatch = useAppDispatch()
+    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const [isMarkingAsLost, setIsMarkingAsLost] = useState(false)
     const [didGoToSettings, setDidGoToSettings] = useState(false)
 
@@ -68,17 +70,19 @@ export default function MarkAsLost(props: MarkAsLostProps) {
     }, [])
 
     return (
-        <ScreenBaseNoInsets>
-            <Spacer size={Spacing.BigGap} />
-            <Text style={TextStyles.h2}>Mark As Lost</Text>
-            <Spacer size={Spacing.BigGap} />
-            <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
-            <Spacer size={Spacing.BigGap} />
-            <VerticallyCenteringRow>
+        <FormScreenBase>
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+                <Spacer size={Spacing.BigGap} />
+                <Text style={TextStyles.h2}>Mark As Lost</Text>
+                <Spacer size={Spacing.BigGap} />
+                <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
+                <Spacer size={Spacing.BigGap} />
+            </View>
+            <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
                 <CancelButton label='Cancel' onPress={props.navigation.goBack} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
             </VerticallyCenteringRow>
-        </ScreenBaseNoInsets>
+        </FormScreenBase>
     )
 }
