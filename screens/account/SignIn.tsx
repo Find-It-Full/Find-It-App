@@ -3,15 +3,10 @@ import auth from "@react-native-firebase/auth"
 import React from "react"
 import {
     Text,
-    Button,
-    useColorScheme,
     View,
 } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { FormScreenBase, ScreenBase } from "../../ui-base/containers"
+import { ScreenBase } from "../../ui-base/containers"
 import { TextStyles } from "../../ui-base/text"
-import { Spacer } from "../../ui-base/layouts"
-import { Spacing } from "../../ui-base/spacing"
 import BigButton from "../../components/BigButton"
 
 export default function SignIn(props: { }) {
