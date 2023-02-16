@@ -8,6 +8,11 @@ import {
     View,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { FormScreenBase, ScreenBase } from "../../ui-base/containers"
+import { TextStyles } from "../../ui-base/text"
+import { Spacer } from "../../ui-base/layouts"
+import { Spacing } from "../../ui-base/spacing"
+import BigButton from "../../components/BigButton"
 
 export default function SignIn(props: { }) {
 
@@ -32,15 +37,19 @@ export default function SignIn(props: { }) {
     })
 
     return (
-        <SafeAreaView>
-            <Button
-                title="Sign In with Google"
+        <ScreenBase>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={TextStyles.h1}>Welcome!</Text>
+            </View>
+            <BigButton
+                label='Sign in with Google'
                 onPress={() =>
                     onGoogleSignIn().then(() =>
                         console.log("Signed in with Google!")
                     )
                 }
+                isInColumn
             />
-        </SafeAreaView>
+        </ScreenBase>
     )
 }

@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native"
 import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
+import TextField from "../TextField"
 
 export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
 
@@ -43,20 +44,17 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
             <View style={{ justifyContent: 'center', flex: props.currentValues ? 0 : 1 }}>
                 <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
                 {/* <Text style={[TextStyles.p2, { marginVertical: Spacing.Gap }]}>{`ID: ${tagID}`}</Text> */}
-                <TextInput
-                    placeholder={"Name"}
-                    style={[TextStyles.h3, styles.input]}
+                <TextField
+                    placeholder='Name'
                     value={name}
-                    onChangeText={(text: string) => {
+                    onChangeText={(text) => {
                         setName(text)
                     }}
                 />
-
-                <TextInput
-                    placeholder={"Icon"}
-                    style={[TextStyles.h3, styles.input, { marginBottom: Spacing.BigGap }]}
+                <TextField
+                    placeholder='Icon'
                     value={icon}
-                    onChangeText={(text: string) => {
+                    onChangeText={(text) => {
                         setIcon(text)
                     }}
                 />
@@ -86,14 +84,6 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
 }
 
 const styles = StyleSheet.create({
-    input: {
-        backgroundColor: Colors.ButtonColor,
-        padding: Spacing.ThreeQuartersGap,
-        borderRadius: Radii.ItemRadius,
-        borderWidth: 1,
-        borderColor: Colors.ItemBorder,
-        marginBottom: Spacing.Gap
-    },
     addItemButton: {
         paddingVertical: Spacing.Gap - 4,
         paddingHorizontal: Spacing.Gap + 2,

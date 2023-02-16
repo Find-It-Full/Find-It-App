@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Alert, Modal } from 'react-native'
 import ActionButtonList from '../../components/ActionButtonList'
 import ActionButtonListItem from '../../components/ActionButtonListItem'
 import BackButton from '../../components/BackButton'
@@ -7,8 +8,13 @@ import { ScreenBase } from '../../ui-base/containers'
 import { Spacer } from '../../ui-base/layouts'
 import { Spacing } from '../../ui-base/spacing'
 import { AccountSettingsProps } from '../Navigator'
+import DeleteAccountForm from './DeleteAccountForm'
+import auth from '@react-native-firebase/auth'
 
 export default function AccountSettings(props: AccountSettingsProps) {
+
+    const [isPresentingModal, setIsPresentingModal] = React.useState(false)
+
     return (
         <ScreenBase style={{ alignItems: 'stretch' }}>
             <BackButton />
@@ -16,9 +22,19 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon='􀉪' label='Edit Profile' onPress={() => { }} />
-                <ActionButtonListItem icon='􀈒' label='Delete Account' onPress={() => { }} />
+                <ActionButtonListItem icon='􀱍' label='Log Out' onPress={() => auth().signOut()} />
+                <ActionButtonListItem icon='􀈒' label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
+            <Modal
+                animationType='fade'
+                presentationStyle='overFullScreen'
+                transparent={true}
+                visible={isPresentingModal}
+                onRequestClose={() => {
+                    setIsPresentingModal(false)
+                }}>
+                <DeleteAccountForm onClose={() => setIsPresentingModal(false)}/>
+            </Modal>
         </ScreenBase>
     )
 }

@@ -5,24 +5,26 @@ import { ActionCard } from '../ui-base/containers'
 import { Spacer } from '../ui-base/layouts'
 import { Spacing } from '../ui-base/spacing'
 
-export default function ActionButtonList(props: { children?: React.ReactNode[] }) {
+export default function ActionButtonList(props: { children?: React.ReactNode[] | React.ReactNode }) {
 
-    const numberOfChildren = props.children ? props.children.length : 0
+    const numberOfChildren = props.children ? (props.children['length']) ? props.children['length'] : 1 : 0
 
     return (
         <ActionCard style={{ alignItems: 'stretch' }}>
             {
-                props.children != null ?
-                    props.children.map((child, index) => (
-                        <View key={index}>
-                            {child}
-                            {
-                                index < numberOfChildren - 1 ?
-                                    <ActionButtonListInterstitial /> :
-                                    null
-                            }
-                        </View>
-                    )) :
+                props.children ?
+                    props.children['map'] ?
+                        props.children['map']((child: React.ReactNode, index: number) => (
+                            <View key={index}>
+                                {child}
+                                {
+                                    index < numberOfChildren - 1 ?
+                                        <ActionButtonListInterstitial /> :
+                                        null
+                                }
+                            </View>
+                        )) :
+                        props.children :
                     undefined
             }
         </ActionCard>

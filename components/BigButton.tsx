@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.White,
         borderRadius: 100,
-        flex: 1,
+        flex: 0,
         alignSelf: 'stretch'
     }
 })
