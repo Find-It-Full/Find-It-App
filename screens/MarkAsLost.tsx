@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FormScreenBase, ScreenBaseNoInsets } from '../ui-base/containers'
+import { FormScreenBase, ModalFormScreenBase, ScreenBaseNoInsets } from '../ui-base/containers'
 import { TextStyles } from '../ui-base/text'
 import { Alert, AppState, Linking, Text, View } from 'react-native'
 import { Spacer, VerticallyCenteringRow } from '../ui-base/layouts'
@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { setItemIsMissing } from '../reducers/items'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 
-export default function MarkAsLost(props: MarkAsLostProps) {
+export default function MarkAsLost(props: { itemID: string, onClose: () => void }) {
 
     const appState = useRef(AppState.currentState)
     const dispatch = useAppDispatch()
@@ -23,9 +23,9 @@ export default function MarkAsLost(props: MarkAsLostProps) {
 
     const setIsMissing = async () => {
         setIsMarkingAsLost(true)
-        await dispatch(setItemIsMissing(props.route.params.item.itemID))
+        await dispatch(setItemIsMissing(props.itemID))
         setIsMarkingAsLost(false)
-        props.navigation.goBack()
+        props.onClose()
     }
 
     const requestNotificationPermission = async () => {
@@ -70,19 +70,16 @@ export default function MarkAsLost(props: MarkAsLostProps) {
     }, [])
 
     return (
-        <FormScreenBase>
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Spacer size={Spacing.BigGap} />
-                <Text style={TextStyles.h2}>Mark As Lost</Text>
-                <Spacer size={Spacing.BigGap} />
-                <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
-                <Spacer size={Spacing.BigGap} />
-            </View>
+        <ModalFormScreenBase closeModal={props.onClose}>
+            <Text style={TextStyles.h2}>Mark As Lost</Text>
+            <Spacer size={Spacing.BigGap} />
+            <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
+            <Spacer size={Spacing.BigGap} />
             <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
-                <CancelButton label='Cancel' onPress={props.navigation.goBack} disabled={isMarkingAsLost} />
+                <CancelButton label='Cancel' onPress={props.onClose} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
             </VerticallyCenteringRow>
-        </FormScreenBase>
+        </ModalFormScreenBase>
     )
 }

@@ -37,6 +37,39 @@ export function FormScreenBase(props: { children?: React.ReactNode, style?: View
     )
 }
 
+export function ModalFormScreenBase(props: { children?: React.ReactNode, style?: ViewStyle, closeModal: () => void }) {
+
+    const superViewRef = React.useRef<View>(null)
+
+    return (
+        <View 
+            style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: Colors.ModalBackground }}
+            ref={superViewRef} 
+            onTouchEnd={(event) => {
+                if (event.target == superViewRef.current) {
+                    props.closeModal()
+                }
+            }}
+        >
+            <KeyboardAvoidingView behavior='padding' style={{ 
+                padding: Spacing.ScreenPadding, 
+                backgroundColor: Colors.Background, 
+                flex: 0,
+                marginBottom: 0,
+                bottom: 0, 
+                paddingTop: Spacing.BigGap,
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                borderTopRightRadius: Radii.ModalRadius,
+                borderTopLeftRadius: Radii.ModalRadius,
+                ...props.style 
+            }}>
+                {props.children}
+            </KeyboardAvoidingView>
+        </View>
+    )
+}
+
 export function ActionCard(props: { children?: React.ReactNode[], style?: ViewStyle }) {
     return (
         <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...props.style }}>

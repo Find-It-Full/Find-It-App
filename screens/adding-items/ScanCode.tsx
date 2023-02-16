@@ -54,7 +54,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
 
     useEffect(() => {
         setTimeout(() => {
-            // navigation.navigate('EnterItemDetails', { tagID: 'bHBE8KHnDdkEiATsv8GE' })
+            navigation.navigate('EnterItemDetails', { tagID: 'bHBE8KHnDdkEiATsv8GE' })
         }, 1000)
     }, [])
 

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useEffect, useRef, useState } from "react";
-import { Alert, Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Alert, Linking, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import MapView, { Callout, LatLng, Marker, Region } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
@@ -10,14 +10,16 @@ import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
 import ReportSummary from "../../components/items/ReportSummary";
-import { ActionButton, ItemIconContainer } from "../../ui-base/containers";
+import { ActionButton, ItemIconContainer, ModalFormScreenBase } from "../../ui-base/containers";
 import { Colors } from "../../ui-base/colors";
 import ItemProfile from "../../components/items/ItemProfile";
 import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
-import { clearReports, setItemIsFound, setItemIsMissing } from "../../reducers/items";
+import { clearReports, editItemDetails, setItemIsFound, setItemIsMissing } from "../../reducers/items";
 import PrimaryActionButton from "../../components/PrimaryActionButton";
+import ItemDetailsForm from "../../components/items/ItemDetailsForm";
+import MarkAsLost from "../MarkAsLost";
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -30,6 +32,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const [isChangingLostState, setIsChangingLostState] = useState(false)
     const [isClearingSightings, setIsClearingSightings] = useState(false)
+    const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
+    const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
 
     useEffect(() => {
         if ( ! item.isMissing) {
@@ -45,6 +49,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
             setSelectedReport(null)
         }
     }, [reports])
+
+    const onEditSubmit = async (name: string, icon: string) => {
+        await dispatch(editItemDetails({ name, icon, itemID: item.itemID }))
+        setIsPresentingEditModal(false)
+    }
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
@@ -102,7 +111,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         onPress={() => {
 
                             if ( ! item.isMissing) {
-                                props.navigation.navigate('MarkAsLost', { item: item })
+                                setIsPresentingMarkAsLostModal(true)
                                 return
                             }
 
@@ -178,7 +187,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         isMenuPrimaryAction={true}
                         onPressMenuItem={({ nativeEvent }) => {
                             if (nativeEvent.actionKey === 'edit_item_details') {
-                                props.navigation.navigate('EditItemFlow', { item: item })
+                                setIsPresentingEditModal(true)
                             }
                             else if (nativeEvent.actionKey === 'clear_sightings') {
                                 Alert.alert(
@@ -261,17 +270,35 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 }
                 
             </View>
+            <Modal
+                animationType='fade'
+                presentationStyle='overFullScreen'
+                transparent={true}
+                visible={isPresentingEditModal}
+                onRequestClose={() => {
+                    setIsPresentingEditModal(false)
+                }}>
+                <ModalFormScreenBase closeModal={() => setIsPresentingEditModal(false)}>
+                    <ItemDetailsForm 
+                        onSubmit={onEditSubmit}
+                        currentValues={{ name: item.name, icon: item.icon }}
+                        onCancel={() => setIsPresentingEditModal(false)}
+                    />
+                </ModalFormScreenBase>
+            </Modal>
+            <Modal
+                animationType='fade'
+                presentationStyle='overFullScreen'
+                transparent={true}
+                visible={isPresentingMarkAsLostModal}
+                onRequestClose={() => {
+                    setIsPresentingMarkAsLostModal(false)
+                }}>
+                <MarkAsLost itemID={item.itemID} onClose={() => setIsPresentingMarkAsLostModal(false)}/>
+            </Modal>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    buttonContainer: { 
-        paddingVertical: Spacing.HalfGap, 
-        marginLeft: Spacing.Gap, 
-        flex: 1 
-    }
-})
 
 function getInitialState(reports: Report[]): { reportID: string, reportIndex: number, location: LatLng | null, } | null {
     // (A) No reports - return nulls

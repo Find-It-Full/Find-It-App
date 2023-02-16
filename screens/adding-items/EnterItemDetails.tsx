@@ -5,6 +5,7 @@ import { EnterItemDetailsProps } from "./AddItemFlowContainer"
 import { useAppDispatch } from "../../store/hooks"
 import { addNewItem } from "../../reducers/items"
 import ItemDetailsForm from "../../components/items/ItemDetailsForm"
+import { FormScreenBase } from "../../ui-base/containers"
 
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
@@ -31,6 +32,8 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
     }
 
     return (
-        <ItemDetailsForm onSubmit={onSubmit} />
+        <FormScreenBase>
+            <ItemDetailsForm onSubmit={onSubmit} />
+        </FormScreenBase>
     )
 }

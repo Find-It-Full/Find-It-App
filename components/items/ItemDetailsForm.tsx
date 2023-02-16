@@ -18,7 +18,7 @@ import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 
-export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string } }) {
+export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
 
     const [name, setName] = useState(props.currentValues?.name ?? '')
     const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
@@ -30,10 +30,18 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
 
     const navigation = useNavigation()
 
+    const cancel = () => {
+        if (props.onCancel) {
+            props.onCancel()
+        } else {
+            navigation.goBack()
+        }
+    }
+
     return (
-        <FormScreenBase>
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>{props.currentValues ? 'Edit' : 'Item'} Information</Text>
+        <>
+            <View style={{ justifyContent: 'center', flex: props.currentValues ? 0 : 1 }}>
+                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
                 {/* <Text style={[TextStyles.p2, { marginVertical: Spacing.Gap }]}>{`ID: ${tagID}`}</Text> */}
                 <TextInput
                     placeholder={"Name"}
@@ -57,7 +65,7 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                 {
                     props.currentValues ? 
                         <>
-                            <CancelButton label='Cancel' onPress={() => navigation.goBack()} disabled={isSubmitting}/>
+                            <CancelButton label='Cancel' onPress={cancel} disabled={isSubmitting}/>
                             <Spacer size={Spacing.BigGap} />
                         </> :
                         null
@@ -73,8 +81,7 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                     }}
                 />
             </VerticallyCenteringRow>
-
-        </FormScreenBase>
+        </>
     )
 }
 
