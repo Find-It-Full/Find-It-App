@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import { StyleProp, View, ViewStyle } from "react-native"
 
 export function VerticallyCenteringRow(props: { children?: React.ReactNode, style?: ViewStyle }) {

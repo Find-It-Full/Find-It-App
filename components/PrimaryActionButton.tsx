@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { ActionButton } from '../ui-base/containers'
 import { Text, StyleSheet, ActivityIndicator, StyleProp, TextStyle } from 'react-native'
 import { TextStyles } from '../ui-base/text'

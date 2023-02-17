@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { FormScreenBase, ModalFormScreenBase, ScreenBaseNoInsets } from '../ui-base/containers'
 import { TextStyles } from '../ui-base/text'
 import { Alert, AppState, Linking, Text, View } from 'react-native'

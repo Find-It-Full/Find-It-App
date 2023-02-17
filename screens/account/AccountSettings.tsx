@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Alert, Modal } from 'react-native'
 import ActionButtonList from '../../components/ActionButtonList'
 import ActionButtonListItem from '../../components/ActionButtonListItem'

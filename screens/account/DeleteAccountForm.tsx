@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { ModalFormScreenBase } from '../../ui-base/containers'
 import { Text } from 'react-native'
 import BigButton from '../../components/BigButton'
