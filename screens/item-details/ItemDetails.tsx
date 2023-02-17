@@ -401,7 +401,7 @@ function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLn
     }, [props.locations])
 
     useEffect(() => {
-        mapRef.current?.animateToRegion(region ?? defaultRegion)
+        mapRef.current?.animateToRegion((region != null && region.longitude !== 0) ? region : defaultRegion)
     }, [region])
 
     const MapContents = () => {
