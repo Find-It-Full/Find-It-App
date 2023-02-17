@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useEffect, useRef, useState } from "react";
 import { Alert, Linking, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
-import MapView, { Callout, LatLng, Marker, Region } from "react-native-maps";
+import MapView, { Callout, LatLng, Marker, Polyline, Region } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -26,6 +26,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const dispatch = useAppDispatch()
     const item = useAppSelector((state) => state.items.items[props.route.params.item.itemID])
     const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]) || { })
+    const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
     const scrollRef = useRef<ScrollView>(null)
@@ -63,6 +64,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
         let index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
 
+        if (index === selectedReport?.reportIndex) {
+            return
+        }
+
         if ( ! reports[index]) {
             if (reports.length > 0) {
                 index = 0
@@ -81,12 +86,21 @@ export default function ItemDetails(props: ItemDetailsProps) {
     }
 
     const scrollToOffset = (offset: number) => {
+        
+        if ( ! selectedReport) {
+            return
+        }
+
+        scrollToIndex(selectedReport.reportIndex + offset)
+    }
+
+    const scrollToIndex = (index: number) => {
 
         if ( ! selectedReport) {
             return
         }
 
-        const newIndex = Math.max(Math.min(selectedReport.reportIndex + offset, reports.length - 1), 0)
+        const newIndex = Math.max(Math.min(index, reports.length - 1), 0)
         const position = newIndex * windowWidth
         scrollRef.current?.scrollTo({ x: position, animated: true })
     }
@@ -96,7 +110,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     return (
         <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
-            <SightingMap location={selectedReport ? selectedReport.location : null} itemIcon={item.icon} />
+            <SightingMap 
+                locations={locations} 
+                primaryLocation={selectedReport ? selectedReport.location : null} 
+                itemIcon={item.icon}
+                selectReportAtIndex={scrollToIndex} 
+            />
             <BackButton />
             <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
                 <View style={{ paddingVertical: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding }}>
@@ -324,6 +343,19 @@ function getInitialState(reports: Report[]): { reportID: string, reportIndex: nu
     return { reportID: firstReport.reportID, reportIndex: reversed.length - firstIndex - 1, location: field }
 }
 
+function getAllLocations(reports: Report[]): LatLng[] {
+    const locations: LatLng[] = []
+    for (const report of reports) {
+        if (isExactLocation(report.fields.EXACT_LOCATION)) {
+            locations.push({
+                latitude: report.fields.EXACT_LOCATION.latitude,
+                longitude: report.fields.EXACT_LOCATION.longitude
+            })
+        }
+    }
+    return locations
+}
+
 function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' })
     const latLng = `${lat},${lng}`
@@ -340,7 +372,7 @@ function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, lab
     Linking.openURL(url)
 }
 
-function SightingMap(props: { location: LatLng | null, itemIcon: string }) {
+function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLng | null, itemIcon: string, selectReportAtIndex: (index: number) => void }) {
 
     const defaultRegion = {
         latitude: 38.648785,
@@ -353,8 +385,8 @@ function SightingMap(props: { location: LatLng | null, itemIcon: string }) {
     const mapRef = useRef<MapView>(null)
 
     useEffect(() => {
-        if (props.location) {
-            setRegion(determineReportRegion([props.location]))
+        if (props.locations && props.primaryLocation) {
+            setRegion(determineReportRegion(props.locations))
         } else {
             fetchIPRegion()
             .then((newIPRegion) => {
@@ -366,23 +398,68 @@ function SightingMap(props: { location: LatLng | null, itemIcon: string }) {
                 console.error(`Failed to fetch IP region, ${error}`)
             })
         }
-    }, [props.location])
+    }, [props.locations])
 
     useEffect(() => {
         mapRef.current?.animateToRegion(region ?? defaultRegion)
     }, [region])
 
+    const MapContents = () => {
+
+        const primaryLocation = props.primaryLocation
+
+        if ( ! props.locations || ! primaryLocation) {
+            return null
+        }
+
+        if (props.locations.length === 1) {
+            return (
+                <Marker coordinate={primaryLocation} key={primaryLocation.latitude}>
+                    <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
+                        <Text style={TextStyles.h3}>{props.itemIcon}</Text>
+                    </ItemIconContainer>
+                </Marker>
+            )
+        }
+
+        return (
+            <>
+                <Polyline
+                    coordinates={props.locations}
+                    strokeColor={Colors.Background}
+                    strokeWidth={4}
+                    lineCap={'butt'}
+                    lineDashPattern={[5, 5]}
+                />
+                {
+                    props.locations.map((loc, index) => {
+                        if (loc.latitude === primaryLocation.latitude && loc.longitude === primaryLocation.longitude) {
+                            return null
+                        }
+                        return (
+                            <Marker 
+                                coordinate={loc} 
+                                key={loc.latitude} 
+                                zIndex={1} 
+                                tappable={true}
+                                onPress={() => props.selectReportAtIndex(index)}>
+                                <ItemIconContainer style={{ ...Shadows.SmallShadow, backgroundColor: Colors.Background, width: 42 / 2, height: 42 / 2 }} />
+                            </Marker>
+                        )
+                    })
+                }
+                <Marker coordinate={primaryLocation} key={primaryLocation.latitude} zIndex={2}>
+                    <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
+                        <Text style={TextStyles.h3}>{props.itemIcon}</Text>
+                    </ItemIconContainer>
+                </Marker>
+            </>
+        )
+    }
+
     return (
         <MapView style={{ flexGrow: 1 }} ref={mapRef}>
-            {
-                props.location ? 
-                    <Marker coordinate={props.location} key={props.location.latitude}>
-                        <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
-                            <Text style={TextStyles.h3}>{props.itemIcon}</Text>
-                        </ItemIconContainer>
-                    </Marker> : 
-                    null
-            }
+            <MapContents />
         </MapView>
     )
 }
