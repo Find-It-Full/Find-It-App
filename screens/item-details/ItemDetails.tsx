@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import { useEffect, useRef, useState } from "react";
 import { Alert, Linking, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import MapView, { Callout, LatLng, Marker, Polyline, Region } from "react-native-maps";

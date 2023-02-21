@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import ScanCode from "./ScanCode"
 import EnterItemDetails from "./EnterItemDetails"

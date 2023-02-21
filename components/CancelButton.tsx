@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { Colors } from '../ui-base/colors'
 import { Spacing } from '../ui-base/spacing'

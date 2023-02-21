@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import { KeyboardAvoidingView, TouchableOpacity, View, ViewStyle } from "react-native" 
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"

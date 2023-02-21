@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { TextInput, StyleSheet } from 'react-native'
 import { Colors } from '../ui-base/colors'
 import { Radii } from '../ui-base/radii'

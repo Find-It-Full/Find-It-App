@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { EditItemFlowProps } from "../Navigator"
 import ItemDetailsForm from "../../components/items/ItemDetailsForm"

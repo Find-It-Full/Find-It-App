@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import dynamicLinks from "@react-native-firebase/dynamic-links"
 import { ReactElement, useEffect } from "react"
 import { Linking, StyleSheet, Text, View } from "react-native";

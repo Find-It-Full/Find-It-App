@@ -1,5 +1,5 @@
 import { NavigationContext } from '@react-navigation/native'
-import * as React from 'react'
+import React from 'react'
 import { TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { Colors } from '../ui-base/colors'

@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from 'react'
 import { useEffect, useState } from "react"
 import { Text, Button, TouchableOpacity, View, Linking } from "react-native"
 import { ScanCodeProps } from "./AddItemFlowContainer"

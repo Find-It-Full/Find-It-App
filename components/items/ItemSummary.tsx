@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import * as React from "react"
+import React from 'react'
 import { Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Item } from "../../backend/databaseTypes";
 import { ActionCard } from "../../ui-base/containers";
