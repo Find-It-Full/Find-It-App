@@ -147,6 +147,12 @@ export interface UserProfile {
     tags: { [key: TagID]: boolean }
 }
 
+export interface linkId {
+    tagId: TagID
+    linkId: string
+    
+}
+
 export type UserID = string
 export type ItemID = string
 export type TagID = string
