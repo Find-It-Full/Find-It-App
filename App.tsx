@@ -12,7 +12,7 @@ import firestore, {
 } from "@react-native-firebase/firestore"
 import functions  from "@react-native-firebase/functions"
 export const uid = "Ethan"
-const EMULATED = true
+const EMULATED = false
 function conditionallyEnableEmulation() {
     if (EMULATED) {
        

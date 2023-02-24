@@ -28,11 +28,11 @@ export default function Home(props: HomeProps) {
     const dispatch = useAppDispatch()
     const subscriptions = useContext(SubscriptionManagerContext)
     const items = useAppSelector(state => state.items.items)
-    if(props.route.params.itemGoTo != null){
-        const navigation = useNavigation<ItemDetailsProps['navigation']>()
-        navigation.navigate('ItemDetails', { item: items[props.route.params.itemGoTo] })
+    // if(props.route.params.itemGoTo != null){
+    //     const navigation = useNavigation<ItemDetailsProps['navigation']>()
+    //     navigation.navigate('ItemDetails', { item: items[props.route.params.itemGoTo] })
 
-    }
+    // }
 
     useEffect(() => {
 

@@ -65,10 +65,10 @@ export class FirestoreBackend {
             // 3. Associate the tag with the new item
 
 
-            // transaction.update(this.tags().doc(item.tagID), {
-            //     isAssociatedWithItem: true,
-            //     associatedItemID: itemRef.id
-            // })
+            transaction.update(this.tags().doc(item.tagID), {
+                isAssociatedWithItem: true,
+                associatedItemID: itemRef.id
+            })
             // console.log("passed 2")
             // 4. Add the new item to the user's record
             transaction.set(this.users().doc(uid), {
