@@ -4,6 +4,7 @@ import firestore, {
 import { uid } from "../App"
 import { ChangeItemLostStateResult, DocChanges, Item, ItemID, RegisterTagResult, Report, UserProfile } from "./databaseTypes"
 import functions from "@react-native-firebase/functions"
+import auth from '@react-native-firebase/auth'
 
 enum CollectionNames {
     Users = 'users',
@@ -147,7 +148,14 @@ export class FirestoreBackend {
     }
 
     public static attachItemsListener(onNewItemData: (docs: DocChanges) => void, onError: (error: Error) => void): () => void {
-        const query = this.items().where('ownerID', '==', uid)
+
+        const userID = auth().currentUser?.uid
+
+        if ( ! userID) {
+            onError(new Error('Cannot retrieve items; user is not authenticated.'))
+        }
+
+        const query = this.items().where('ownerID', '==', userID)
 
         return query.onSnapshot({
             next: (snapshot) => {

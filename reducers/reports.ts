@@ -23,9 +23,12 @@ const reportsSlice = createSlice({
         },
         removeReportFromItem(state, action: PayloadAction<Report>) {
             delete state[action.payload.itemID][action.payload.reportID]
+        },
+        removeAllReportsFromItem(state, action: PayloadAction<ItemID>) {
+            state[action.payload] = { }
         }
     }
 })
 
-export const { addReportToItem, removeReportFromItem } = reportsSlice.actions
+export const { addReportToItem, removeReportFromItem, removeAllReportsFromItem } = reportsSlice.actions
 export default reportsSlice.reducer

@@ -1,6 +1,6 @@
 import React, { createContext } from "react"
 import { deleteItem, directlyAddItem, updateItem } from "../reducers/items"
-import { addReportToItem, removeReportFromItem } from "../reducers/reports"
+import { addReportToItem, removeAllReportsFromItem, removeReportFromItem } from "../reducers/reports"
 import { useAppDispatch } from "../store/hooks"
 import { DocChanges, isReport, Item, ItemID, Report } from "./databaseTypes"
 import { FirestoreBackend } from "./firestoreBackend"
@@ -18,6 +18,8 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
     const dispatch = useAppDispatch()
 
     const subscribeToItemReports = (itemID: ItemID) => {
+
+        console.log(`Subscribing to reports for: ${itemID}`)
 
         const onNewReportData = (changes: DocChanges) => {
             console.log(`Got item report updates (${changes.length})...`)
@@ -48,7 +50,11 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
         }
 
         const onError = (error: Error) => {
-            console.error(`Error when attempting to retrieve item reports: ${JSON.stringify(error)}`)
+            console.error(`Error when attempting to retrieve item reports for ${itemID}: ${error.message}`)
+            if (error.message.includes('permission-denied')) {
+                console.log('User does not have permissions to view reports on item. Clearing...')
+                dispatch(removeAllReportsFromItem(itemID))
+            }
         }
 
         const unsubscribe = FirestoreBackend.attachItemReportListener(itemID, onNewReportData, onError)
@@ -76,7 +82,7 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
         }
 
         const onError = (error: Error) => {
-            console.error(`Error when attempting to retrieve item updates: ${JSON.stringify(error)}`)
+            console.error(`Error when attempting to retrieve item updates: ${error.message}`)
         }
 
         const unsubscribe = FirestoreBackend.attachItemsListener(onNewItemData, onError)

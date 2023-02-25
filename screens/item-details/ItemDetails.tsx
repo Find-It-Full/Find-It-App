@@ -386,7 +386,7 @@ function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLn
 
     useEffect(() => {
         if (props.locations && props.primaryLocation) {
-            setRegion(determineReportRegion(props.locations))
+            setRegion(determineReportRegion([props.primaryLocation]))
         } else {
             fetchIPRegion()
             .then((newIPRegion) => {

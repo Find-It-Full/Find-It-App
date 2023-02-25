@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 import { SubscriptionManagerContext } from "../../backend/SubscriptionManager"
 import ItemSummary from "../../components/items/ItemSummary"
-import Items, { fetchAllItems } from "../../reducers/items"
+import Items, { clearItems, fetchAllItems } from "../../reducers/items"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { VerticallyCenteringRow } from "../../ui-base/layouts"
 import { Spacing } from "../../ui-base/spacing"

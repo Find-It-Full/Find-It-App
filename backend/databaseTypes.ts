@@ -128,14 +128,17 @@ export function isMessage(obj: any): obj is MessageReportField {
 
 export interface ContactInformationReportField extends ReportField {
     type: ReportFieldType.CONTACT_INFORMATION
-    contactInfo: string
+    contactInfo: number
 }
 
 export function isContactInformation(obj: any): obj is ContactInformationReportField {
     return (
+        obj != null &&
         "type" in obj &&
         obj.type === ReportFieldType.CONTACT_INFORMATION &&
-        "contactInfo" in obj
+        "contactInfo" in obj &&
+        Number.isInteger(obj.contactInfo) &&
+        obj.contactInfo.toString().length === 10
     )
 }
 

@@ -78,6 +78,9 @@ const itemsSlice = createSlice({
         },
         deleteItem(state, action: PayloadAction<ItemID>) {
             delete state.items[action.payload]
+        },
+        clearItems(state, _) {
+            state.items = { }
         }
     },
     extraReducers: (builder) => {
@@ -111,7 +114,7 @@ const itemsSlice = createSlice({
     }
 })
 
-export const { directlyAddItem, deleteItem, updateItem } = itemsSlice.actions
+export const { directlyAddItem, deleteItem, updateItem, clearItems } = itemsSlice.actions
 export default itemsSlice.reducer
 
 /*
