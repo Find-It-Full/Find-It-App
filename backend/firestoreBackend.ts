@@ -1,16 +1,16 @@
 import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
-import { uid } from "../App"
-import { ChangeItemLostStateResult, DocChanges, Item, ItemID, RegisterTagResult, Report, UserProfile } from "./databaseTypes"
+import auth from "@react-native-firebase/auth"
+import { ChangeItemLostStateResult, DocChanges, Item, ItemID, linkId, RegisterTagResult, Report, TagID, UserProfile } from "./databaseTypes"
 import functions from "@react-native-firebase/functions"
-import auth from '@react-native-firebase/auth'
 
 enum CollectionNames {
     Users = 'users',
     Items = 'items',
     Reports = 'reports',
-    Tags = 'tags'
+    Tags = 'tags',
+    LinkId = "linkId"
 }
 
 export class FirestoreBackend {
@@ -29,6 +29,9 @@ export class FirestoreBackend {
     private static tags() {
         return firestore().collection(CollectionNames.Tags)
     }
+    private static tagList() {
+        return firestore().collection(CollectionNames.LinkId)
+    }
 
     public static async addItem(item: Item): Promise<RegisterTagResult> {
 
@@ -40,14 +43,14 @@ export class FirestoreBackend {
             return 'internal'
         }
 
-        if (result !== 'success' && result !== 'registered-to-caller') {
+        if (result !== 'success' ){ //&& result !== 'registered-to-caller') {
             return result
         }
 
         console.log('Creating item...')
 
         const itemRef = this.items().doc()
-
+        const uid = auth().currentUser?.uid
         return firestore().runTransaction(async (transaction) => {
             // 2. Create an item
             transaction.set(itemRef, {
@@ -59,18 +62,18 @@ export class FirestoreBackend {
                 isMissing: false,
                 dateAdded: new Date().getTime()
             })
-
             // 3. Associate the tag with the new item
+
+
             transaction.update(this.tags().doc(item.tagID), {
                 isAssociatedWithItem: true,
                 associatedItemID: itemRef.id
             })
-
+            // console.log("passed 2")
             // 4. Add the new item to the user's record
             transaction.set(this.users().doc(uid), {
                 items: { [itemRef.id]: true }
             }, { merge: true })
-
             return 'success'
         })
     }
@@ -98,6 +101,7 @@ export class FirestoreBackend {
     }
 
     public static async removeItem(itemID: ItemID) {
+        const uid = auth().currentUser?.uid
         await this.items().doc(itemID).delete()
         await this.users()
             .doc(uid)
@@ -115,12 +119,29 @@ export class FirestoreBackend {
     }
 
     public static async getItems(): Promise<Item[]> {
+        const uid = auth().currentUser?.uid
         const query = await this.items().where("ownerID", "==", uid).get()
         return query.docs.map((snap) => snap.data() as Item)
     }
 
     public static async getUserProfile(): Promise<UserProfile> {
+        const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).get()).data() as UserProfile
+    }
+    public static async addNotificationToken(token) {
+        const uid = auth().currentUser?.uid
+        return (await this.users().doc(uid).update({"notificationTokens": firestore.FieldValue.arrayUnion(token)}))
+    }
+
+    public static async getTagId(linkId) {
+        console.log(linkId)
+        return (( (await this.tagList().doc(linkId).get()).data())as linkId).tagId
+    }
+
+    public static async deleteUser() {
+        const changeItemLostState = functions().httpsCallable('deleteAccount')
+        await changeItemLostState()
+        return true
     }
 
     public static attachItemReportListener(

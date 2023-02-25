@@ -11,7 +11,6 @@ import store from "./store"
 import { Provider } from "react-redux"
 import SubscriptionManager from "./backend/SubscriptionManager"
 
-export const uid = "Ethan"
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -52,11 +51,7 @@ function subscribeToAuthStateChanges(onChange: (isAuthenticated: boolean) => voi
 export default function App() {
 
     const [isAuthenticated, setIsAuthenticated] = useState(auth().currentUser !== null)
-
     conditionallyEnableEmulation()
-
-    console.log(auth().currentUser?.uid)
-
     useEffect(() => {
         return subscribeToAuthStateChanges(setIsAuthenticated)
     }, [isAuthenticated])

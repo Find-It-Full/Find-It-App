@@ -10,13 +10,14 @@ import { TextStyles } from '../../ui-base/text';
 export default function ReportSummary(props: { report: Report, isSelected: string | null }) {
 
     const reportDate = new Date(props.report.timeOfCreation)
-
+    const contactInfo = props.report.fields.CONTACT_INFORMATION
     const dateString = `${reportDate.getMonth() + 1}/${reportDate.getDate()}`
     const timeString = `${reportDate.getHours()}:${reportDate.getMinutes()}`
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
 
     const messageField = props.report.fields.MESSAGE
     const [message, hasMessage] = isMessage(messageField) ? [messageField.message, true] : ['No message included.', false]
+    const [contact, hasContact] = isContactInformation(contactInfo) ? [contactInfo.contactInfo.toString(), true] : ['No contact info included.', false]
     const [locationString, setLocationString] = useState<string>('')
 
     useEffect(() => {
@@ -76,7 +77,6 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                     <Text style={TextStyles.h4}>{`${locationString}`}</Text>
                 </VerticallyCenteringRow>
                 <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginBottom: Spacing.QuarterGap }}>
-                    
                     <PhoneNumber />
                 </VerticallyCenteringRow>
                 <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic' }]}>{message}</Text>

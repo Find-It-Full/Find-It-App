@@ -11,7 +11,7 @@ import AccountSettings from './account/AccountSettings'
 import MarkAsLost from './MarkAsLost'
 
 export type RootStackParamList = {
-    Home: undefined
+    Home: {itemGoTo:string}
     ItemDetails: { item: Item }
     SignIn: undefined
     AddItemFlow: undefined
@@ -28,6 +28,9 @@ export type AccountSettingsProps = NativeStackScreenProps<RootStackParamList, 'A
 export type MarkAsLostProps = NativeStackScreenProps<RootStackParamList, 'MarkAsLost'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
+
+
+
 
 export default function Navigator(props: { isAuthenticated: boolean }) {
 

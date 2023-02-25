@@ -8,7 +8,8 @@ import { Spacing } from '../../ui-base/spacing'
 import { TextStyles } from '../../ui-base/text'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import TextField from '../../components/TextField'
-
+import { FirestoreBackend } from '../../backend/firestoreBackend'
+import auth from '@react-native-firebase/auth'
 export default function DeleteAccountForm(props: { onClose: () => void }) {
 
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
@@ -23,6 +24,9 @@ export default function DeleteAccountForm(props: { onClose: () => void }) {
 
     const deleteAccount = async () => {
         setIsDeletingAccount(true)
+        //ADDED
+        await FirestoreBackend.deleteUser()
+        auth().signOut()
         setTimeout(() => { setIsDeletingAccount(false); props.onClose() }, 1000)
     }
 

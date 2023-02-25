@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react"
-import { Text, Button, TouchableOpacity, View } from "react-native"
+import { Text, Button, TouchableOpacity, View, Linking } from "react-native"
 import { ScanCodeProps } from "./AddItemFlowContainer"
 import { check, PERMISSIONS, RESULTS } from "react-native-permissions"
 import QRCodeScanner from "react-native-qrcode-scanner"
@@ -8,25 +8,35 @@ import { BarCodeReadEvent } from "react-native-camera"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import auth from '@react-native-firebase/auth'
+import { FirestoreBackend } from "../../backend/firestoreBackend"
+import { TagID } from "../../backend/databaseTypes"
 
 export default function ScanCode({ navigation }: ScanCodeProps) {
 
     const scannerRef = React.useRef<QRCodeScanner>(null)
     const [cameraAllowed, setCameraAllowed] = useState(false)
     
-    function onSuccess(data: BarCodeReadEvent) {
+    async function onSuccess(data: BarCodeReadEvent) {
         console.log(`Scanned QR code with data: ${data.data}`)
         try {
+           
+            
             const url = data.data
             const pathSegments = url.split('/')
 
-            if (pathSegments.length !== 5) {
-                throw new Error()
-            }
+            // if (pathSegments.length !== 5) {
+            //     throw new Error()
+            // }
 
-            const id = pathSegments[4]
+            const id = pathSegments[(pathSegments.length)-1]
+            //Add loading icon 
+            const tagID = await FirestoreBackend.getTagId(id)
 
-            navigation.navigate('EnterItemDetails', { tagID: id })
+            //
+            console.warn(tagID)
+            
+
+            navigation.navigate('EnterItemDetails', { tagID: tagID })
         } catch (e) {
             console.log(`Read invalid URL: ${e}`)
             scannerRef.current?.reactivate()
@@ -54,7 +64,16 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
 
     useEffect(() => {
         setTimeout(() => {
-            // navigation.navigate('EnterItemDetails', { tagID: 'bHBE8KHnDdkEiATsv8GE' }) 
+           onSuccess({
+               data: "https://gobilabsllc.page.link/TC1ExH5Xzv9Bd8S8A",
+               type: "aztec",
+               bounds: {
+                   width: 0,
+                   height: 0,
+                   origin: []
+               },
+               image: ""
+           })
         }, 1000)
     }, [])
 

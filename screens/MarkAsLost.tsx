@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { setItemIsMissing } from '../reducers/items'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { FirestoreBackend } from '../backend/firestoreBackend'
 
 export default function MarkAsLost(props: { itemID: string, onClose: () => void }) {
 
@@ -36,6 +37,9 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
       
         if (enabled) {
             setIsMissing()
+            //ADDED
+            const token = await messaging().getToken()
+            FirestoreBackend.addNotificationToken(token)
         } else {
             Alert.alert(
                 'Notifications Not Enabled', 

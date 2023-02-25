@@ -132,6 +132,9 @@ export interface ContactInformationReportField extends ReportField {
 }
 
 export function isContactInformation(obj: any): obj is ContactInformationReportField {
+    if(obj == undefined){
+        return false
+    }
     return (
         obj != null &&
         "type" in obj &&
@@ -148,6 +151,12 @@ export interface UserProfile {
     lastName: string
     items: { [key: ItemID]: boolean }
     tags: { [key: TagID]: boolean }
+}
+
+export interface linkId {
+    tagId: TagID
+    linkId: string
+    
 }
 
 export type UserID = string
