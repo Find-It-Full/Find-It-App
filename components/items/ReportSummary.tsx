@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Linking, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import { isExactLocation, isMessage, Report } from '../../backend/databaseTypes';
+import { isContactInformation, isExactLocation, isMessage, Report } from '../../backend/databaseTypes';
 import LocationCoder from '../../backend/LocationCoder';
 import { Colors } from '../../ui-base/colors';
 import { VerticallyCenteringGroupedRow, VerticallyCenteringRow } from '../../ui-base/layouts';
@@ -10,12 +10,13 @@ import { TextStyles } from '../../ui-base/text';
 export default function ReportSummary(props: { report: Report, isSelected: string | null }) {
 
     const reportDate = new Date(props.report.timeOfCreation)
-
+    const contactInfo = props.report.fields.CONTACT_INFORMATION
     const dateString = `${reportDate.getMonth() + 1}/${reportDate.getDate()}`
     const timeString = `${reportDate.getHours()}:${reportDate.getMinutes()}`
 
     const messageField = props.report.fields.MESSAGE
     const [message, hasMessage] = isMessage(messageField) ? [messageField.message, true] : ['No message included.', false]
+    const [contact, hasContact] = isContactInformation(contactInfo) ? [contactInfo.contactInfo.toString(), true] : ['No contact info included.', false]
     const [locationString, setLocationString] = useState<string>('')
 
     useEffect(() => {
@@ -49,7 +50,6 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     }, [props.isSelected])
 
     const windowWidth = useWindowDimensions().width
-
     return (
         <View style={[{ width: windowWidth }, styles.container]}>
             <View style={styles.contentContainer}>
@@ -59,10 +59,13 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                 </VerticallyCenteringRow>
                 <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginBottom: Spacing.QuarterGap }}>
                     <Text style={TextStyles.p}>Contact: </Text>
+                   
                     <TouchableOpacity
-                        onPress={() => Linking.openURL(`sms://${4156348151}`)}
+                        onPress={() => {hasContact?Linking.openURL(`sms://${contact}`):null}}
                     >
-                        <Text style={[TextStyles.p, { textDecorationLine: 'underline' }]}>+1 (415) 634-8151</Text>
+
+                        {hasContact?<Text style={[TextStyles.p, { textDecorationLine: 'underline' }]}>{"+1 "+(contact).substring(0,3) + " " + (contact).substring(3,6)+"-"+(contact).substring(6)}</Text>:<Text style={[TextStyles.p, ]}>{contact}</Text>
+                        }
                     </TouchableOpacity>
                 </VerticallyCenteringRow>
                 <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic' }]}>{message}</Text>

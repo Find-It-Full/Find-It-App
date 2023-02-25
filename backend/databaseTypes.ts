@@ -132,6 +132,9 @@ export interface ContactInformationReportField extends ReportField {
 }
 
 export function isContactInformation(obj: any): obj is ContactInformationReportField {
+    if(obj == undefined){
+        return false
+    }
     return (
         "type" in obj &&
         obj.type === ReportFieldType.CONTACT_INFORMATION &&
