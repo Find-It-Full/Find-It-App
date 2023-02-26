@@ -62,20 +62,20 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
         checkForCameraPermission()
     }, [cameraAllowed])
 
-    useEffect(() => {
-        setTimeout(() => {
-           onSuccess({
-               data: "https://gobilabsllc.page.link/TC1ExH5Xzv9Bd8S8A",
-               type: "aztec",
-               bounds: {
-                   width: 0,
-                   height: 0,
-                   origin: []
-               },
-               image: ""
-           })
-        }, 1000)
-    }, [])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //        onSuccess({
+    //            data: "https://gobilabsllc.page.link/TC1ExH5Xzv9Bd8S8A",
+    //            type: "aztec",
+    //            bounds: {
+    //                width: 0,
+    //                height: 0,
+    //                origin: []
+    //            },
+    //            image: ""
+    //        })
+    //     }, 1000)
+    // }, [])
 
     return (
         <View style={{ height: '100%', backgroundColor: 'black' }}>
