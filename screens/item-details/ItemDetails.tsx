@@ -20,6 +20,7 @@ import { clearReports, editItemDetails, setItemIsFound, setItemIsMissing } from 
 import PrimaryActionButton from "../../components/PrimaryActionButton";
 import ItemDetailsForm from "../../components/items/ItemDetailsForm";
 import MarkAsLost from "../MarkAsLost";
+import { FirestoreBackend } from '../../backend/firestoreBackend';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -227,6 +228,9 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                             }
                                         }
                                     ])
+                            }
+                            else{
+                                FirestoreBackend.removeItem(item.itemID, item.tagID)
                             }
                         }}
                         style={{ flex: 1 }}
