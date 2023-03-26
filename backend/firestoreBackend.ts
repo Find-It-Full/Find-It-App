@@ -37,7 +37,7 @@ export class FirestoreBackend {
 
         // 1. Attempt to register tag associated with item
         const registerTag = functions().httpsCallable('registerTag')
-        const result: RegisterTagResult = (await registerTag({ tagID: item.tagID })).data
+        const result: RegisterTagResult = (await registerTag({ tagID: item.tagID, itemInfo:item })).data
 
         if ( ! result) {
             return 'internal'
@@ -49,33 +49,8 @@ export class FirestoreBackend {
 
         console.log('Creating item...')
 
-        const itemRef = this.items().doc()
-        const uid = auth().currentUser?.uid
-        return firestore().runTransaction(async (transaction) => {
-            // 2. Create an item
-            transaction.set(itemRef, {
-                itemID: itemRef.id,
-                tagID: item.tagID,
-                name: item.name,
-                icon: item.icon,
-                ownerID: uid,
-                isMissing: false,
-                dateAdded: new Date().getTime()
-            })
-            // 3. Associate the tag with the new item
+        return "success"
 
-
-            transaction.update(this.tags().doc(item.tagID), {
-                isAssociatedWithItem: true,
-                associatedItemID: itemRef.id
-            })
-            // console.log("passed 2")
-            // 4. Add the new item to the user's record
-            transaction.set(this.users().doc(uid), {
-                items: { [itemRef.id]: true }
-            }, { merge: true })
-            return 'success'
-        })
     }
 
     public static async editItem(item: { itemID: string, name: string, icon: string }): Promise<RegisterTagResult> {
@@ -100,15 +75,20 @@ export class FirestoreBackend {
         })
     }
 
-    public static async removeItem(itemID: ItemID) {
-        const uid = auth().currentUser?.uid
-        await this.items().doc(itemID).delete()
-        await this.users()
-            .doc(uid)
-            .set(
-                { items: { [itemID]: firestore.FieldValue.delete() } },
-                { merge: true }
-            )
+    public static async removeItem(itemID: ItemID,tagID:TagID) {
+        // const uid = auth().currentUser?.uid
+        // await this.items().doc(itemID).delete()
+        // await this.users()
+        //     .doc(uid)
+        //     .set(
+        //         { items: { [itemID]: firestore.FieldValue.delete() } },
+        //         { merge: true }
+        //     )
+
+        const removeItem = functions().httpsCallable('removeItem')
+        const result: ChangeItemLostStateResult = (await removeItem({ itemID,tagID})).data
+
+        return result
     }
 
     public static async setItemIsMissing(itemID: ItemID, isMissing: boolean, clearRecentReports: boolean) {

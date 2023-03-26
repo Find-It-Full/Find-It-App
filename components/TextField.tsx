@@ -16,6 +16,20 @@ export default function TextField(props: { onChangeText: (text: string) => void,
     )
 }
 
+export  function SignInField(props: { onChangeText: (text: string) => void, value: string, inputType:string, placeholder?: string }) {
+
+    return (
+        <TextInput
+            secureTextEntry={props.inputType == "password"}
+            autoComplete ={props.inputType == "password"?"password":"email"}
+            placeholder={props.placeholder}
+            style={[TextStyles.h3, styles.input, { marginBottom: Spacing.BigGap }]}
+            value={props.value}
+            onChangeText={props.onChangeText}
+        />
+    )
+}
+
 const styles = StyleSheet.create({
     input: {
         backgroundColor: Colors.ButtonColor,
