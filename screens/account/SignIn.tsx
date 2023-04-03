@@ -9,10 +9,13 @@ import { ScreenBase } from "../../ui-base/containers"
 import { TextStyles } from "../../ui-base/text"
 import BigButton from "../../components/BigButton"
 import EmailAndPasswordInput from "../../components/emailAndPasswordInput"
+import { SignInProps } from "../Navigator"
+import { Spacer } from "../../ui-base/layouts"
+import { Spacing } from "../../ui-base/spacing"
 
-export default function SignIn(props: { }) {
-    const [error,setError] = useState(false)
-    const [sent,setSent] = useState(false)
+export default function SignIn(props: SignInProps) {
+    const [error, setError] = useState(false)
+    const [sent, setSent] = useState(false)
     async function onGoogleSignIn() {
         // Check if your device supports Google Play
         await GoogleSignin.hasPlayServices({
@@ -33,37 +36,45 @@ export default function SignIn(props: { }) {
             "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
     })
 
-async function emailSignIn(email:string,password:string) {
+    async function emailSignIn(email: string, password: string) {
 
-    try{
-await auth().createUserWithEmailAndPassword(email, password)
-    }
-    catch(err){
-        setError(true)
-    }
+        try {
+            await auth().createUserWithEmailAndPassword(email, password)
+        }
+        catch (err) {
+            setError(true)
+        }
 
-}
-
-async function forgotPassword(email:string) {
-
-    try{
-await auth().sendPasswordResetEmail(email)
-setSent(true)
-    }
-    catch(err){
-        setError(true)
     }
 
-}
+    async function forgotPassword(email: string) {
+
+        try {
+            await auth().sendPasswordResetEmail(email)
+            setSent(true)
+        }
+        catch (err) {
+            setError(true)
+        }
+
+    }
 
     return (
         <ScreenBase>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={TextStyles.h1}>Welcome!</Text>
+                <Text style={TextStyles.h1}>FoundHound</Text>
             </View>
-            <EmailAndPasswordInput error ={error} sent={sent} forgotPassword={async (email)=>{await forgotPassword(email)}} onSubmit={ async (email,password)=>{await emailSignIn(email,password)}} />
+            {/* <EmailAndPasswordInput error={error} sent={sent} forgotPassword={async (email) => { await forgotPassword(email) }} onSubmit={async (email, password) => { await emailSignIn(email, password) }} /> */}
             <BigButton
-                label='Sign in with Google'
+                label='Continue with Email'
+                onPress={() =>
+                    props.navigation.navigate('EmailSignIn')
+                }
+                isInColumn
+            />
+            <Spacer size={Spacing.Gap} />
+            <BigButton
+                label='Continue with Google'
                 onPress={() =>
                     onGoogleSignIn().then(() =>
                         console.log("Signed in with Google!")

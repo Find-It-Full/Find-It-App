@@ -21,6 +21,7 @@ import PrimaryActionButton from "../../components/PrimaryActionButton";
 import ItemDetailsForm from "../../components/items/ItemDetailsForm";
 import MarkAsLost from "../MarkAsLost";
 import { FirestoreBackend } from '../../backend/firestoreBackend';
+import { viewReport } from '../../reducers/userData';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -105,6 +106,18 @@ export default function ItemDetails(props: ItemDetailsProps) {
         const position = newIndex * windowWidth
         scrollRef.current?.scrollTo({ x: position, animated: true })
     }
+
+    useEffect(() => {
+        if ( ! selectedReport) {
+            return
+        }
+
+        if ( ! selectedReport.reportID) {
+            return
+        }
+
+        dispatch(viewReport({ reportID: selectedReport.reportID }))
+    }, [selectedReport])
 
     const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
     const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
@@ -443,7 +456,7 @@ function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLn
                         return (
                             <Marker 
                                 coordinate={loc} 
-                                key={loc.latitude} 
+                                key={loc.latitude + index} 
                                 zIndex={1} 
                                 tappable={true}
                                 onPress={() => props.selectReportAtIndex(index)}>

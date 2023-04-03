@@ -145,12 +145,82 @@ export function isContactInformation(obj: any): obj is ContactInformationReportF
     )
 }
 
-export interface UserProfile {
-    userID: UserID
-    firstName: string
-    lastName: string
-    items: { [key: ItemID]: boolean }
-    tags: { [key: TagID]: boolean }
+export interface UserData {
+    items?: { [key: ItemID]: boolean }
+    tags?: { [key: TagID]: boolean }
+    notificationTokens?: string[]
+    viewedReports?: { [key: ReportID]: ReportViewStatus }
+}
+
+function isFirestoreSet(obj: any, valueType: "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" = 'boolean'): boolean {
+
+    if (typeof obj !== 'object') {
+        return false
+    }
+
+    for (const item of Object.entries(obj)) {
+
+        if (typeof item[0] !== 'string') {
+            return false
+        }
+
+        if (item[0].length !== 20) {
+            return false
+        }
+
+        if (typeof item[1] !== valueType) {
+            return false
+        }
+    }
+
+    return true
+}
+
+export function isUserData(obj: any): obj is UserData {
+    if (obj == undefined) {
+        return false
+    }
+
+    let containsAtLeastOneKey = false
+
+    for (const [key, type] of [['items', 'boolean'], ['tags', 'boolean'], ['viewedReports', 'string']]) {
+        if (key in obj) {
+            if ( ! isFirestoreSet(obj[key], type as 'boolean' | 'string')) {
+                console.log(`invalid firestore set ${key}`)
+                return false
+            }
+
+            containsAtLeastOneKey = true
+        }
+    }
+
+    if ('viewedReports' in obj) {
+        for (const viewState of Object.values(obj['viewedReports'])) {
+            if ( ! ReportViewStatusValues.includes(viewState as any)) {
+                return false
+            }
+        }
+    }
+
+    if ('notificationTokens' in obj) {
+        if ( ! Array.isArray(obj['notificationTokens'])) {
+            return false
+        }
+
+        for (const token of obj['notificationTokens']) {
+            if (typeof token !== 'string') {
+                return false
+            }
+        }
+
+        containsAtLeastOneKey = true
+    }
+
+    if ( ! containsAtLeastOneKey && Object.keys(obj).length > 0) {
+        return false
+    }
+
+    return true
 }
 
 export interface linkId {
@@ -175,3 +245,11 @@ export type ChangeItemLostStateResult =
     | "unauthenticated"
     | "internal"
     | "success"
+
+export enum ReportViewStatus {
+    UNSEEN = 'unseen',
+    NOTIFIED = 'notified',
+    SEEN = 'seen'
+}
+
+const ReportViewStatusValues = [ReportViewStatus.UNSEEN, ReportViewStatus.NOTIFIED, ReportViewStatus.SEEN]

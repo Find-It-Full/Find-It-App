@@ -9,11 +9,17 @@ import ItemDetails from './item-details/ItemDetails'
 import EditItemFlowContainer from './editing-items/EditItemDetails'
 import AccountSettings from './account/AccountSettings'
 import MarkAsLost from './MarkAsLost'
+import EmailSignIn from './account/EmailSignIn'
+import CreateAccount from './account/CreateAccount'
+import InAppNotificationManager from '../components/InAppNotificationManager'
 
 export type RootStackParamList = {
     Home: {itemGoTo:string}
     ItemDetails: { item: Item }
     SignIn: undefined
+    EmailSignIn: undefined
+    EnterPassword: { email: string }
+    CreateAccount: { email: string }
     AddItemFlow: undefined
     EditItemFlow: { item: Item }
     AccountSettings: undefined
@@ -26,6 +32,9 @@ export type ItemDetailsProps = NativeStackScreenProps<RootStackParamList, 'ItemD
 export type EditItemFlowProps = NativeStackScreenProps<RootStackParamList, 'EditItemFlow'>
 export type AccountSettingsProps = NativeStackScreenProps<RootStackParamList, 'AccountSettings'>
 export type MarkAsLostProps = NativeStackScreenProps<RootStackParamList, 'MarkAsLost'>
+export type SignInProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>
+export type EmailSignInProps = NativeStackScreenProps<RootStackParamList, 'EmailSignIn'>
+export type CreateAccountProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -59,10 +68,13 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                     (
                         <>
                             <RootStack.Screen name="SignIn" component={SignIn} />
+                            <RootStack.Screen name="EmailSignIn" component={EmailSignIn} />
+                            <RootStack.Screen name="CreateAccount" component={CreateAccount} />
                         </>
                     )
                 }
             </RootStack.Navigator>
+            <InAppNotificationManager />
         </NavigationContainer>
     )
 }

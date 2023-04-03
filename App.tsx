@@ -10,6 +10,7 @@ import Navigator from "./screens/Navigator"
 import store from "./store"
 import { Provider } from "react-redux"
 import SubscriptionManager from "./backend/SubscriptionManager"
+import InAppNotificationManager from './components/InAppNotificationManager'
 
 const USE_EMULATORS = false
 

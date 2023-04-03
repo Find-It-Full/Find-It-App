@@ -2,7 +2,7 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
-import { ChangeItemLostStateResult, DocChanges, Item, ItemID, linkId, RegisterTagResult, Report, TagID, UserProfile } from "./databaseTypes"
+import { ChangeItemLostStateResult, DocChanges, isUserData, Item, ItemID, linkId, RegisterTagResult, Report, ReportID, ReportViewStatus, TagID, UserData } from "./databaseTypes"
 import functions from "@react-native-firebase/functions"
 
 enum CollectionNames {
@@ -75,18 +75,10 @@ export class FirestoreBackend {
         })
     }
 
-    public static async removeItem(itemID: ItemID,tagID:TagID) {
-        // const uid = auth().currentUser?.uid
-        // await this.items().doc(itemID).delete()
-        // await this.users()
-        //     .doc(uid)
-        //     .set(
-        //         { items: { [itemID]: firestore.FieldValue.delete() } },
-        //         { merge: true }
-        //     )
+    public static async removeItem(itemID: ItemID) {
 
         const removeItem = functions().httpsCallable('removeItem')
-        const result: ChangeItemLostStateResult = (await removeItem({ itemID,tagID})).data
+        const result: ChangeItemLostStateResult = (await removeItem({ itemID })).data
 
         return result
     }
@@ -104,9 +96,9 @@ export class FirestoreBackend {
         return query.docs.map((snap) => snap.data() as Item)
     }
 
-    public static async getUserProfile(): Promise<UserProfile> {
+    public static async getUserProfile(): Promise<UserData> {
         const uid = auth().currentUser?.uid
-        return (await this.users().doc(uid).get()).data() as UserProfile
+        return (await this.users().doc(uid).get()).data() as UserData
     }
     public static async addNotificationToken(token) {
         const uid = auth().currentUser?.uid
@@ -169,5 +161,57 @@ export class FirestoreBackend {
             },
             error: onError
         })
+    }
+
+    public static attachViewedReportsListener(onNewViewedReports: (snapshot: UserData) => void, onError: (error: Error) => void): () => void {
+
+        const userID = auth().currentUser?.uid
+
+        if ( ! userID) {
+            onError(new Error('Cannot retrieve viewed reports; user is not authenticated'))
+        }
+
+        const query = this.users().doc(userID)
+
+        console.log(`Retrieving viewed reports for ${userID}`)
+
+        return query.onSnapshot({
+            next: (snapshot) => {
+
+                if ( ! snapshot.data()) {
+                    return
+                }
+
+                const data = snapshot.data()
+
+                if ( ! isUserData(data)) {
+                    console.error('Got invalid user data from Firestore.')
+                    return
+                }
+
+                onNewViewedReports(data)
+            },
+            error: onError
+        })
+    }
+
+    public static async setViewedReport(reportID: ReportID) {
+
+        const userID = auth().currentUser?.uid
+
+        await this.users().doc(userID).set(
+            { viewedReports: { [reportID]: ReportViewStatus.SEEN }}, 
+            { merge: true }
+        )
+    }
+
+    public static async setNotifiedOfReport(reportID: ReportID) {
+
+        const userID = auth().currentUser?.uid
+
+        await this.users().doc(userID).set(
+            { viewedReports: { [reportID]: ReportViewStatus.NOTIFIED }}, 
+            { merge: true }
+        )
     }
 }

@@ -1,18 +1,21 @@
 import React from 'react'
-import { TextInput, StyleSheet } from 'react-native'
+import { TextInput, StyleSheet, TextInputProps } from 'react-native'
 import { Colors } from '../ui-base/colors'
 import { Radii } from '../ui-base/radii'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
 
-export default function TextField(props: { onChangeText: (text: string) => void, value: string, placeholder?: string }) {
+export default function TextField(props: { onChangeText: (text: string) => void, value: string, placeholder?: string, inputProps?: TextInputProps, children?: React.ReactNode }) {
     return (
         <TextInput
             placeholder={props.placeholder}
             style={[TextStyles.h3, styles.input, { marginBottom: Spacing.BigGap }]}
             value={props.value}
             onChangeText={props.onChangeText}
-        />
+            {...props.inputProps}
+        >
+            {props.children}
+        </TextInput>
     )
 }
 

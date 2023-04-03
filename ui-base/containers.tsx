@@ -70,7 +70,7 @@ export function ModalFormScreenBase(props: { children?: React.ReactNode, style?:
     )
 }
 
-export function ActionCard(props: { children?: React.ReactNode[], style?: ViewStyle }) {
+export function ActionCard(props: { children?: React.ReactNode[] | React.ReactNode, style?: ViewStyle }) {
     return (
         <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...props.style }}>
             {props.children}
@@ -101,6 +101,14 @@ export function ActionButton(props: { children?: React.ReactNode, style?: ViewSt
 export function ItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
     return (
         <View style={{ height: 38, width: 38, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
+            {props.children}
+        </View>
+    )
+}
+
+export function SmallItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
+    return (
+        <View style={{ height: 32, width: 32, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
             {props.children}
         </View>
     )

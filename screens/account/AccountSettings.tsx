@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Modal } from 'react-native'
+import { Alert, Linking, Modal } from 'react-native'
 import ActionButtonList from '../../components/ActionButtonList'
 import ActionButtonListItem from '../../components/ActionButtonListItem'
 import BackButton from '../../components/BackButton'
@@ -24,6 +24,15 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <ActionButtonList>
                 <ActionButtonListItem icon='􀱍' label='Log Out' onPress={() => auth().signOut()} />
                 <ActionButtonListItem icon='􀈒' label='Delete Account' onPress={() => setIsPresentingModal(true)} />
+            </ActionButtonList>
+            <Spacer size={Spacing.BigGap} />
+            <ActionButtonList>
+                <ActionButtonListItem icon='􀙤' label='Terms of Service' onPress={() => Alert.alert('Coming soon! lol')} />
+                <ActionButtonListItem icon='􀎡' label='Privacy Policy' onPress={() => Alert.alert('Coming soon! lol')} />
+            </ActionButtonList>
+            <Spacer size={Spacing.BigGap} />
+            <ActionButtonList>
+                <ActionButtonListItem icon='􀣌' label='Manage Permissions' onPress={() => Linking.openSettings()} />
             </ActionButtonList>
             <Modal
                 animationType='fade'

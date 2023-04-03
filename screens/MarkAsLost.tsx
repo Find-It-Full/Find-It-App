@@ -37,7 +37,6 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
       
         if (enabled) {
             setIsMissing()
-            //ADDED
             const token = await messaging().getToken()
             FirestoreBackend.addNotificationToken(token)
         } else {

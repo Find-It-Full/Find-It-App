@@ -1,15 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
-import sessionReducer from "../reducers/session"
 import itemReducer from "../reducers/items"
-import userInfoReducer from "../reducers/userInfo"
 import reportsReducer from "../reducers/reports"
+import userDataReducer from "../reducers/userData"
 
 const store = configureStore({
     reducer: {
-        session: sessionReducer,
         items: itemReducer,
-        userInfo: userInfoReducer,
-        reports: reportsReducer
+        reports: reportsReducer,
+        userData: userDataReducer
     },
 })
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react"
-import { Text, Button, TouchableOpacity, View, Linking } from "react-native"
+import { Text, Button, TouchableOpacity, View, Linking, Alert } from "react-native"
 import { ScanCodeProps } from "./AddItemFlowContainer"
 import { check, PERMISSIONS, RESULTS } from "react-native-permissions"
 import QRCodeScanner from "react-native-qrcode-scanner"
@@ -10,11 +10,13 @@ import { TextStyles } from "../../ui-base/text"
 import auth from '@react-native-firebase/auth'
 import { FirestoreBackend } from "../../backend/firestoreBackend"
 import { TagID } from "../../backend/databaseTypes"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function ScanCode({ navigation }: ScanCodeProps) {
 
     const scannerRef = React.useRef<QRCodeScanner>(null)
     const [cameraAllowed, setCameraAllowed] = useState(false)
+    const [didCheckForCameraPermission, setDidCheckForCameraPermission] = useState(false)
     
     async function onSuccess(data: BarCodeReadEvent) {
         console.log(`Scanned QR code with data: ${data.data}`)
@@ -31,9 +33,6 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             const id = pathSegments[(pathSegments.length)-1]
             //Add loading icon 
             const tagID = await FirestoreBackend.getTagId(id)
-
-            //
-            console.warn(tagID)
             
 
             navigation.navigate('EnterItemDetails', { tagID: tagID })
@@ -56,11 +55,42 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
         if (resultAndroid == RESULTS.GRANTED) {
             setCameraAllowed(true)
         }
+
+        setDidCheckForCameraPermission(true)
+    }
+
+    async function checkForPriorCameraDenial() {
+        try {
+            const didDeny = await AsyncStorage.getItem('didDenyCameraPermissions')
+            if (didDeny !== null) {
+                Alert.alert('Camera Access Denied', 'Access to your camera is required to add an item.', [
+                    {
+                        text: 'Go to Settings',
+                        onPress: () => { Linking.openSettings() }
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => navigation.goBack()
+                    }
+                ])
+            } else {
+                await AsyncStorage.setItem('didDenyCameraPermissions', 'true')
+                navigation.goBack()
+            }
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     useEffect(() => {
         checkForCameraPermission()
-    }, [cameraAllowed])
+    }, [cameraAllowed, didCheckForCameraPermission])
+
+    useEffect(() => {
+        if (didCheckForCameraPermission && ! cameraAllowed) {
+            checkForPriorCameraDenial()
+        }
+    }, [cameraAllowed, didCheckForCameraPermission])
 
     // useEffect(() => {
     //     setTimeout(() => {
