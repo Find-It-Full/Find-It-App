@@ -12,10 +12,38 @@ import EmailAndPasswordInput from "../../components/emailAndPasswordInput"
 import { SignInProps } from "../Navigator"
 import { Spacer } from "../../ui-base/layouts"
 import { Spacing } from "../../ui-base/spacing"
+import { appleAuth } from '@invertase/react-native-apple-authentication';
+
 
 export default function SignIn(props: SignInProps) {
     const [error, setError] = useState(false)
     const [sent, setSent] = useState(false)
+
+    async function onAppleButtonPress() {
+        // Start the sign-in request
+        const appleAuthRequestResponse = await appleAuth.performRequest({
+          requestedOperation: appleAuth.Operation.LOGIN,
+          requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+        });
+      
+        // Ensure Apple returned a user identityToken
+        if (!appleAuthRequestResponse.identityToken) {
+          throw new Error('Apple Sign-In failed - no identify token returned');
+        }
+      
+        // Create a Firebase credential from the response
+        const { identityToken, nonce } = appleAuthRequestResponse;
+        const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+      
+        // Sign the user in with the credential
+        return auth().signInWithCredential(appleCredential);
+      }
+
+
+
+
+
+
     async function onGoogleSignIn() {
         // Check if your device supports Google Play
         await GoogleSignin.hasPlayServices({
@@ -86,10 +114,9 @@ export default function SignIn(props: SignInProps) {
             <BigButton
                 label='Continue with Apple'
                 onPress={() =>
-                    console.warn("not done yet")
-                    // onGoogleSignIn().then(() =>
-                    //     console.log("Signed in with Apple")
-                    // )
+                    onAppleButtonPress().then(() =>
+                        console.log("Signed in with Apple!")
+                    )
                 }
                 isInColumn
             />
