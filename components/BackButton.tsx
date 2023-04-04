@@ -13,7 +13,8 @@ export default function BackButton() {
     const navigation = React.useContext(NavigationContext)
 
     return (
-        <TouchableOpacity style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} onPress={navigation?.goBack}>
+        <TouchableOpacity style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} onPress={()=>{
+        navigation?.goBack()}}>
             <Text style={TextStyles.h3}>􀆉</Text>
         </TouchableOpacity>
     )

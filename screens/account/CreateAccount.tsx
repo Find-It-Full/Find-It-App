@@ -17,8 +17,9 @@ export default function CreateAccount(props: CreateAccountProps) {
 
     return (
         <FormScreenBase>
-            <BackButton />
+            
             <View style={{ flex: 1, justifyContent: 'center' }}>
+            <BackButton />
                 <Text style={TextStyles.h2}>Set a Password</Text>
                 <Spacer size={Spacing.BigGap} />
                 <TextField

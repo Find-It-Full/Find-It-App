@@ -37,7 +37,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
-
     useEffect(() => {
         if ( ! item.isMissing) {
             setIsChangingLostState(false)
@@ -243,7 +242,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                     ])
                             }
                             else{
-                                FirestoreBackend.removeItem(item.itemID, item.tagID)
+
+                                FirestoreBackend.removeItem(item.itemID)
                             }
                         }}
                         style={{ flex: 1 }}

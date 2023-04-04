@@ -41,8 +41,9 @@ export default function EmailSignIn(props: EmailSignInProps) {
 
     return (
         <FormScreenBase>
-            <BackButton />
+            
             <View style={{ flex: 1, justifyContent: 'center' }}>
+            <BackButton />
                 <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>What's your email?</Text>
                 <TextField 
                     onChangeText={setEmail}

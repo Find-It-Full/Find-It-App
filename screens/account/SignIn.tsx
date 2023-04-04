@@ -82,6 +82,17 @@ export default function SignIn(props: SignInProps) {
                 }
                 isInColumn
             />
+            <Spacer size={Spacing.Gap} />
+            <BigButton
+                label='Continue with Apple'
+                onPress={() =>
+                    console.warn("not done yet")
+                    // onGoogleSignIn().then(() =>
+                    //     console.log("Signed in with Apple")
+                    // )
+                }
+                isInColumn
+            />
         </ScreenBase>
     )
 }

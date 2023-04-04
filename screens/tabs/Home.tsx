@@ -27,19 +27,20 @@ export default function Home(props: HomeProps) {
     const didFetchViewedReports = useAppSelector(state => state.userData.didFetchViewedReports)
 
     console.log(`Got item count ${Object.keys(items)}`)
-
+    
     useEffect(() => {
 
         console.log(`Attempting to fetch reports`)
 
         if ( ! didFetchViewedReports) {
-            console.log(`View status has not been fetched.`)
-            return
+            console.warn(`View status has not been fetched.`)
+            // return //TODO LOOK AT THIS IDK WHY THIS WAS HERE
         }
 
         const unsubscribeCallbacks: (() => void)[] = []
-
+        
         for (const [itemID, _] of Object.entries(items)) {
+            
             unsubscribeCallbacks.push(subscriptions.subscribeToItemReports(itemID))
         }
 

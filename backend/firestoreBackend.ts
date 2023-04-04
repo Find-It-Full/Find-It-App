@@ -79,7 +79,7 @@ export class FirestoreBackend {
 
         const removeItem = functions().httpsCallable('removeItem')
         const result: ChangeItemLostStateResult = (await removeItem({ itemID })).data
-
+        console.log(result)
         return result
     }
 
