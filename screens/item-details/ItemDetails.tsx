@@ -16,7 +16,7 @@ import ItemProfile from "../../components/items/ItemProfile";
 import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
-import { clearReports, editItemDetails, setItemIsFound, setItemIsMissing } from "../../reducers/items";
+import { clearReports, editItemDetails, removeItem, setItemIsFound, setItemIsMissing } from "../../reducers/items";
 import PrimaryActionButton from "../../components/PrimaryActionButton";
 import ItemDetailsForm from "../../components/items/ItemDetailsForm";
 import MarkAsLost from "../MarkAsLost";
@@ -27,7 +27,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const dispatch = useAppDispatch()
     const item = useAppSelector((state) => state.items.items[props.route.params.item.itemID])
-    const reports = Object.values(useAppSelector((state) => state.reports[item.itemID]) || { })
+    const reports = item ? Object.values(useAppSelector((state) => state.reports[item.itemID]) || { }) : []
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
@@ -37,6 +37,14 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
+    useEffect(() => {
+        if ( ! item) {
+            console.log('Item has been deleted, navigating back to home')
+        }
+
+        props.navigation.goBack()
+    }, [item])
+
     useEffect(() => {
         if ( ! item.isMissing) {
             setIsChangingLostState(false)
@@ -120,6 +128,23 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
     const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
+
+    if ( ! item) {
+        return (
+            <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
+                <SightingMap 
+                    locations={null} 
+                    primaryLocation={null} 
+                    itemIcon={' '}
+                    selectReportAtIndex={() => { }} 
+                />
+                <BackButton />
+                <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
+                    
+                </View>
+            </View>
+        )
+    }
 
     return (
         <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
@@ -241,9 +266,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                         }
                                     ])
                             }
-                            else{
-
-                                FirestoreBackend.removeItem(item.itemID)
+                            else {
+                                dispatch(removeItem(item.itemID))
                             }
                         }}
                         style={{ flex: 1 }}
