@@ -11,7 +11,7 @@ import store from "./store"
 import { Provider } from "react-redux"
 import SubscriptionManager from "./backend/SubscriptionManager"
 import InAppNotificationManager from './components/InAppNotificationManager'
-
+import type {PropsWithChildren} from 'react';
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
