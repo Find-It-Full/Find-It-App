@@ -64,6 +64,7 @@ export default function Home(props: HomeProps) {
         messaging().onNotificationOpenedApp(remoteMessage => {
             if (remoteMessage.data != null && remoteMessage.data.itemId != null) {
                 const navigation = useNavigation<ItemDetailsProps['navigation']>()
+                console.log('Navigating to item details')
                 navigation.navigate('ItemDetails', { item: items[remoteMessage.data.itemId] })
             }
         })

@@ -37,12 +37,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
+    
     useEffect(() => {
         if ( ! item) {
             console.log('Item has been deleted, navigating back to home')
+            props.navigation.goBack()
         }
-
-        props.navigation.goBack()
     }, [item])
 
     useEffect(() => {
