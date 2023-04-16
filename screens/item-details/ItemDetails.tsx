@@ -398,7 +398,7 @@ function getAllLocations(reports: Report[]): LatLng[] {
 }
 
 function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
-    const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' })
+    const scheme = Platform.select({ ios: 'http://maps.apple.com/?q=', android: 'geo:0,0?q=' })
     const latLng = `${lat},${lng}`
     const url = Platform.select({
         ios: `${scheme}${label}@${latLng}`,
@@ -409,7 +409,7 @@ function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, lab
         console.error('could not generate url')
         return
     }
-        
+    console.warn(url)
     Linking.openURL(url)
 }
 

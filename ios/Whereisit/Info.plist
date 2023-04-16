@@ -64,6 +64,11 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is required to scan and add tags.</string>
+	
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Use you location to show you where your items are in relation to you. </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Use you location to show you where your items are in relation to you. </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
@@ -83,6 +88,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

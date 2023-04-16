@@ -36,7 +36,7 @@ export class FirestoreBackend {
     public static async addItem(item: Item): Promise<RegisterTagResult> {
 
         // 1. Attempt to register tag associated with item
-        const registerTag = functions().httpsCallable('registerTag')
+        const registerTag = functions().httpsCallable('addItem')
         const result: RegisterTagResult = (await registerTag({ tagID: item.tagID, itemInfo:item })).data
 
         if ( ! result) {
