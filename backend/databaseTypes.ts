@@ -19,6 +19,7 @@ export interface Report {
     tagID: string
     fields: { [key in ReportFieldType]: ReportField }
     timeOfCreation: number
+    viewStatus: { [key: UserID]: ReportViewStatus }
 }
 
 export interface UserData {
@@ -182,6 +183,10 @@ export function isReport(obj: any): obj is Report {
         'tagID' in obj &&
         'timeOfCreation' in obj &&
         'fields' in obj && 
+        'viewStatus' in obj &&
+        Object.entries(obj.viewStatus).map(([id, status]) => (
+            typeof id === 'string' && ReportViewStatusValues.includes(status as any)
+        )).reduce((a, b) => a && b) &&
         Object.entries(obj.fields).map(([type, field]) => (
             type && (field as any).type && isReportField(field) && type === field.type
         )).reduce((a, b) => a && b)
@@ -190,7 +195,7 @@ export function isReport(obj: any): obj is Report {
 
 export function isReportField(obj: any): obj is ReportField {
 
-    if (obj == null || typeof obj !== 'object') {
+    if (obj == null || typeof obj != 'object') {
         return false
     }
 

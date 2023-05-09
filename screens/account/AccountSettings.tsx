@@ -17,7 +17,6 @@ export default function AccountSettings(props: AccountSettingsProps) {
 
     return (
         <ScreenBase style={{ alignItems: 'stretch' }}>
-            <BackButton />
             <Spacer size={Spacing.BigGap} />
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
@@ -44,6 +43,7 @@ export default function AccountSettings(props: AccountSettingsProps) {
                 }}>
                 <DeleteAccountForm onClose={() => setIsPresentingModal(false)}/>
             </Modal>
+            <BackButton />
         </ScreenBase>
     )
 }

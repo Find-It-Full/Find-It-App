@@ -21,13 +21,38 @@ import PrimaryActionButton from "../../components/PrimaryActionButton";
 import ItemDetailsForm from "../../components/items/ItemDetailsForm";
 import MarkAsLost from "../MarkAsLost";
 import { FirestoreBackend } from '../../backend/firestoreBackend';
-import { viewReport } from '../../reducers/userData';
+import { viewReport } from '../../reducers/reports';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
     const dispatch = useAppDispatch()
-    const item = useAppSelector((state) => state.items.items[props.route.params.item.itemID])
-    const reports = item ? Object.values(useAppSelector((state) => state.reports[item.itemID]) || { }) : []
+
+    useEffect(() => {
+        if ( ! props.route.params.item) {
+            console.error('Navigated to ItemDetails without an item')
+            props.navigation.goBack()
+        }
+    }, [props.route.params.item])
+
+    if ( ! props.route.params.item) {
+        return <EmptyItemDetails />
+    }
+
+    const itemID = props.route.params.item.itemID
+    const item = useAppSelector((state) => state.items.items[itemID])
+
+    useEffect(() => {
+        if ( ! item) {
+            console.log('Item has been deleted, navigating back to home')
+            props.navigation.goBack()
+        }
+    }, [item])
+
+    if ( ! item) {
+        return <EmptyItemDetails />
+    }
+
+    const reports = item ? Object.values(useAppSelector((state) => state.reports.reports[item.itemID]) || { }) : []
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
@@ -37,13 +62,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
-    
-    useEffect(() => {
-        if ( ! item) {
-            console.log('Item has been deleted, navigating back to home')
-            props.navigation.goBack()
-        }
-    }, [item])
 
     useEffect(() => {
         if ( ! item.isMissing) {
@@ -123,28 +141,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
             return
         }
 
-        dispatch(viewReport({ reportID: selectedReport.reportID }))
+        dispatch(viewReport({ reportID: selectedReport.reportID, itemID: itemID, userID: item.ownerID }))
     }, [selectedReport])
 
     const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
     const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
-
-    if ( ! item) {
-        return (
-            <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
-                <SightingMap 
-                    locations={null} 
-                    primaryLocation={null} 
-                    itemIcon={' '}
-                    selectReportAtIndex={() => { }} 
-                />
-                <BackButton />
-                <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
-                    
-                </View>
-            </View>
-        )
-    }
 
     return (
         <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
@@ -264,10 +265,27 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                                 setIsClearingSightings(false)
                                             }
                                         }
-                                    ])
+                                    ]
+                                )
                             }
                             else {
-                                dispatch(removeItem(item.itemID))
+                                Alert.alert(
+                                    'Do you want to remove this item?', 
+                                    'You cannot undo this action, but you can always reuse your tag',
+                                    [
+                                        {
+                                            text: 'Cancel'
+                                        },
+                                        { 
+                                            text: 'Remove',
+                                            style: 'destructive',
+                                            onPress: async () => {
+                                                dispatch(removeItem(item.itemID))
+                                                props.navigation.goBack()
+                                            }
+                                        }
+                                    ]
+                                )
                             }
                         }}
                         style={{ flex: 1 }}
@@ -356,6 +374,26 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 }}>
                 <MarkAsLost itemID={item.itemID} onClose={() => setIsPresentingMarkAsLostModal(false)}/>
             </Modal>
+        </View>
+    )
+}
+
+function EmptyItemDetails() {
+
+    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
+
+    return (
+        <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
+            <SightingMap 
+                locations={null} 
+                primaryLocation={null} 
+                itemIcon={' '}
+                selectReportAtIndex={() => { }} 
+            />
+            <BackButton />
+            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
+                
+            </View>
         </View>
     )
 }

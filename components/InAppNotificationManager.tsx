@@ -7,7 +7,7 @@ import InAppNotification from './InAppNotification'
 export default function InAppNotificationManager() {
 
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
-    const reportsPendingNotification = useAppSelector(state => state.userData.reportsPendingNotification)
+    const reportsPendingNotification = useAppSelector(state => state.reports.reportsPendingNotification)
     const reportsToDisplay = Object.values(reportsPendingNotification).sort((a, b) => a.timeOfCreation - b.timeOfCreation)
 
     if ( ! reportsToDisplay.length) {

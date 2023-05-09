@@ -72,7 +72,6 @@ export class FirestoreBackend {
     public static async setItemIsMissing(itemID: ItemID, isMissing: boolean, clearRecentReports: boolean) {
         const changeItemLostState = functions().httpsCallable('changeItemLostState')
         const result = (await changeItemLostState({ itemID, isMissing, shouldClearReports: clearRecentReports })).data
-
         return result
     }
 
@@ -115,11 +114,7 @@ export class FirestoreBackend {
                     return
                 }
 
-                if (snapshot.metadata.hasPendingWrites) {
-                    console.error('INVARIANT VIOLATION: reports cannot be generated locally')
-                } else {
-                    onNewReportData(snapshot.docChanges())
-                }
+                onNewReportData(snapshot.docChanges())
             },
             error: onError
         })
@@ -148,44 +143,14 @@ export class FirestoreBackend {
         })
     }
 
-    public static attachViewedReportsListener(onNewViewedReports: (snapshot: UserData) => void, onError: (error: Error) => void): () => void {
-
-        const userID = auth().currentUser?.uid
-
-        if ( ! userID) {
-            onError(new Error('Cannot retrieve viewed reports; user is not authenticated'))
-        }
-
-        const query = this.users().doc(userID)
-
-        console.log(`Retrieving viewed reports for ${userID}`)
-
-        return query.onSnapshot({
-            next: (snapshot) => {
-
-                if ( ! snapshot.data()) {
-                    return
-                }
-
-                const data = snapshot.data()
-
-                if ( ! isUserData(data)) {
-                    console.error('Got invalid user data from Firestore.')
-                    return
-                }
-
-                onNewViewedReports(data)
-            },
-            error: onError
-        })
-    }
-
     public static async setViewedReport(reportID: ReportID) {
 
         const userID = auth().currentUser?.uid
 
-        await this.users().doc(userID).set(
-            { viewedReports: { [reportID]: ReportViewStatus.SEEN }}, 
+        if ( ! userID) { return }
+
+        await this.reports().doc(reportID).set(
+            { viewStatus: { [userID]: ReportViewStatus.SEEN } }, 
             { merge: true }
         )
     }
@@ -194,8 +159,10 @@ export class FirestoreBackend {
 
         const userID = auth().currentUser?.uid
 
-        await this.users().doc(userID).set(
-            { viewedReports: { [reportID]: ReportViewStatus.NOTIFIED }}, 
+        if ( ! userID) { return }
+
+        await this.reports().doc(reportID).set(
+            { viewStatus: { [userID]: ReportViewStatus.NOTIFIED } }, 
             { merge: true }
         )
     }

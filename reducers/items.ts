@@ -1,14 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { Item, ItemID } from "../backend/databaseTypes"
+import { Item, ItemID, ReportID } from "../backend/databaseTypes"
 import { FirestoreBackend } from "../backend/firestoreBackend"
 import { RootState } from "../store"
 
 export interface ItemsData {
     items: { [itemID: string]: Item }
+    newReports: { [itemID: ItemID]: { [reportID: ReportID]: boolean } }
 }
 
 const initialState: ItemsData = {
-    items: {}
+    items: { },
+    newReports: { }
 }
 
 export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item): Promise<Item> => {
@@ -44,10 +46,7 @@ export const clearReports = createAsyncThunk('items/clearReports', async (props:
     const item = state.items.items[props.itemID]
     const isMissing = item.isMissing
 
-    const result = await FirestoreBackend.setItemIsMissing(props.itemID, isMissing, true)
-    if (result !== 'success') {
-        throw new Error(`Failed to set clear reports: ${result}`)
-    }
+    await FirestoreBackend.setItemIsMissing(props.itemID, isMissing, true)
 })
 
 export const fetchAllItems = createAsyncThunk('items/fetchAllItems', async (): Promise<Item[]> => {
@@ -75,6 +74,15 @@ const itemsSlice = createSlice({
         },
         clearItems(state, _) {
             state.items = { }
+        },
+        addNewReport(state, action: PayloadAction<{ itemID: ItemID, reportID: ReportID }>) {
+            state.newReports[action.payload.itemID] = {
+                ...state.newReports[action.payload.itemID],
+                [action.payload.reportID]: true
+            }
+        },
+        removeNewReport(state, action: PayloadAction<{ itemID: ItemID, reportID: ReportID }>) {
+            delete state.newReports[action.payload.itemID][action.payload.reportID]
         }
     },
     extraReducers: (builder) => {
@@ -108,5 +116,5 @@ const itemsSlice = createSlice({
     }
 })
 
-export const { directlyAddItem, deleteItem, updateItem, clearItems } = itemsSlice.actions
+export const { directlyAddItem, deleteItem, updateItem, clearItems, addNewReport, removeNewReport } = itemsSlice.actions
 export default itemsSlice.reducer

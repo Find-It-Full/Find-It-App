@@ -1,16 +1,16 @@
 import React, { createContext } from "react"
-import { deleteItem, directlyAddItem, updateItem } from "../reducers/items"
-import { addReportToItem, removeAllReportsFromItem, removeReportFromItem } from "../reducers/reports"
-import { notifyUserOfReport, setViewedReports } from "../reducers/userData"
+import { deleteItem, directlyAddItem, addNewReport, updateItem } from "../reducers/items"
+import { addReportToItem, changeReportViewStatus, removeAllReportsFromItem, removeReportFromItem } from "../reducers/reports"
+import { notifyUserOfReport } from "../reducers/reports"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { isReport, Item, ItemID, Report, ReportViewStatus, UserData } from "./databaseTypes"
 import { FirestoreBackend } from "./firestoreBackend"
 import { DocChanges } from "./appOnlyDatabaseTypes"
+import auth from '@react-native-firebase/auth'
 
 interface SubscriptionManagerInterface {
     subscribeToItemReports: (itemID: ItemID) => (() => void)
     subscribeToItems: () => (() => void)
-    subscribeToViewedReports: () => (() => void)
 }
 
 const SubscriptionManagerContext = createContext({ } as SubscriptionManagerInterface)
@@ -19,12 +19,10 @@ export { SubscriptionManagerContext }
 const SubscriptionManager = (props: { children?: React.ReactNode }) => {
 
     const dispatch = useAppDispatch()
-    const viewedReports = useAppSelector(state => state.userData.viewedReports)
-    const didFetchViewedReports = useAppSelector(state => state.userData.didFetchViewedReports)
 
     const subscribeToItemReports = (itemID: ItemID) => {
 
-        console.log(`Subscribing to reports for: ${itemID}; did fetch view state ${didFetchViewedReports}; viewed count ${Object.keys(viewedReports).length}`)
+        console.log(`Subscribing to reports for: ${itemID}`)
 
         const onNewReportData = (changes: DocChanges) => {
             console.log(`Got item report updates (${changes.length})...`)
@@ -38,19 +36,30 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
                     return
                 }
 
+                const userID = auth().currentUser?.uid
+
                 switch (change.type) {
                     case 'added':
                         console.log('<- Report is new, added.')
 
-                        if ( ! Object.keys(viewedReports).includes(data.reportID) || viewedReports[data.reportID] === ReportViewStatus.UNSEEN) {
+                        dispatch(addReportToItem(data))
+
+                        if (userID && data.viewStatus[userID] === ReportViewStatus.UNSEEN) {
                             console.log('Notifying of report')
                             dispatch(notifyUserOfReport({ itemID: data.itemID, reportID: data.reportID }))
                         }
 
-                        dispatch(addReportToItem(data))
+                        if (userID && data.viewStatus[userID] !== ReportViewStatus.SEEN) {
+                            dispatch(addNewReport({ itemID: data.itemID, reportID: data.reportID }))
+                        }
+
                         break
                     case 'modified':
-                        console.error('<- INVARIANT VIOLATION: reports cannot be modified.')
+                        if ( ! userID) {
+                            return
+                        }
+                        dispatch(changeReportViewStatus({ report: data, userID: userID }))
+                        console.log(`<- Report view status changed to ${data.viewStatus[userID]}`)
                         break
                     case 'removed':
                         console.log('<- Report was removed, removing.')
@@ -69,28 +78,6 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
         }
 
         const unsubscribe = FirestoreBackend.attachItemReportListener(itemID, onNewReportData, onError)
-
-        return unsubscribe
-    }
-
-    const subscribeToViewedReports = () => {
-        const onNewViewedReports = (snapshot: UserData) => {
-
-            if ( ! snapshot.viewedReports) {
-                dispatch(setViewedReports({ }))
-                return
-            }
-
-            console.log(`Got viewed reports: ${Object.keys(snapshot.viewedReports).length}`)
-
-            dispatch(setViewedReports(snapshot.viewedReports))
-        }
-
-        const onError = (error: Error) => {
-            console.error(`Error while attempting to retrieve viewed reports: ${error.message}`)
-        }
-
-        const unsubscribe = FirestoreBackend.attachViewedReportsListener(onNewViewedReports, onError)
 
         return unsubscribe
     }
@@ -125,8 +112,7 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
 
     const subscriptions: SubscriptionManagerInterface = {
         subscribeToItemReports: subscribeToItemReports,
-        subscribeToItems: subscribeToItems,
-        subscribeToViewedReports: subscribeToViewedReports
+        subscribeToItems: subscribeToItems
     }
 
     return (

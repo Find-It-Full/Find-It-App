@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, LayoutAnimation, Animated } from 'react-native';
-import { InAppNotificationPayload, setDidNotify } from '../reducers/userData';
+import { InAppNotificationPayload, setDidNotify } from '../reducers/reports';
 import { HomeProps } from '../screens/Navigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { Colors } from '../ui-base/colors';
