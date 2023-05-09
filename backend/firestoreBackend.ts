@@ -2,54 +2,35 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
-import { ChangeItemLostStateResult, DocChanges, isUserData, Item, ItemID, linkId, RegisterTagResult, Report, ReportID, ReportViewStatus, TagID, UserData } from "./databaseTypes"
+import { Collections, DocChanges, isUserData, Item, ItemID, linkId, RegisterTagResult, Report, ReportID, ReportViewStatus, TagID, UserData } from "./databaseTypes"
 import functions from "@react-native-firebase/functions"
-
-enum CollectionNames {
-    Users = 'users',
-    Items = 'items',
-    Reports = 'reports',
-    Tags = 'tags',
-    LinkId = "linkId"
-}
 
 export class FirestoreBackend {
     private static users() {
-        return firestore().collection(CollectionNames.Users)
+        return firestore().collection(Collections.Users)
     }
 
     private static items() {
-        return firestore().collection(CollectionNames.Items)
+        return firestore().collection(Collections.Items)
     }
 
     private static reports() {
-        return firestore().collection(CollectionNames.Reports)
+        return firestore().collection(Collections.Reports)
     }
 
     private static tags() {
-        return firestore().collection(CollectionNames.Tags)
+        return firestore().collection(Collections.Tags)
     }
+    
     private static tagList() {
-        return firestore().collection(CollectionNames.LinkId)
+        return firestore().collection(Collections.ReportableTagIDs)
     }
 
-    public static async addItem(item: Item): Promise<RegisterTagResult> {
+    public static async addItem(item: Item): Promise<void> {
 
         // 1. Attempt to register tag associated with item
         const registerTag = functions().httpsCallable('addItem')
-        const result: RegisterTagResult = (await registerTag({ tagID: item.tagID, itemInfo:item })).data
-
-        if ( ! result) {
-            return 'internal'
-        }
-
-        if (result !== 'success' ){ //&& result !== 'registered-to-caller') {
-            return result
-        }
-
-        console.log('Creating item...')
-
-        return "success"
+        await registerTag({ tagID: item.tagID, itemInfo:item })
 
     }
 
@@ -78,14 +59,14 @@ export class FirestoreBackend {
     public static async removeItem(itemID: ItemID) {
 
         const removeItem = functions().httpsCallable('removeItem')
-        const result: ChangeItemLostStateResult = (await removeItem({ itemID })).data
+        const result = (await removeItem({ itemID })).data
         console.log(result)
         return result
     }
 
     public static async setItemIsMissing(itemID: ItemID, isMissing: boolean, clearRecentReports: boolean) {
         const changeItemLostState = functions().httpsCallable('changeItemLostState')
-        const result: ChangeItemLostStateResult = (await changeItemLostState({ itemID, isMissing, shouldClearReports: clearRecentReports })).data
+        const result = (await changeItemLostState({ itemID, isMissing, shouldClearReports: clearRecentReports })).data
 
         return result
     }

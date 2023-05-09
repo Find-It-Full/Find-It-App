@@ -1,42 +1,18 @@
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore"
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
+
+/////////////////////////
+// DATABASE INTERFACES //
+/////////////////////////
 
 export interface Item {
-    itemID: ItemID
-    tagID: TagID
+    itemID: string
+    tagID: string
     name: string
     icon: string
-    reports: { [key: ReportID]: boolean }
-    isMissing: boolean
-}
-
-export interface messageDetails {
-    id: MessageID
-    message: string
-    timeOfSend: string
-    sender: string
-    conversationId: string
-}
-
-export interface conversation {
-    conservationId: string
-    messages: { [messageId: MessageID]: messageDetails }
-}
-
-export enum ReportFieldType {
-    EXACT_LOCATION = "EXACT_LOCATION",
-    MAP_LOCATION = "MAP_LOCATION",
-    MESSAGE = "MESSAGE",
-    CONTACT_INFORMATION = "CONTACT_INFORMATION",
-}
-export const ReportFieldTypeList = [
-    "EXACT_LOCATION",
-    "MAP_LOCATION",
-    "MESSAGE",
-    "CONTACT_INFORMATION",
-]
-
-interface ReportField {
-    type: ReportFieldType
+    reports: { [key: string]: boolean }
+    isMissing: boolean,
+    ownerID: string,
+    dateAdded: number
 }
 
 export interface Report {
@@ -47,8 +23,164 @@ export interface Report {
     timeOfCreation: number
 }
 
+export interface UserData {
+    items: { [key: ItemID]: boolean }
+    notificationTokens: string[]
+    viewedReports: { [key: ReportID]: ReportViewStatus }
+    userID: string
+}
+
+export interface linkId {
+    tagId: TagID
+    linkId: string
+    
+}
+
+export interface Tag {
+    tagID: string
+    isAssociatedWithItem: boolean
+    associatedItemID: string | null
+    link: string
+}
+
+/////////////////////////////
+// REPORT FIELD INTERFACES //
+/////////////////////////////
+
+export interface ReportField {
+    type: ReportFieldType
+}
+
+export interface ExactLocationReportField extends ReportField {
+    type: ReportFieldType.EXACT_LOCATION
+    latitude: number
+    longitude: number
+}
+
+export interface MapLocationReportField extends ReportField {
+    type: ReportFieldType.MAP_LOCATION
+    latitude: number
+    longitude: number
+}
+
+export interface MessageReportField extends ReportField {
+    type: ReportFieldType.MESSAGE
+    message: string
+}
+
+export interface ContactInformationReportField extends ReportField {
+    type: ReportFieldType.CONTACT_INFORMATION
+    contactInfo: number
+}
+
+//////////////////////////
+// REPORT FIELD CLASSES //
+//////////////////////////
+
+export abstract class ReportFieldBase {
+    protected _type: ReportFieldType
+
+    constructor(type: ReportFieldType) {
+        this._type = type
+    }
+
+    public get type(): ReportFieldType {
+        return this._type
+    }
+
+    public abstract toPlainObject(): any
+}
+
+class Location extends ReportFieldBase {
+    private _latitude: number
+    private _longitude: number
+
+    constructor(lat: number, lng: number, isExact: boolean) {
+        super(
+            isExact
+                ? ReportFieldType.EXACT_LOCATION
+                : ReportFieldType.MAP_LOCATION
+        )
+        this._latitude = lat
+        this._longitude = lng
+    }
+
+    public get longitude(): number {
+        return this._longitude
+    }
+
+    public get latitude(): number {
+        return this._latitude
+    }
+    public toPlainObject(): any {
+        return {
+            type: ReportFieldType.EXACT_LOCATION,
+            latitude: this.latitude,
+            longitude: this.longitude,
+        }
+    }
+}
+
+export class ExactLocation extends Location {
+    constructor(lat: number, lng: number) {
+        super(lat, lng, true)
+    }
+}
+
+export class MapLocation extends Location {
+    constructor(lat: number, lng: number) {
+        super(lat, lng, false)
+    }
+}
+
+export class Message extends ReportFieldBase {
+    private message: string
+
+    toPlainObject() {
+        return {
+            type: ReportFieldType.MESSAGE,
+            message: this.message,
+        }
+    }
+
+    constructor(msg: string) {
+        super(ReportFieldType.MESSAGE)
+        this.message = msg
+    }
+
+    public get _message(): string {
+        return this.message
+    }
+}
+
+export class ContactInformation extends ReportFieldBase {
+    private contactInfo: number
+
+    toPlainObject() {
+        return {
+            type: ReportFieldType.CONTACT_INFORMATION,
+            contactInfo: this.contactInfo,
+        }
+    }
+
+    constructor(contactInfo: number) {
+        super(ReportFieldType.CONTACT_INFORMATION)
+        this.contactInfo = contactInfo
+    }
+
+    public get message(): number {
+        return this.contactInfo
+    }
+}
+
+///////////////////
+// TYPE CHECKERS //
+///////////////////
+
 export function isReport(obj: any): obj is Report {
     return (
+        obj != null &&
+        typeof obj == 'object' && 
         'reportID' in obj &&
         'itemID' in obj &&
         'tagID' in obj &&
@@ -61,6 +193,11 @@ export function isReport(obj: any): obj is Report {
 }
 
 export function isReportField(obj: any): obj is ReportField {
+
+    if (obj == null || typeof obj == 'object') {
+        return false
+    }
+
     if ( ! obj.type) {
         return false
     }
@@ -83,76 +220,56 @@ export function isReportField(obj: any): obj is ReportField {
     }
 }
 
-export interface ExactLocationReportField extends ReportField {
-    type: ReportFieldType.EXACT_LOCATION
-    latitude: number
-    longitude: number
-}
-
 export function isExactLocation(obj: any): obj is ExactLocationReportField {
     return (
-        "type" in obj &&
+        obj != null &&
+        typeof obj == 'object' && 
+        'type' in obj &&
         obj.type === ReportFieldType.EXACT_LOCATION &&
-        "latitude" in obj &&
-        "longitude" in obj
+        'latitude' in obj &&
+        'longitude' in obj &&
+        typeof obj.latitude === 'number' &&
+        typeof obj.longitude === 'number'
     )
-}
-
-export interface MapLocationReportField extends ReportField {
-    type: ReportFieldType.MAP_LOCATION
-    latitude: number
-    longitude: number
 }
 
 export function isMapLocation(obj: any): obj is MapLocationReportField {
     return (
-        "type" in obj &&
+        obj != null &&
+        typeof obj == 'object' && 
+        'type' in obj &&
         obj.type === ReportFieldType.MAP_LOCATION &&
-        "latitude" in obj &&
-        "longitude" in obj
+        'latitude' in obj &&
+        'longitude' in obj &&
+        typeof obj.latitude === 'number' &&
+        typeof obj.longitude === 'number'
     )
-}
-
-export interface MessageReportField extends ReportField {
-    type: ReportFieldType.MESSAGE
-    message: string
 }
 
 export function isMessage(obj: any): obj is MessageReportField {
     return (
-        "type" in obj &&
+        obj != null &&
+        typeof obj == 'object' && 
+        'type' in obj &&
         obj.type === ReportFieldType.MESSAGE &&
-        "message" in obj
+        'message' in obj &&
+        typeof obj.message === 'string'
     )
 }
 
-export interface ContactInformationReportField extends ReportField {
-    type: ReportFieldType.CONTACT_INFORMATION
-    contactInfo: number
-}
-
 export function isContactInformation(obj: any): obj is ContactInformationReportField {
-    if(obj == undefined){
-        return false
-    }
     return (
         obj != null &&
-        "type" in obj &&
+        typeof obj == 'object' && 
+        'type' in obj &&
         obj.type === ReportFieldType.CONTACT_INFORMATION &&
-        "contactInfo" in obj &&
+        'contactInfo' in obj &&
         Number.isInteger(obj.contactInfo) &&
         obj.contactInfo.toString().length === 10
     )
 }
 
-export interface UserData {
-    items?: { [key: ItemID]: boolean }
-    tags?: { [key: TagID]: boolean }
-    notificationTokens?: string[]
-    viewedReports?: { [key: ReportID]: ReportViewStatus }
-}
-
-function isFirestoreSet(obj: any, valueType: "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" = 'boolean'): boolean {
+function isFirestoreSet(obj: any, valueType: 'string' | 'number' | 'bigint' | 'boolean' | 'symbol' | 'undefined' | 'object' | 'function' = 'boolean'): boolean {
 
     if (typeof obj !== 'object') {
         return false
@@ -223,10 +340,17 @@ export function isUserData(obj: any): obj is UserData {
     return true
 }
 
-export interface linkId {
-    tagId: TagID
-    linkId: string
-    
+/////////////////////
+// ENUMS AND TYPES //
+/////////////////////
+
+export enum Collections {
+    Items = 'items',
+    Tags = 'tags',
+    Reports = 'reports',
+    Users = 'users',
+    Links = 'links',
+    ReportableTagIDs = 'reportableTagIDs'
 }
 
 export type UserID = string
@@ -235,16 +359,10 @@ export type TagID = string
 export type ReportID = string
 export type URL = string
 export type MessageID = string
+
 export type DocChanges = FirebaseFirestoreTypes.DocumentChange<FirebaseFirestoreTypes.DocumentData>[]
 
 export type RegisterTagResult = 'no-such-tag' | 'internal' | 'registered-to-caller' | 'registered-to-other' | 'success'
-
-export type ChangeItemLostStateResult =
-    | "no-such-item"
-    | "not-authorized"
-    | "unauthenticated"
-    | "internal"
-    | "success"
 
 export enum ReportViewStatus {
     UNSEEN = 'unseen',
@@ -252,4 +370,22 @@ export enum ReportViewStatus {
     SEEN = 'seen'
 }
 
-const ReportViewStatusValues = [ReportViewStatus.UNSEEN, ReportViewStatus.NOTIFIED, ReportViewStatus.SEEN]
+const ReportViewStatusValues = [
+    ReportViewStatus.UNSEEN, 
+    ReportViewStatus.NOTIFIED, 
+    ReportViewStatus.SEEN
+]
+
+export enum ReportFieldType {
+    EXACT_LOCATION = 'EXACT_LOCATION',
+    MAP_LOCATION = 'MAP_LOCATION',
+    MESSAGE = 'MESSAGE',
+    CONTACT_INFORMATION = 'CONTACT_INFORMATION',
+}
+
+export const ReportFieldTypeList = [
+    'EXACT_LOCATION',
+    'MAP_LOCATION',
+    'MESSAGE',
+    'CONTACT_INFORMATION',
+]
