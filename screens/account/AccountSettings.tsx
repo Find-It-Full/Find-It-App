@@ -10,10 +10,13 @@ import { Spacing } from '../../ui-base/spacing'
 import { AccountSettingsProps } from '../Navigator'
 import DeleteAccountForm from './DeleteAccountForm'
 import auth from '@react-native-firebase/auth'
+import { useAppDispatch } from '../../store/hooks'
+import { signOut } from '../../reducers/userData'
 
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
+    const dispatch = useAppDispatch()
 
     return (
         <ScreenBase style={{ alignItems: 'stretch' }}>
@@ -21,7 +24,7 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon='􀱍' label='Log Out' onPress={() => auth().signOut()} />
+                <ActionButtonListItem icon='􀱍' label='Log Out' onPress={() => dispatch(signOut())} />
                 <ActionButtonListItem icon='􀈒' label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />

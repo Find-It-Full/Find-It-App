@@ -83,6 +83,10 @@ const reportsSlice = createSlice({
         removeAllReportsFromItem(state, action: PayloadAction<ItemID>) {
             state.reports[action.payload] = { }
         },
+        removeAllReports(state, _action: PayloadAction<undefined>) {
+            state.reports = { }
+            state.reportsPendingNotification = { }
+        },
         addInAppNotification(state, action: PayloadAction<{ payload: InAppNotificationPayload }>) {
             state.reportsPendingNotification[action.payload.payload.reportID] = action.payload.payload
         },
@@ -104,5 +108,5 @@ const reportsSlice = createSlice({
             })
 })
 
-export const { addReportToItem, removeReportFromItem, removeAllReportsFromItem, addInAppNotification, setDidNotify, changeReportViewStatus } = reportsSlice.actions
+export const { addReportToItem, removeReportFromItem, removeAllReportsFromItem, addInAppNotification, setDidNotify, changeReportViewStatus, removeAllReports } = reportsSlice.actions
 export default reportsSlice.reducer

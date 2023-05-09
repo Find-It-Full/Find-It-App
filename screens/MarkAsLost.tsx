@@ -27,6 +27,7 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
         try {
             await dispatch(setItemIsMissing(props.itemID))
         } catch(e) {
+            console.log('Failed to set item as missing')
             console.error(e)
         }
         setIsMarkingAsLost(false)

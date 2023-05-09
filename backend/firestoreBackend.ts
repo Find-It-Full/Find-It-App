@@ -85,6 +85,7 @@ export class FirestoreBackend {
         const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).get()).data() as UserData
     }
+
     public static async addNotificationToken(token: string) {
         const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).update({"notificationTokens": firestore.FieldValue.arrayUnion(token)}))
@@ -95,9 +96,8 @@ export class FirestoreBackend {
     }
 
     public static async deleteUser() {
-        const changeItemLostState = functions().httpsCallable('deleteAccount')
-        await changeItemLostState()
-        return true
+        const deleteAccount = functions().httpsCallable('deleteAccount')
+        await deleteAccount()
     }
 
     public static attachItemReportListener(
