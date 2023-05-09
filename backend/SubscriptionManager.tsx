@@ -3,8 +3,9 @@ import { deleteItem, directlyAddItem, updateItem } from "../reducers/items"
 import { addReportToItem, removeAllReportsFromItem, removeReportFromItem } from "../reducers/reports"
 import { notifyUserOfReport, setViewedReports } from "../reducers/userData"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
-import { DocChanges, isReport, Item, ItemID, Report, ReportViewStatus, UserData } from "./databaseTypes"
+import { isReport, Item, ItemID, Report, ReportViewStatus, UserData } from "./databaseTypes"
 import { FirestoreBackend } from "./firestoreBackend"
+import { DocChanges } from "./appOnlyDatabaseTypes"
 
 interface SubscriptionManagerInterface {
     subscribeToItemReports: (itemID: ItemID) => (() => void)
@@ -76,6 +77,7 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
         const onNewViewedReports = (snapshot: UserData) => {
 
             if ( ! snapshot.viewedReports) {
+                dispatch(setViewedReports({ }))
                 return
             }
 

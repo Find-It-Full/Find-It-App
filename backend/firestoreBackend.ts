@@ -2,7 +2,8 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
-import { Collections, DocChanges, isUserData, Item, ItemID, linkId, RegisterTagResult, Report, ReportID, ReportViewStatus, TagID, UserData } from "./databaseTypes"
+import { Collections, isUserData, Item, ItemID, Link, RegisterTagResult, Report, ReportID, ReportViewStatus, TagID, UserData } from "./databaseTypes"
+import { DocChanges } from "./appOnlyDatabaseTypes"
 import functions from "@react-native-firebase/functions"
 
 export class FirestoreBackend {
@@ -21,9 +22,13 @@ export class FirestoreBackend {
     private static tags() {
         return firestore().collection(Collections.Tags)
     }
-    
+
     private static tagList() {
         return firestore().collection(Collections.ReportableTagIDs)
+    }
+
+    private static links() {
+        return firestore().collection(Collections.Links)
     }
 
     public static async addItem(item: Item): Promise<void> {
@@ -81,14 +86,13 @@ export class FirestoreBackend {
         const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).get()).data() as UserData
     }
-    public static async addNotificationToken(token) {
+    public static async addNotificationToken(token: string) {
         const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).update({"notificationTokens": firestore.FieldValue.arrayUnion(token)}))
     }
 
-    public static async getTagId(linkId) {
-        console.log(linkId)
-        return (( (await this.tagList().doc(linkId).get()).data())as linkId).tagId
+    public static async getTagID(linkID: string) {
+        return (((await this.links().doc(linkID).get()).data()) as Link).tagID
     }
 
     public static async deleteUser() {

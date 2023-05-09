@@ -33,9 +33,11 @@ export default function Home(props: HomeProps) {
         console.log(`Attempting to fetch reports`)
 
         if ( ! didFetchViewedReports) {
-            console.warn(`View status has not been fetched.`)
-            // return //TODO LOOK AT THIS IDK WHY THIS WAS HERE
+            console.log(`View status has not been fetched.`)
+            return
         }
+
+        console.log('View status was fetched')
 
         const unsubscribeCallbacks: (() => void)[] = []
         

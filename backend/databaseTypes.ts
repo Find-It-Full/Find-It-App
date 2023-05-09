@@ -1,5 +1,3 @@
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
-
 /////////////////////////
 // DATABASE INTERFACES //
 /////////////////////////
@@ -30,17 +28,15 @@ export interface UserData {
     userID: string
 }
 
-export interface linkId {
-    tagId: TagID
-    linkId: string
-    
+export interface Link {
+    tagID: TagID
+    linkID: string
 }
 
 export interface Tag {
     tagID: string
     isAssociatedWithItem: boolean
     associatedItemID: string | null
-    link: string
 }
 
 /////////////////////////////
@@ -194,7 +190,7 @@ export function isReport(obj: any): obj is Report {
 
 export function isReportField(obj: any): obj is ReportField {
 
-    if (obj == null || typeof obj == 'object') {
+    if (obj == null || typeof obj !== 'object') {
         return false
     }
 
@@ -359,8 +355,6 @@ export type TagID = string
 export type ReportID = string
 export type URL = string
 export type MessageID = string
-
-export type DocChanges = FirebaseFirestoreTypes.DocumentChange<FirebaseFirestoreTypes.DocumentData>[]
 
 export type RegisterTagResult = 'no-such-tag' | 'internal' | 'registered-to-caller' | 'registered-to-other' | 'success'
 

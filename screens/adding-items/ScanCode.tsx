@@ -21,20 +21,13 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     async function onSuccess(data: BarCodeReadEvent) {
         console.log(`Scanned QR code with data: ${data.data}`)
         try {
-           
-            
             const url = data.data
             const pathSegments = url.split('/')
 
-            // if (pathSegments.length !== 5) {
-            //     throw new Error()
-            // }
-
             const id = pathSegments[(pathSegments.length)-1]
-            //Add loading icon 
-            const tagID = await FirestoreBackend.getTagId(id)
+            console.log(id)
+            const tagID = await FirestoreBackend.getTagID(id)
             
-
             navigation.navigate('EnterItemDetails', { tagID: tagID })
         } catch (e) {
             console.log(`Read invalid URL: ${e}`)
