@@ -36,7 +36,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const windowWidth = useWindowDimensions().width
     const scrollRef = useRef<ScrollView>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
-    const [isChangingLostState, setIsChangingLostState] = useState(false)
+    const [isChangingLostState, setIsChangingLostState] = useState<'none' | 'set-lost' | 'set-found'>('none')
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
@@ -44,10 +44,48 @@ export default function ItemDetails(props: ItemDetailsProps) {
     reports.sort((a, b) => a.timeOfCreation - b.timeOfCreation)
 
     useEffect(() => {
-        if ( ! item.isMissing) {
-            setIsChangingLostState(false)
+
+        // Handles independent changes to lost state
+
+        if (isClearingSightings) {
+            return
+        }
+        
+        if (item.isMissing && isChangingLostState === 'set-lost') {
+            setIsChangingLostState('none')
+            setIsPresentingMarkAsLostModal(false)
+        }
+
+        if ( ! item.isMissing && isChangingLostState === 'set-found') {
+            setIsChangingLostState('none')
         }
     }, [item.isMissing])
+
+    useEffect(() => {
+
+        // Handles independent sight clearings
+
+        if (isChangingLostState === 'set-found') {
+            return
+        }
+
+        if (reports.length === 0 && isClearingSightings) {
+            setIsClearingSightings(false)
+        }
+    }, [reports.length])
+
+    useEffect(() => {
+
+        // Handles the combined set-found and sight clearing
+
+        if (isChangingLostState === 'set-found' && isClearingSightings) {
+            if ( ! item.isMissing && reports.length === 0) {
+                setIsChangingLostState('none')
+                setIsClearingSightings(false)
+            }
+        }
+
+    }, [item.isMissing, reports.length])
 
     useEffect(() => {
         if ( ! selectedReport && reports.length) {
@@ -57,18 +95,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
             setSelectedReport(null)
         }
     }, [reports])
-
-    useEffect(() => {
-        if (reports.length === 0 && isClearingSightings) {
-            setIsClearingSightings(false)
-        }
-    }, [reports.length])
-
-    useEffect(() => {
-        if (isChangingLostState) {
-            setIsChangingLostState(false)
-        }
-    }, [item.isMissing])
 
     const onEditSubmit = async (name: string, icon: string) => {
         await dispatch(editItemDetails({ name, icon, itemID: item.itemID }))
@@ -137,29 +163,40 @@ export default function ItemDetails(props: ItemDetailsProps) {
     }, [selectedReport])
 
     const handleChangeLostState = () => {
+
+        // If the item isn't missing, we're setting it as lost, hand over control to the modal
         if ( ! item.isMissing) {
+            setIsChangingLostState('set-lost')
             setIsPresentingMarkAsLostModal(true)
             return
         }
 
-        setIsChangingLostState(true)
+        // Else, we're setting it as found
+        setIsChangingLostState('set-found')
 
-        const changeLostState = async (clearRecentReports: boolean) => {
+        const handleSetItemIsFound = async (clearRecentReports: boolean) => {
+
+            if (clearRecentReports) {
+                setIsClearingSightings(true)
+            }
+
             const result = await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports }))
 
             // If the action fails, we need to disable loading immediately.
             // Else, we wait for the effect to happen to disable loading to
             // prevent flicker.
             if (result.meta.requestStatus === 'rejected') {
-                setIsChangingLostState(false)
+                setIsChangingLostState('none')
             }
         }
 
+        // If there are no reports, we can set the item as found immediately
         if (reports.length === 0) {
-            changeLostState(false)
+            handleSetItemIsFound(false)
             return
         }
 
+        // Else, we need to ask whether to clear old sightings
         Alert.alert(
             `Great!`,
             `Do you want to clear this item's old sightings?`,
@@ -167,11 +204,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 {
                     text: 'Yes',
                     style: 'destructive',
-                    onPress: () => changeLostState(true)
+                    onPress: () => handleSetItemIsFound(true)
                 },
                 {
                     text: 'No',
-                    onPress: () => changeLostState(false)
+                    onPress: () => handleSetItemIsFound(false)
                 }
             ]
         )
@@ -250,7 +287,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
                         icon={item.isMissing ? '􀇻' : '􀇿'}
                         textSyle={{ color: item.isMissing ? Colors.White : Colors.Red }}
-                        isLoading={isChangingLostState}
+                        isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
                     />
                     <PrimaryActionButton
@@ -290,7 +327,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                     }
                                 </ScrollView>
                                 {
-                                    isClearingSightings ? 
+                                    isClearingSightings && isChangingLostState === 'none' ? 
                                         <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -10.5 }, { translateY: -10.5 }], justifyContent: 'center' }}>
                                             <ActivityIndicator size={'small'} />
                                         </View>
@@ -352,7 +389,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 onRequestClose={() => {
                     setIsPresentingMarkAsLostModal(false)
                 }}>
-                <MarkAsLost itemID={item.itemID} onClose={() => setIsPresentingMarkAsLostModal(false)}/>
+                <MarkAsLost itemID={item.itemID} forceClose={() => setIsPresentingMarkAsLostModal(false)} />
             </Modal>
         </View>
     )

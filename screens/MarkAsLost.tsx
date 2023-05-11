@@ -14,7 +14,7 @@ import { setItemIsMissing } from '../reducers/items'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { FirestoreBackend } from '../backend/firestoreBackend'
 
-export default function MarkAsLost(props: { itemID: string, onClose: () => void }) {
+export default function MarkAsLost(props: { itemID: string, forceClose: () => void }) {
 
     const appState = useRef(AppState.currentState)
     const dispatch = useAppDispatch()
@@ -24,14 +24,13 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
 
     const setIsMissing = async () => {
         setIsMarkingAsLost(true)
-        try {
-            await dispatch(setItemIsMissing(props.itemID))
-        } catch(e) {
-            console.log('Failed to set item as missing')
-            console.error(e)
+
+        const result = await dispatch(setItemIsMissing(props.itemID))
+
+        // If the operation failed, we can leave the modal open but we need to stop loading
+        if (result.meta.requestStatus === 'rejected') {
+            setIsMarkingAsLost(false)
         }
-        setIsMarkingAsLost(false)
-        props.onClose()
     }
 
     const requestNotificationPermission = async () => {
@@ -78,13 +77,13 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
     }, [])
 
     return (
-        <ModalFormScreenBase closeModal={props.onClose}>
+        <ModalFormScreenBase closeModal={props.forceClose}>
             <Text style={TextStyles.h2}>Set as Lost</Text>
             <Spacer size={Spacing.BigGap} />
             <Text style={TextStyles.p}>When you set this item as lost, you'll get notified whenever someone spots it.</Text>
             <Spacer size={Spacing.BigGap} />
             <VerticallyCenteringRow style={{ marginBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding) }}>
-                <CancelButton label='Cancel' onPress={props.onClose} disabled={isMarkingAsLost} />
+                <CancelButton label='Cancel' onPress={props.forceClose} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
             </VerticallyCenteringRow>

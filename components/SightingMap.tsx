@@ -32,7 +32,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                 }
             })
             .catch((error) => {
-                console.error(`Failed to fetch IP region, ${error}`)
+                console.log(`Failed to fetch IP region, ${error}`)
             })
         }
     }, [props.locations])
