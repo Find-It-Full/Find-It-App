@@ -79,9 +79,9 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
 
     return (
         <ModalFormScreenBase closeModal={props.onClose}>
-            <Text style={TextStyles.h2}>Mark As Lost</Text>
+            <Text style={TextStyles.h2}>Set as Lost</Text>
             <Spacer size={Spacing.BigGap} />
-            <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
+            <Text style={TextStyles.p}>When you set this item as lost, you'll get notified whenever someone spots it.</Text>
             <Spacer size={Spacing.BigGap} />
             <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
                 <CancelButton label='Cancel' onPress={props.onClose} disabled={isMarkingAsLost} />

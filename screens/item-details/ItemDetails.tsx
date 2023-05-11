@@ -162,9 +162,9 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 </View>
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
-                        label={item.isMissing ? 'Found It' : 'Mark as Lost'}
+                        label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
                         icon={item.isMissing ? '􀇻' : '􀇿'}
-                        textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
+                        textSyle={{ color: item.isMissing ? Colors.White : Colors.Red }}
                         isLoading={isChangingLostState}
                         onPress={() => {
 
@@ -223,7 +223,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 }
                             }, {
                                 actionKey: 'edit_item_details',
-                                actionTitle: 'Edit',
+                                actionTitle: 'Edit Item',
                                 icon: {
                                     type: 'IMAGE_SYSTEM',
                                     imageValue: {
@@ -232,7 +232,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 }
                             }, {
                                 actionKey: 'delete_item',
-                                actionTitle: 'Remove',
+                                actionTitle: 'Remove Item',
                                 menuAttributes: ['destructive'],
                                 icon: {
                                     type: 'IMAGE_SYSTEM',
@@ -339,8 +339,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             >
                                 {
                                     item.isMissing ? 
-                                        'Nobody has spotted this item yet.' : 
-                                        `Nobody has spotted this item yet. If you want to be notified when it's spotted, mark it as lost.`
+                                        `Nobody has spotted this item yet. You'll be notified when it's spotted.` : 
+                                        `Nobody has spotted this item yet. If you want to be notified when it's spotted, set it as lost.`
                                 }
                                 
                             </Text>
