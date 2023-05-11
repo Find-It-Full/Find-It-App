@@ -4,18 +4,14 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { useAppSelector } from '../store/hooks'
 import InAppReportNotification from './InAppReportNotification'
 import InAppErrorNotification, { InAppErrorNotificationType } from './InAppNoInternetNotification'
-import { resetMiscErrorNotification, resetNoInternetNotification } from '../reducers/items'
 
-export default function InAppNotificationManager() {
+export default function InAppNotificationManager(props: { shouldShowNoInternetError: boolean, shouldShowMiscError: boolean, resetNoInternetError: () => void, resetMiscError: () => void }) {
 
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
     const reportsPendingNotification = useAppSelector(state => state.reports.reportsPendingNotification)
     const reportsToDisplay = Object.values(reportsPendingNotification).sort((a, b) => a.timeOfCreation - b.timeOfCreation)
 
-    const shouldShowNoInternetError = useAppSelector(state => state.items.notifyOfNoInternet)
-    const shouldShowMiscError = useAppSelector(state => state.items.notifyOfMiscError)
-
-    if ( ! reportsToDisplay.length && ! shouldShowMiscError && ! shouldShowNoInternetError) {
+    if ( ! reportsToDisplay.length && ! props.shouldShowMiscError && ! props.shouldShowNoInternetError) {
         return null
     }
 
@@ -27,14 +23,14 @@ export default function InAppNotificationManager() {
                 ) 
             }
             {
-                shouldShowNoInternetError ?
-                    <InAppErrorNotification type={InAppErrorNotificationType.NO_INTERNET} resetAction={resetNoInternetNotification} />
+                props.shouldShowNoInternetError ?
+                    <InAppErrorNotification type={InAppErrorNotificationType.NO_INTERNET} resetAction={props.resetNoInternetError} />
                     :
                     null
             }
             {
-                shouldShowMiscError ?
-                    <InAppErrorNotification type={InAppErrorNotificationType.MISC_ERROR} resetAction={resetMiscErrorNotification} />
+                props.shouldShowMiscError ?
+                    <InAppErrorNotification type={InAppErrorNotificationType.MISC_ERROR} resetAction={props.resetMiscError} />
                     :
                     null
             }

@@ -13,14 +13,14 @@ export enum InAppErrorNotificationType {
     MISC_ERROR = 'misc-error'
 }
 
-export default function InAppErrorNotification(props: { type: InAppErrorNotificationType, resetAction: ActionCreatorWithOptionalPayload<any, any> }) {
+export default function InAppErrorNotification(props: { type: InAppErrorNotificationType, resetAction: () => void }) {
 
     const [shouldHide, setShouldHide] = useState(false)
     const dispatch = useAppDispatch()
     const message = props.type === InAppErrorNotificationType.NO_INTERNET ? `Connection failed! Please try again.` : `An error occurred! Please try again.`
 
     const onHide = () => {
-        dispatch(props.resetAction())
+        props.resetAction()
     }
 
     return (

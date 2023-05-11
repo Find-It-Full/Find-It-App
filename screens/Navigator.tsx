@@ -12,6 +12,8 @@ import MarkAsLost from './MarkAsLost'
 import EmailSignIn from './account/EmailSignIn'
 import CreateAccount from './account/CreateAccount'
 import InAppNotificationManager from '../components/InAppNotificationManager'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { resetMiscErrorNotification, resetNoInternetNotification } from '../reducers/items'
 
 export type RootStackParamList = {
     Home: {itemGoTo:string}
@@ -38,10 +40,19 @@ export type CreateAccountProps = NativeStackScreenProps<RootStackParamList, 'Cre
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
-
-
-
 export default function Navigator(props: { isAuthenticated: boolean }) {
+
+    const dispatch = useAppDispatch()
+    const shouldShowMiscError = useAppSelector(state => state.items.notifyOfMiscError)
+    const shouldShowNoInternetError = useAppSelector(state => state.items.notifyOfNoInternet)
+
+    const resetNoInternetError = () => {
+        dispatch(resetNoInternetNotification())
+    }
+
+    const resetMiscError = () => {
+        dispatch(resetMiscErrorNotification())
+    }
 
     const initialScreen = props.isAuthenticated ? "Home" : "SignIn"
 
@@ -74,7 +85,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                     )
                 }
             </RootStack.Navigator>
-            <InAppNotificationManager />
+            <InAppNotificationManager shouldShowMiscError={shouldShowMiscError} shouldShowNoInternetError={shouldShowNoInternetError} resetMiscError={resetMiscError} resetNoInternetError={resetNoInternetError} />
         </NavigationContainer>
     )
 }
