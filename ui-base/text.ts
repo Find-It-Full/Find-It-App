@@ -41,7 +41,7 @@ export namespace TextStyles {
         fontFamily: 'SFPro-Regular',
         fontSize: 14,
         color: Colors.TextColor,
-        opacity: 0.6
+        opacity: Colors.DisabledOpacity
     }
 
     export const b1: StyleProp<TextStyle> = {

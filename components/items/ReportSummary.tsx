@@ -53,7 +53,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
 
     const PhoneNumber = () => {
         if ( ! contactPhoneNumber) {
-            return <Text style={[TextStyles.p, { opacity: 0.6 }]}>No contact info provided</Text>
+            return <Text style={[TextStyles.p, { opacity: Colors.DisabledOpacity }]}>No contact info provided</Text>
         } else {
             return (
                 <>

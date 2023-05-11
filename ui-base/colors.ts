@@ -11,6 +11,7 @@ export namespace DarkModeColors {
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
     export const Red = PlatformColor('systemRed')
     export const Green = PlatformColor('systemGreen')
+    export const DisabledOpacity = 0.6
 }
 
 export namespace Colors {
@@ -24,4 +25,5 @@ export namespace Colors {
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
     export const Red = PlatformColor('systemRed')
     export const Green = PlatformColor('systemGreen')
+    export const DisabledOpacity = 0.75
 }

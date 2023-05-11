@@ -10,7 +10,7 @@ export default function BigButton(props: { label: string, onPress: () => void, d
 
     return (
         <TouchableOpacity 
-            style={[styles.buttonStyle, { opacity: disabled ? 0.6 : 1, flex: props.isInColumn ? 0 : 1 }]}
+            style={[styles.buttonStyle, { opacity: disabled ? Colors.DisabledOpacity : 1, flex: props.isInColumn ? 0 : 1 }]}
             onPress={props.onPress}
             disabled={disabled}
         >

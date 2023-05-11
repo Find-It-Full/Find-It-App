@@ -7,7 +7,7 @@ import { TextStyles } from '../ui-base/text'
 export default function CancelButton(props: { label: string, onPress: () => void, disabled?: boolean }) {
     return (
         <TouchableOpacity 
-            style={[styles.buttonStyle, { opacity: props.disabled ? 0.6 : 1 }]}
+            style={[styles.buttonStyle, { opacity: props.disabled ? Colors.DisabledOpacity : 1 }]}
             onPress={props.onPress}
 
         >
