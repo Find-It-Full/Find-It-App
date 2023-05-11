@@ -4,7 +4,7 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import SignIn from './account/SignIn'
 import AddItemFlowContainer from './adding-items/AddItemFlowContainer'
 import Home from './tabs/Home'
-import { Item, TagID } from '../backend/databaseTypes'
+import { Item, ItemID, TagID } from '../backend/databaseTypes'
 import ItemDetails from './item-details/ItemDetails'
 import EditItemFlowContainer from './editing-items/EditItemDetails'
 import AccountSettings from './account/AccountSettings'
@@ -15,7 +15,7 @@ import InAppNotificationManager from '../components/InAppNotificationManager'
 
 export type RootStackParamList = {
     Home: {itemGoTo:string}
-    ItemDetails: { item: Item }
+    ItemDetails: { itemID: ItemID }
     SignIn: undefined
     EmailSignIn: undefined
     EnterPassword: { email: string }

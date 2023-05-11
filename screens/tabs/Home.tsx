@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useContext, useEffect } from "react"
 import {
     Text,
@@ -17,13 +17,20 @@ import BigButton from "../../components/BigButton"
 import { useNavigation } from "@react-navigation/native";
 import messaging from '@react-native-firebase/messaging';
 import { setDidNotify } from '../../reducers/reports'
+import { fetchAllItems } from '../../reducers/items'
+import { ItemID, ReportID } from '../../backend/databaseTypes'
 
+interface RemoteNotificationPayload {
+    itemID: ItemID
+    reportID: ReportID
+}
 
 export default function Home(props: HomeProps) {
 
     const dispatch = useAppDispatch()
     const subscriptions = useContext(SubscriptionManagerContext)
     const items = useAppSelector(state => state.items.items)
+    const [incomingNotificationPayload, setIncomingNotificationPayload] = useState<RemoteNotificationPayload | null>(null)
 
     console.log(`Got item count ${Object.keys(items)}`)
     
@@ -48,20 +55,25 @@ export default function Home(props: HomeProps) {
     useEffect(() => {
         messaging().onNotificationOpenedApp(remoteMessage => {
             if (remoteMessage.data != null && remoteMessage.data.itemID != null && remoteMessage.data.reportID != null) {
-                dispatch(setDidNotify(remoteMessage.data.reportID))
-                props.navigation.navigate('ItemDetails', { item: items[remoteMessage.data.itemID] })
+                setIncomingNotificationPayload({ itemID: remoteMessage.data.itemID, reportID: remoteMessage.data.reportID })
             }
         })
 
         messaging().getInitialNotification().then(remoteMessage => {
             if (remoteMessage) {
                 if (remoteMessage.data != null && remoteMessage.data.itemID != null && remoteMessage.data.reportID != null) {
-                    dispatch(setDidNotify(remoteMessage.data.reportID))
-                    props.navigation.navigate('ItemDetails', { item: items[remoteMessage.data.itemID] })
+                    setIncomingNotificationPayload({ itemID: remoteMessage.data.itemID, reportID: remoteMessage.data.reportID })
                 }
             }
         })
     }, [])
+
+    useEffect(() => {
+        if (Object.keys(items).length > 0 && incomingNotificationPayload) {
+            dispatch(setDidNotify(incomingNotificationPayload.reportID))
+            props.navigation.navigate('ItemDetails', { itemID: incomingNotificationPayload.itemID })
+        }
+    }, [items, incomingNotificationPayload])
 
     return (
         <ScreenBase>

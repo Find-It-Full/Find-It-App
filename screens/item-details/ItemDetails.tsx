@@ -28,31 +28,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        if ( ! props.route.params.item) {
-            console.error('Navigated to ItemDetails without an item')
-            props.navigation.goBack()
-        }
-    }, [props.route.params.item])
-
-    if ( ! props.route.params.item) {
-        return <EmptyItemDetails />
-    }
-
-    const itemID = props.route.params.item.itemID
+    const itemID = props.route.params.itemID
     const item = useAppSelector((state) => state.items.items[itemID])
-
-    useEffect(() => {
-        if ( ! item) {
-            console.log('Item has been deleted, navigating back to home')
-            props.navigation.goBack()
-        }
-    }, [item])
-
-    if ( ! item) {
-        return <EmptyItemDetails />
-    }
-
     const reports = item ? Object.values(useAppSelector((state) => state.reports.reports[item.itemID]) || { }) : []
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
@@ -199,7 +176,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     }
 
     const handleRequestDirections = () => {
-        if ( ! selectedReport || ! selectedReport.location) {
+        if ( ! selectedReport || ! selectedReport.location || ! item) {
             return
         }
         openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
@@ -248,6 +225,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
     const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
+
+    if ( ! item) {
+        return <EmptyItemDetails />
+    }
 
     return (
         <View style={{ padding: 0, paddingBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding), backgroundColor: Colors.Background, flex: 1 }}>

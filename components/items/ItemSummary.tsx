@@ -20,7 +20,7 @@ export default function ItemSummary(props: Item) {
         <ActionCard style={{ flexGrow: 1, padding: Spacing.Gap, marginBottom: Spacing.Gap }}>
             <TouchableOpacity
                 onPress={() => {
-                    navigation.navigate('ItemDetails', { item: props })
+                    navigation.navigate('ItemDetails', { itemID: props.itemID })
                 }}
             >
                 <VerticallyCenteringRow>
