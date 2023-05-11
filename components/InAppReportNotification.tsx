@@ -20,7 +20,7 @@ export default function InAppReportNotification(props: { payload: InAppNotificat
     const hideAndNavigate = () => {
         setShouldHide(true)
         dispatch(setDidNotify(props.payload.reportID))
-        navigation.navigate('ItemDetails', { item: item })
+        navigation.navigate('ItemDetails', { itemID: item.itemID })
     }
 
     const onAutoHide = () => {

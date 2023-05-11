@@ -3,7 +3,8 @@ import { View } from 'react-native'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { useAppSelector } from '../store/hooks'
 import InAppReportNotification from './InAppReportNotification'
-import InAppNoInternetNotification from './InAppNoInternetNotification'
+import InAppErrorNotification, { InAppErrorNotificationType } from './InAppNoInternetNotification'
+import { resetMiscErrorNotification, resetNoInternetNotification } from '../reducers/items'
 
 export default function InAppNotificationManager() {
 
@@ -27,7 +28,13 @@ export default function InAppNotificationManager() {
             }
             {
                 shouldShowNoInternetError ?
-                    <InAppNoInternetNotification />
+                    <InAppErrorNotification type={InAppErrorNotificationType.NO_INTERNET} resetAction={resetNoInternetNotification} />
+                    :
+                    null
+            }
+            {
+                shouldShowMiscError ?
+                    <InAppErrorNotification type={InAppErrorNotificationType.MISC_ERROR} resetAction={resetMiscErrorNotification} />
                     :
                     null
             }

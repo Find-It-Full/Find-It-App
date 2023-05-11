@@ -6,15 +6,21 @@ import { Panel } from '../ui-base/containers';
 import { Spacing } from '../ui-base/spacing';
 import { TextStyles } from '../ui-base/text';
 import InAppNotification from './InAppNotification';
-import { resetNoInternetNotification } from '../reducers/items';
+import { ActionCreatorWithOptionalPayload } from '@reduxjs/toolkit';
 
-export default function InAppNoInternetNotification(props) {
+export enum InAppErrorNotificationType {
+    NO_INTERNET = 'no-internet',
+    MISC_ERROR = 'misc-error'
+}
+
+export default function InAppErrorNotification(props: { type: InAppErrorNotificationType, resetAction: ActionCreatorWithOptionalPayload<any, any> }) {
 
     const [shouldHide, setShouldHide] = useState(false)
     const dispatch = useAppDispatch()
+    const message = props.type === InAppErrorNotificationType.NO_INTERNET ? `Connection failed! Please try again.` : `An error occurred! Please try again.`
 
     const onHide = () => {
-        dispatch(resetNoInternetNotification())
+        dispatch(props.resetAction())
     }
 
     return (
@@ -28,7 +34,7 @@ export default function InAppNoInternetNotification(props) {
                     shadowOffset: { width: 0, height: 3 } }}
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={TextStyles.h4}>{`Connection failed! Please try again`}</Text>
+                        <Text style={TextStyles.h4}>{message}</Text>
                     </View>
                 </Panel>
             </TouchableOpacity>

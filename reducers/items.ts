@@ -100,6 +100,9 @@ const itemsSlice = createSlice({
         resetNoInternetNotification(state, _: PayloadAction<undefined>) {
             state.notifyOfNoInternet = false
         },
+        resetMiscErrorNotification(state, _: PayloadAction<undefined>) {
+            state.notifyOfMiscError = false
+        },
         handleExternalError(state, action: PayloadAction<SerializedError>) {
             handleError(state, action.payload)
         }
@@ -141,5 +144,5 @@ const itemsSlice = createSlice({
     }
 })
 
-export const { directlyAddItem, deleteItem, updateItem, clearItems, addNewReport, removeNewReport, resetNoInternetNotification, handleExternalError } = itemsSlice.actions
+export const { directlyAddItem, deleteItem, updateItem, clearItems, addNewReport, removeNewReport, resetNoInternetNotification, resetMiscErrorNotification, handleExternalError } = itemsSlice.actions
 export default itemsSlice.reducer
