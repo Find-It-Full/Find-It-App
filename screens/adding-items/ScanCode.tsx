@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState } from "react"
 import { Text, Button, TouchableOpacity, View, Linking, Alert } from "react-native"
 import { ScanCodeProps } from "./AddItemFlowContainer"
-import { check, PERMISSIONS, RESULTS } from "react-native-permissions"
+import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions"
 import QRCodeScanner from "react-native-qrcode-scanner"
 import { BarCodeReadEvent } from "react-native-camera"
 import { Spacing } from "../../ui-base/spacing"
@@ -38,21 +38,49 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     async function checkForCameraPermission() {
         console.log("Checking camera permissions...")
 
-        const result = await check(PERMISSIONS.IOS.CAMERA)
-        console.log(`Got result: ${result}`)
-        if (result == RESULTS.GRANTED) {
+        const checkResult = await check(PERMISSIONS.IOS.CAMERA)
+        console.log(`Got result: ${checkResult}`)
+
+        switch (checkResult) {
+            case RESULTS.BLOCKED:
+                // The user has denied usage; handled elsewhere
+                return
+            case RESULTS.DENIED:
+                // Camera is available, need to request permissions
+                break
+            case RESULTS.GRANTED:
+            case RESULTS.LIMITED:
+                setCameraAllowed(true)
+                return
+            case RESULTS.UNAVAILABLE:
+                Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
+                return
+        }
+
+        console.log('Requesting camera permissions...')
+        const requestResult = await request(PERMISSIONS.IOS.CAMERA)
+        console.log(`Got result ${requestResult}`)
+        if (requestResult === RESULTS.GRANTED) {
             setCameraAllowed(true)
         }
 
-        const resultAndroid = await check(PERMISSIONS.ANDROID.CAMERA)
-        if (resultAndroid == RESULTS.GRANTED) {
-            setCameraAllowed(true)
-        }
+        // TODO: handle Android permissions
+        // const checkResultAndroid = await check(PERMISSIONS.ANDROID.CAMERA)
+        // if (checkResultAndroid === RESULTS.UNAVAILABLE) {
+        //     Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
+        //     setDidCheckForCameraPermission(true)
+        //     return
+        // }
 
-        setDidCheckForCameraPermission(true)
+        // const requestResultAndroid = await request(PERMISSIONS.ANDROID.CAMERA)
+
+        // if (requestResultAndroid === RESULTS.GRANTED) {
+        //     setCameraAllowed(true)
+        // }
     }
 
     async function checkForPriorCameraDenial() {
+        console.log('Checking for prior denial.')
         try {
             const didDeny = await AsyncStorage.getItem('didDenyCameraPermissions')
             if (didDeny !== null) {
@@ -76,29 +104,14 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     }
 
     useEffect(() => {
-        checkForCameraPermission()
-    }, [cameraAllowed, didCheckForCameraPermission])
+        checkForCameraPermission().then(() => setDidCheckForCameraPermission(true))
+    }, [])
 
     useEffect(() => {
         if (didCheckForCameraPermission && ! cameraAllowed) {
             checkForPriorCameraDenial()
         }
     }, [cameraAllowed, didCheckForCameraPermission])
-
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //        onSuccess({
-    //            data: "https://gobilabsllc.page.link/TC1ExH5Xzv9Bd8S8A",
-    //            type: "aztec",
-    //            bounds: {
-    //                width: 0,
-    //                height: 0,
-    //                origin: []
-    //            },
-    //            image: ""
-    //        })
-    //     }, 1000)
-    // }, [])
 
     return (
         <View style={{ height: '100%', backgroundColor: 'black' }}>
