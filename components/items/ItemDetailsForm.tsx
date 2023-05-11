@@ -59,7 +59,7 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                     }}
                 />
             </View>
-            <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
+            <VerticallyCenteringRow style={{ marginBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding) }}>
                 {
                     props.currentValues ? 
                         <>

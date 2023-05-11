@@ -8,7 +8,7 @@ export namespace Colors {
     export const PanelColor = '#1D1D1D'
     export const ButtonColor = '#2C2C2C'
     export const ItemBorder = 'rgba(255, 255, 255, 0.1)'
-    export const ModalBackground = 'rgba(255, 255, 255, 0.2)'
+    export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
     export const Red = PlatformColor('systemRed')
     export const Green = PlatformColor('systemGreen')
 }

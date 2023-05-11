@@ -83,7 +83,7 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
             <Spacer size={Spacing.BigGap} />
             <Text style={TextStyles.p}>When you set this item as lost, you'll get notified whenever someone spots it.</Text>
             <Spacer size={Spacing.BigGap} />
-            <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
+            <VerticallyCenteringRow style={{ marginBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding) }}>
                 <CancelButton label='Cancel' onPress={props.onClose} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />

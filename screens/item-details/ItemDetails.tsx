@@ -250,7 +250,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
 
     return (
-        <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
+        <View style={{ padding: 0, paddingBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding), backgroundColor: Colors.Background, flex: 1 }}>
             <SightingMap 
                 locations={locations} 
                 primaryLocation={selectedReport ? selectedReport.location : null} 
@@ -332,7 +332,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         </> :
                         <>
                             <Text 
-                                style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.BigGap, textAlign: 'center' }]}
+                                style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding * 3, marginTop: Spacing.BigGap, textAlign: 'center' }]}
                             >
                                 {
                                     item.isMissing ? 
