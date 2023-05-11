@@ -17,11 +17,8 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
         try {
             await dispatch(addNewItem({
                 tagID,
-                itemID: '',
                 name,
-                icon,
-                isMissing: false,
-                reports: { }
+                icon
             }))
 
             navigation.navigate('Home')

@@ -31,11 +31,11 @@ export class FirestoreBackend {
         return firestore().collection(Collections.Links)
     }
 
-    public static async addItem(item: Item): Promise<void> {
+    public static async addItem(item: { name: string, icon: string, tagID: string }): Promise<void> {
 
         // 1. Attempt to register tag associated with item
-        const registerTag = functions().httpsCallable('addItem')
-        await registerTag({ tagID: item.tagID, itemInfo:item })
+        const addItem = functions().httpsCallable('addItem')
+        await addItem({ tagID: item.tagID, itemInfo:item })
 
     }
 

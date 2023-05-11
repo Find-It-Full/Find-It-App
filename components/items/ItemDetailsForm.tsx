@@ -24,7 +24,6 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
     const [name, setName] = useState(props.currentValues?.name ?? '')
     const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
 
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
@@ -41,9 +40,14 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
 
     return (
         <>
-            <View style={{ justifyContent: 'center', flex: props.currentValues ? 0 : 1 }}>
-                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                {/* <Text style={[TextStyles.p2, { marginVertical: Spacing.Gap }]}>{`ID: ${tagID}`}</Text> */}
+            <View style={{  flex: props.currentValues ? 0 : 1 }}>
+                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
+                {   
+                    props.currentValues ?
+                        null
+                        :
+                        <Text style={[TextStyles.p2, { marginBottom: Spacing.Gap }]}>{`What sort of item is this?`}</Text>
+                }
                 <TextField
                     placeholder='Name'
                     value={name}
@@ -59,7 +63,7 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                     }}
                 />
             </View>
-            <VerticallyCenteringRow style={{ marginBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding) }}>
+            <VerticallyCenteringRow>
                 {
                     props.currentValues ? 
                         <>

@@ -16,7 +16,6 @@ import { deleteUser } from '../../reducers/userData'
 
 export default function DeleteAccountForm(props: { onClose: () => void }) {
 
-    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const dispatch = useAppDispatch()
     const [isDeletingAccount, setIsDeletingAccount] = React.useState(false)
     const [confirmationText, setConfirmationText] = React.useState('')
@@ -54,7 +53,7 @@ export default function DeleteAccountForm(props: { onClose: () => void }) {
                 onChangeText={setConfirmationText}
             />
             <Spacer size={Spacing.Gap} />
-            <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
+            <VerticallyCenteringRow>
                 <CancelButton label='Cancel' onPress={props.onClose} disabled={isDeletingAccount} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Delete Account' onPress={onDelete} isLoading={isDeletingAccount} disabled={ ! canDelete} />

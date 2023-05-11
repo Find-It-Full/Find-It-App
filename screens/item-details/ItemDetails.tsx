@@ -390,7 +390,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 onRequestClose={() => {
                     setIsPresentingMarkAsLostModal(false)
                 }}>
-                <MarkAsLost itemID={item.itemID} forceClose={() => setIsPresentingMarkAsLostModal(false)} />
+                <MarkAsLost itemID={item.itemID} forceClose={() => {
+                    setIsPresentingMarkAsLostModal(false)
+                    setIsChangingLostState('none')
+                }} />
             </Modal>
         </View>
     )

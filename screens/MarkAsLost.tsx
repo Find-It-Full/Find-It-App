@@ -18,7 +18,6 @@ export default function MarkAsLost(props: { itemID: string, forceClose: () => vo
 
     const appState = useRef(AppState.currentState)
     const dispatch = useAppDispatch()
-    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const [isMarkingAsLost, setIsMarkingAsLost] = useState(false)
     const [didGoToSettings, setDidGoToSettings] = useState(false)
 
@@ -82,7 +81,7 @@ export default function MarkAsLost(props: { itemID: string, forceClose: () => vo
             <Spacer size={Spacing.BigGap} />
             <Text style={TextStyles.p}>When you set this item as lost, you'll get notified whenever someone spots it.</Text>
             <Spacer size={Spacing.BigGap} />
-            <VerticallyCenteringRow style={{ marginBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding) }}>
+            <VerticallyCenteringRow>
                 <CancelButton label='Cancel' onPress={props.forceClose} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />

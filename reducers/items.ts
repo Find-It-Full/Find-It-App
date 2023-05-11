@@ -17,11 +17,11 @@ const initialState: ItemsData = {
     notifyOfMiscError: false
 }
 
-export const addNewItem = createAsyncThunk('items/addNewItem', async (item: Item): Promise<Item> => {
-    item.icon = item.icon.trim()
-    item.name = item.name.trim()
-    await FirestoreBackend.addItem(item)
-    return item
+export const addNewItem = createAsyncThunk('items/addNewItem', async (itemInfo: { name: string, icon: string, tagID: string }): Promise<{ name: string, icon: string, tagID: string }> => {
+    itemInfo.icon = itemInfo.icon.trim()
+    itemInfo.name = itemInfo.name.trim()
+    await FirestoreBackend.addItem(itemInfo)
+    return itemInfo
 })
 
 export const editItemDetails = createAsyncThunk('items/editItemDetails', async (item: { name: string, icon: string, itemID: string }): Promise<void> => {
