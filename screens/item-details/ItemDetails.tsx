@@ -41,6 +41,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
 
+    reports.sort((a, b) => a.timeOfCreation - b.timeOfCreation)
+
     useEffect(() => {
         if ( ! item.isMissing) {
             setIsChangingLostState(false)
