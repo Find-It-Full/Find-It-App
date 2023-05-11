@@ -29,7 +29,7 @@ export default function InAppErrorNotification(props: { type: InAppErrorNotifica
                 <Panel style={{ 
                     backgroundColor: Colors.ButtonColor,
                     padding: Spacing.ThreeQuartersGap, 
-                    shadowColor: Colors.Black, 
+                    shadowColor: Colors.White, 
                     shadowOpacity: 0.7, 
                     shadowOffset: { width: 0, height: 3 } }}
                 >

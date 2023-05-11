@@ -2,12 +2,12 @@ import React from "react"
 import { useState, useRef, useEffect } from "react"
 import { Text } from "react-native"
 import MapView, { LatLng, Region, Marker, Polyline } from "react-native-maps"
-import { Colors } from "react-native/Libraries/NewAppScreen"
 import { Platform, Linking } from "react-native/types"
 import { Report, ExactLocationReportField, isExactLocation } from "../backend/databaseTypes"
 import { ItemIconContainer } from "../ui-base/containers"
 import { Shadows } from "../ui-base/shadows"
 import { TextStyles } from "../ui-base/text"
+import { Colors } from "../ui-base/colors"
 
 export default function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLng | null, itemIcon: string, selectReportAtIndex: (index: number) => void }) {
 
@@ -95,7 +95,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
     }
 
     return (
-        <MapView style={{ flexGrow: 1 }} ref={mapRef}>
+        <MapView style={{ flexGrow: 1 }} ref={mapRef} >
             <MapContents />
         </MapView>
     )

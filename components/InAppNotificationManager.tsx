@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { useAppSelector } from '../store/hooks'
 import InAppReportNotification from './InAppReportNotification'
-import InAppErrorNotification, { InAppErrorNotificationType } from './InAppNoInternetNotification'
+import InAppErrorNotification, { InAppErrorNotificationType } from './InAppErrorNotification'
 
 export default function InAppNotificationManager(props: { shouldShowNoInternetError: boolean, shouldShowMiscError: boolean, resetNoInternetError: () => void, resetMiscError: () => void }) {
 

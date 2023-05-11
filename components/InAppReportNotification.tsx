@@ -30,7 +30,7 @@ export default function InAppReportNotification(props: { payload: InAppNotificat
     return (
         <InAppNotification shouldHide={shouldHide} onHide={onAutoHide}>
             <TouchableOpacity activeOpacity={1} onPress={hideAndNavigate}>
-                <Panel style={{ padding: Spacing.ThreeQuartersGap, shadowColor: Colors.Black, shadowOpacity: 0.7, shadowOffset: { width: 0, height: 3 } }}>
+                <Panel style={{ padding: Spacing.ThreeQuartersGap, shadowColor: Colors.White, shadowOpacity: 0.7, shadowOffset: { width: 0, height: 3 } }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                         <Text style={TextStyles.h4}>{`􀋚   ${item.name} was spotted`}</Text>
                     </View>

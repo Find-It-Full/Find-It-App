@@ -187,6 +187,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             // prevent flicker.
             if (result.meta.requestStatus === 'rejected') {
                 setIsChangingLostState('none')
+                setIsClearingSightings(false)
             }
         }
 
@@ -328,7 +329,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 </ScrollView>
                                 {
                                     isClearingSightings && isChangingLostState === 'none' ? 
-                                        <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -10.5 }, { translateY: -10.5 }], justifyContent: 'center' }}>
+                                        <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -21 }, { translateY: -21 }], justifyContent: 'center' }}>
                                             <ActivityIndicator size={'small'} />
                                         </View>
                                         :
