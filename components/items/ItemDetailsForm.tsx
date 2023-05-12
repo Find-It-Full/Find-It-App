@@ -6,7 +6,6 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
-    TouchableWithoutFeedback,
     Keyboard
 } from "react-native"
 import { FormScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
@@ -46,12 +45,6 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
                 <>
                     <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                    {   
-                        props.currentValues ?
-                            null
-                            :
-                            <Text style={[TextStyles.p2, { marginBottom: Spacing.Gap }]}>{`What sort of item is this?`}</Text>
-                    }
                     <TextField
                         placeholder='Name'
                         value={name}

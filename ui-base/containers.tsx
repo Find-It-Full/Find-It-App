@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Keyboard, KeyboardAvoidingView, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native" 
+import { Keyboard, KeyboardAvoidingView, TouchableOpacity, View, ViewStyle } from "react-native" 
 import { SafeAreaInsetsContext, SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"
 import { Spacer } from "./layouts"
@@ -46,9 +46,7 @@ export function FormScreenBase(props: { children?: React.ReactNode, style?: View
             alignItems: 'stretch',
             ...props.style 
         }}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                {props.children}
-            </TouchableWithoutFeedback>
+            {props.children}
         </KeyboardAvoidingView>
     )
 }
@@ -82,9 +80,7 @@ export function ModalFormScreenBase(props: { children?: React.ReactNode, style?:
                 ...props.style 
             }}>
                 <View style={{ marginBottom: !!(safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding }}>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                        {props.children}
-                    </TouchableWithoutFeedback>
+                    {props.children}
                 </View>
             </KeyboardAvoidingView>
         </View>
