@@ -31,10 +31,26 @@ export namespace TextStyles {
         color: Colors.TextColor
     }
 
+    export const h5: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Bold',
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: Colors.TextColor,
+        fontVariant: ['small-caps']
+    }
+
     export const p: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
         fontSize: 14,
         color: Colors.TextColor
+    }
+
+    export const emoji: StyleProp<TextStyle> = {
+        fontSize: 24
+    }
+
+    export const smallEmoji: StyleProp<TextStyle> = {
+        fontSize: 18
     }
 
     export const p2: StyleProp<TextStyle> = {

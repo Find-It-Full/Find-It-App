@@ -12,6 +12,7 @@ import { Provider } from "react-redux"
 import SubscriptionManager from "./backend/SubscriptionManager"
 import InAppNotificationManager from './components/InAppNotificationManager'
 import type {PropsWithChildren} from 'react';
+import EmojiManager from './backend/EmojiManager'
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -66,7 +67,9 @@ export default function App() {
                 <SafeAreaProvider>
                     <DynamicLinkDelegate>
                         <SubscriptionManager>
-                            <Navigator isAuthenticated={isAuthenticated} />
+                            <EmojiManager>
+                                <Navigator isAuthenticated={isAuthenticated} />
+                            </EmojiManager>
                         </SubscriptionManager>
                     </DynamicLinkDelegate>
                 </SafeAreaProvider>

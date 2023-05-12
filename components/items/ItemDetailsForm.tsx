@@ -5,7 +5,9 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    View
+    View,
+    TouchableWithoutFeedback,
+    Keyboard
 } from "react-native"
 import { FormScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
 import { Spacing } from "../../ui-base/spacing"
@@ -18,6 +20,7 @@ import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
+import EmojiPicker from '../../screens/EmojiPicker'
 
 export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
 
@@ -40,28 +43,24 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
 
     return (
         <>
-            <View style={{  flex: props.currentValues ? 0 : 1 }}>
-                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                {   
-                    props.currentValues ?
-                        null
-                        :
-                        <Text style={[TextStyles.p2, { marginBottom: Spacing.Gap }]}>{`What sort of item is this?`}</Text>
-                }
-                <TextField
-                    placeholder='Name'
-                    value={name}
-                    onChangeText={(text) => {
-                        setName(text)
-                    }}
-                />
-                <TextField
-                    placeholder='Icon'
-                    value={icon}
-                    onChangeText={(text) => {
-                        setIcon(text)
-                    }}
-                />
+            <View style={{ flex: props.currentValues ? 0 : 1 }}>
+                <>
+                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
+                    {   
+                        props.currentValues ?
+                            null
+                            :
+                            <Text style={[TextStyles.p2, { marginBottom: Spacing.Gap }]}>{`What sort of item is this?`}</Text>
+                    }
+                    <TextField
+                        placeholder='Name'
+                        value={name}
+                        onChangeText={(text) => {
+                            setName(text)
+                        }}
+                    />
+                    <EmojiPicker currentValue={icon} onSelect={setIcon} />               
+                </>
             </View>
             <VerticallyCenteringRow>
                 {
