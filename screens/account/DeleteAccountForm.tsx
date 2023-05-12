@@ -10,9 +10,13 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import TextField from '../../components/TextField'
 import { FirestoreBackend } from '../../backend/firestoreBackend'
 import auth from '@react-native-firebase/auth'
+import { useAppDispatch } from '../../store/hooks'
+import { handleExternalError } from '../../reducers/items'
+import { deleteUser } from '../../reducers/userData'
+
 export default function DeleteAccountForm(props: { onClose: () => void }) {
 
-    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
+    const dispatch = useAppDispatch()
     const [isDeletingAccount, setIsDeletingAccount] = React.useState(false)
     const [confirmationText, setConfirmationText] = React.useState('')
 
@@ -22,12 +26,13 @@ export default function DeleteAccountForm(props: { onClose: () => void }) {
         setCanDelete(confirmationText.trim().toLowerCase() === 'delete')
     }, [confirmationText])
 
-    const deleteAccount = async () => {
+    const onDelete = async () => {
         setIsDeletingAccount(true)
-        //ADDED
-        await FirestoreBackend.deleteUser()
-        auth().signOut()
-        setTimeout(() => { setIsDeletingAccount(false); props.onClose() }, 1000)
+
+        await dispatch(deleteUser())
+
+        setIsDeletingAccount(false)
+        props.onClose()
     }
 
     return (
@@ -43,15 +48,15 @@ export default function DeleteAccountForm(props: { onClose: () => void }) {
             </Text>
             <Spacer size={Spacing.HalfGap} />
             <TextField
-                placeholder='Confirmation'
+                placeholder='Delete'
                 value={confirmationText}
                 onChangeText={setConfirmationText}
             />
             <Spacer size={Spacing.Gap} />
-            <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
+            <VerticallyCenteringRow>
                 <CancelButton label='Cancel' onPress={props.onClose} disabled={isDeletingAccount} />
                 <Spacer size={Spacing.BigGap} />
-                <BigButton label='Delete Account' onPress={deleteAccount} isLoading={isDeletingAccount} disabled={ ! canDelete} />
+                <BigButton label='Delete Account' onPress={onDelete} isLoading={isDeletingAccount} disabled={ ! canDelete} />
             </VerticallyCenteringRow>
         </ModalFormScreenBase>
     )

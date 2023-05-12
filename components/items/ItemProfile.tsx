@@ -10,7 +10,7 @@ export default function ItemProfile({ icon, name }: Item) {
     return (
         <VerticallyCenteringGroupedRow style={{ justifyContent: 'flex-start' }}>
             <ItemIconContainer>
-                <Text style={TextStyles.h3}>{icon}</Text>
+                <Text style={TextStyles.smallEmoji}>{icon}</Text>
             </ItemIconContainer>
             <Spacer size={Spacing.Gap} />
             <Text style={TextStyles.h2}>{name}</Text>

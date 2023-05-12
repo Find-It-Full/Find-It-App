@@ -13,36 +13,34 @@ import { SignInProps } from "../Navigator"
 import { Spacer } from "../../ui-base/layouts"
 import { Spacing } from "../../ui-base/spacing"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
+import BigPrimaryActionButton from "../../components/BigPrimaryActionButton"
+import InAppNotificationManager from "../../components/InAppNotificationManager"
 
 
 export default function SignIn(props: SignInProps) {
-    const [error, setError] = useState(false)
-    const [sent, setSent] = useState(false)
+    const [showMiscError, setShowMiscError] = useState(false)
+    const [showNoInternetError, setShowNoInternetError] = useState(false)
 
     async function onAppleButtonPress() {
         // Start the sign-in request
         const appleAuthRequestResponse = await appleAuth.performRequest({
-          requestedOperation: appleAuth.Operation.LOGIN,
-          requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+            requestedOperation: appleAuth.Operation.LOGIN,
+            requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
         });
-      
+
         // Ensure Apple returned a user identityToken
-        if (!appleAuthRequestResponse.identityToken) {
-          throw new Error('Apple Sign-In failed - no identify token returned');
+        if ( ! appleAuthRequestResponse.identityToken) {
+            setShowMiscError(true)
+            return
         }
-      
+
         // Create a Firebase credential from the response
         const { identityToken, nonce } = appleAuthRequestResponse;
         const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
-      
+
         // Sign the user in with the credential
         return auth().signInWithCredential(appleCredential);
-      }
-
-
-
-
-
+    }
 
     async function onGoogleSignIn() {
         // Check if your device supports Google Play
@@ -64,62 +62,59 @@ export default function SignIn(props: SignInProps) {
             "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
     })
 
-    async function emailSignIn(email: string, password: string) {
-
-        try {
-            await auth().createUserWithEmailAndPassword(email, password)
-        }
-        catch (err) {
-            setError(true)
-        }
-
-    }
-
-    async function forgotPassword(email: string) {
-
-        try {
-            await auth().sendPasswordResetEmail(email)
-            setSent(true)
-        }
-        catch (err) {
-            setError(true)
-        }
-
-    }
-
     return (
-        <ScreenBase>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={TextStyles.h1}>FoundHound</Text>
-            </View>
-            {/* <EmailAndPasswordInput error={error} sent={sent} forgotPassword={async (email) => { await forgotPassword(email) }} onSubmit={async (email, password) => { await emailSignIn(email, password) }} /> */}
-            <BigButton
-                label='Continue with Email'
-                onPress={() =>
-                    props.navigation.navigate('EmailSignIn')
-                }
-                isInColumn
+        <>
+            <ScreenBase>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={TextStyles.h1}>FoundHound</Text>
+                </View>
+                {/* <EmailAndPasswordInput error={error} sent={sent} forgotPassword={async (email) => { await forgotPassword(email) }} onSubmit={async (email, password) => { await emailSignIn(email, password) }} /> */}
+                {/* <BigButton
+                    label='Continue with Email'
+                    onPress={() =>
+                        props.navigation.navigate('EmailSignIn')
+                    }
+                    isInColumn
+                /> */}
+                <Spacer size={Spacing.Gap} />
+                <BigPrimaryActionButton
+                    icon='􀀑'
+                    label='Continue with Google'
+                    onPress={() =>
+                        onGoogleSignIn().then(() =>
+                            console.log("Signed in with Google!")
+                        ).catch((e) => {
+                            if (e.code !== '-5') {
+                                setShowMiscError(true)
+                            }
+                        })
+                    }
+                    isInColumn
+                />
+                <Spacer size={Spacing.Gap} />
+                <BigPrimaryActionButton
+                    icon='􀣺'
+                    label='Continue with Apple'
+                    onPress={() =>
+                        onAppleButtonPress().then(() =>
+                            console.log("Signed in with Apple!")
+                        ).catch((e) => {
+                            if (e.code === '1000') {
+                                setShowNoInternetError(true)
+                            } else if (e.code !== '1001') {
+                                setShowMiscError(true)
+                            }
+                        })
+                    }
+                    isInColumn
+                />
+            </ScreenBase>
+            <InAppNotificationManager 
+                shouldShowMiscError={showMiscError}
+                shouldShowNoInternetError={showNoInternetError}
+                resetMiscError={() => setShowMiscError(false)}
+                resetNoInternetError={() => setShowNoInternetError(false)}
             />
-            <Spacer size={Spacing.Gap} />
-            <BigButton
-                label='Continue with Google'
-                onPress={() =>
-                    onGoogleSignIn().then(() =>
-                        console.log("Signed in with Google!")
-                    )
-                }
-                isInColumn
-            />
-            <Spacer size={Spacing.Gap} />
-            <BigButton
-                label='Continue with Apple'
-                onPress={() =>
-                    onAppleButtonPress().then(() =>
-                        console.log("Signed in with Apple!")
-                    )
-                }
-                isInColumn
-            />
-        </ScreenBase>
+        </>
     )
 }

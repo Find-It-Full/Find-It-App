@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useRef, useState } from "react";
-import { Alert, Linking, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
-import MapView, { Callout, LatLng, Marker, Polyline, Region } from "react-native-maps";
+import { ActivityIndicator, Alert, Linking, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { LatLng } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -10,46 +10,82 @@ import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
 import ReportSummary from "../../components/items/ReportSummary";
-import { ActionButton, ItemIconContainer, ModalFormScreenBase } from "../../ui-base/containers";
+import { ModalFormScreenBase } from "../../ui-base/containers";
 import { Colors } from "../../ui-base/colors";
 import ItemProfile from "../../components/items/ItemProfile";
-import { Shadows } from "../../ui-base/shadows";
 import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
-import { clearReports, editItemDetails, removeItem, setItemIsFound, setItemIsMissing } from "../../reducers/items";
+import { clearReports, editItemDetails, removeItem, setItemIsFound } from "../../reducers/items";
 import PrimaryActionButton from "../../components/PrimaryActionButton";
 import ItemDetailsForm from "../../components/items/ItemDetailsForm";
 import MarkAsLost from "../MarkAsLost";
-import { FirestoreBackend } from '../../backend/firestoreBackend';
-import { viewReport } from '../../reducers/userData';
+import { viewReport } from '../../reducers/reports';
+import SightingMap from '../../components/SightingMap';
+import IconButton from '../../components/IconButton';
+import { Radii } from '../../ui-base/radii';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
     const dispatch = useAppDispatch()
-    const item = useAppSelector((state) => state.items.items[props.route.params.item.itemID])
-    const reports = item ? Object.values(useAppSelector((state) => state.reports[item.itemID]) || { }) : []
+
+    const itemID = props.route.params.itemID
+    const item = useAppSelector((state) => state.items.items[itemID])
+    const reports = item ? Object.values(useAppSelector((state) => state.reports.reports[item.itemID]) || { }) : []
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
     const scrollRef = useRef<ScrollView>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
-    const [isChangingLostState, setIsChangingLostState] = useState(false)
+    const [isChangingLostState, setIsChangingLostState] = useState<'none' | 'set-lost' | 'set-found'>('none')
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingEditModal, setIsPresentingEditModal] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
-    
-    useEffect(() => {
-        if ( ! item) {
-            console.log('Item has been deleted, navigating back to home')
-            props.navigation.goBack()
-        }
-    }, [item])
+
+    reports.sort((a, b) => a.timeOfCreation - b.timeOfCreation)
 
     useEffect(() => {
-        if ( ! item.isMissing) {
-            setIsChangingLostState(false)
+
+        // Handles independent changes to lost state
+
+        if (isClearingSightings) {
+            return
+        }
+        
+        if (item.isMissing && isChangingLostState === 'set-lost') {
+            setIsChangingLostState('none')
+            setIsPresentingMarkAsLostModal(false)
+        }
+
+        if ( ! item.isMissing && isChangingLostState === 'set-found') {
+            setIsChangingLostState('none')
         }
     }, [item.isMissing])
+
+    useEffect(() => {
+
+        // Handles independent sight clearings
+
+        if (isChangingLostState === 'set-found') {
+            return
+        }
+
+        if (reports.length === 0 && isClearingSightings) {
+            setIsClearingSightings(false)
+        }
+    }, [reports.length])
+
+    useEffect(() => {
+
+        // Handles the combined set-found and sight clearing
+
+        if (isChangingLostState === 'set-found' && isClearingSightings) {
+            if ( ! item.isMissing && reports.length === 0) {
+                setIsChangingLostState('none')
+                setIsClearingSightings(false)
+            }
+        }
+
+    }, [item.isMissing, reports.length])
 
     useEffect(() => {
         if ( ! selectedReport && reports.length) {
@@ -123,31 +159,119 @@ export default function ItemDetails(props: ItemDetailsProps) {
             return
         }
 
-        dispatch(viewReport({ reportID: selectedReport.reportID }))
+        dispatch(viewReport({ reportID: selectedReport.reportID, itemID: itemID, userID: item.ownerID }))
     }, [selectedReport])
+
+    const handleChangeLostState = () => {
+
+        // If the item isn't missing, we're setting it as lost, hand over control to the modal
+        if ( ! item.isMissing) {
+            setIsChangingLostState('set-lost')
+            setIsPresentingMarkAsLostModal(true)
+            return
+        }
+
+        // Else, we're setting it as found
+        setIsChangingLostState('set-found')
+
+        const handleSetItemIsFound = async (clearRecentReports: boolean) => {
+
+            if (clearRecentReports) {
+                setIsClearingSightings(true)
+            }
+
+            const result = await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports }))
+
+            // If the action fails, we need to disable loading immediately.
+            // Else, we wait for the effect to happen to disable loading to
+            // prevent flicker.
+            if (result.meta.requestStatus === 'rejected') {
+                setIsChangingLostState('none')
+                setIsClearingSightings(false)
+            }
+        }
+
+        // If there are no reports, we can set the item as found immediately
+        if (reports.length === 0) {
+            handleSetItemIsFound(false)
+            return
+        }
+
+        // Else, we need to ask whether to clear old sightings
+        Alert.alert(
+            `Great!`,
+            `Do you want to clear this item's old sightings?`,
+            [
+                {
+                    text: 'Yes',
+                    style: 'destructive',
+                    onPress: () => handleSetItemIsFound(true)
+                },
+                {
+                    text: 'No',
+                    onPress: () => handleSetItemIsFound(false)
+                }
+            ]
+        )
+    }
+
+    const handleRequestDirections = () => {
+        if ( ! selectedReport || ! selectedReport.location || ! item) {
+            return
+        }
+        openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
+    }
+
+    const handleClearSightings = () => {
+        Alert.alert(
+            'Do you want to clear all sightings?',
+            'You cannot undo this action',
+            [
+                {
+                    text: 'Cancel'
+                },
+                {
+                    text: 'Clear',
+                    style: 'destructive',
+                    onPress: async () => {
+                        console.log('clearing')
+                        setIsClearingSightings(true)
+                        await dispatch(clearReports({ itemID: item.itemID }))
+                    }
+                }
+            ]
+        )
+    }
+
+    const handleRemoveItem = () => {
+        Alert.alert(
+            'Do you want to remove this item?',
+            'You cannot undo this action, but you can always reuse your tag',
+            [
+                {
+                    text: 'Cancel'
+                },
+                {
+                    text: 'Remove',
+                    style: 'destructive',
+                    onPress: async () => {
+                        dispatch(removeItem(item.itemID));
+                        props.navigation.goBack()
+                    }
+                }
+            ]
+        );
+    }
 
     const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
     const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
 
     if ( ! item) {
-        return (
-            <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
-                <SightingMap 
-                    locations={null} 
-                    primaryLocation={null} 
-                    itemIcon={' '}
-                    selectReportAtIndex={() => { }} 
-                />
-                <BackButton />
-                <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
-                    
-                </View>
-            </View>
-        )
+        return <EmptyItemDetails />
     }
 
     return (
-        <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
+        <View style={{ padding: 0, paddingBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding), backgroundColor: Colors.Background, flex: 1 }}>
             <SightingMap 
                 locations={locations} 
                 primaryLocation={selectedReport ? selectedReport.location : null} 
@@ -161,168 +285,80 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 </View>
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
-                        label={item.isMissing ? 'Found It' : 'Mark as Lost'}
+                        label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
                         icon={item.isMissing ? '􀇻' : '􀇿'}
-                        textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
-                        isLoading={isChangingLostState}
-                        onPress={() => {
-
-                            if ( ! item.isMissing) {
-                                setIsPresentingMarkAsLostModal(true)
-                                return
-                            }
-
-                            setIsChangingLostState(true)
-
-                            Alert.alert(
-                                `Great!`,
-                                `Do you want to clear this item's old sightings?`,
-                                [
-                                    {
-                                        text: 'Yes',
-                                        style: 'destructive',
-                                        onPress: async () => {
-                                            await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports: true }))
-                                            setIsChangingLostState(false)
-                                        }
-                                    },
-                                    {
-                                        text: 'No',
-                                        onPress: async () => {
-                                            await dispatch(setItemIsFound({ itemID: item.itemID, clearRecentReports: false }))
-                                        }
-                                    }
-                                ]
-                            )
-                        }}
+                        textSyle={{ color: item.isMissing ? Colors.White : Colors.Red }}
+                        isLoading={isChangingLostState !== 'none'}
+                        onPress={handleChangeLostState}
                     />
                     <PrimaryActionButton
                         label='Directions'
                         icon='􀙋'
                         disabled={ ! selectedReport || ! selectedReport.location}
-                        onPress={() => {
-                            if ( ! selectedReport || ! selectedReport.location) {
-                                return
-                            }
-                            openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
-                        }}
+                        onPress={handleRequestDirections}
                     />
-                    <ContextMenuButton
-                        menuConfig={{
-                            menuTitle: '',
-                            menuItems: [{
-                                actionKey: 'clear_sightings',
-                                actionTitle: 'Clear Sightings',
-                                menuAttributes: reports.length > 0 ? [] : ['disabled'],
-                                icon: {
-                                    type: 'IMAGE_SYSTEM',
-                                    imageValue: {
-                                        systemName: 'xmark.square',
-                                    },
-                                }
-                            }, {
-                                actionKey: 'edit_item_details',
-                                actionTitle: 'Edit',
-                                icon: {
-                                    type: 'IMAGE_SYSTEM',
-                                    imageValue: {
-                                        systemName: 'pencil',
-                                    },
-                                }
-                            }, {
-                                actionKey: 'delete_item',
-                                actionTitle: 'Remove',
-                                menuAttributes: ['destructive'],
-                                icon: {
-                                    type: 'IMAGE_SYSTEM',
-                                    imageValue: {
-                                        systemName: 'trash',
-                                    },
-                                }
-                            }]
-                        }}
-                        isMenuPrimaryAction={true}
-                        onPressMenuItem={({ nativeEvent }) => {
-                            if (nativeEvent.actionKey === 'edit_item_details') {
-                                setIsPresentingEditModal(true)
-                            }
-                            else if (nativeEvent.actionKey === 'clear_sightings') {
-                                Alert.alert(
-                                    'Do you want to clear all sightings?', 
-                                    'You cannot undo this action',
-                                    [
-                                        {
-                                            text: 'Cancel'
-                                        },
-                                        { 
-                                            text: 'Clear',
-                                            style: 'destructive',
-                                            onPress: async () => {
-                                                console.log('clearing')
-                                                setIsClearingSightings(true)
-                                                await dispatch(clearReports({ itemID: item.itemID }))
-                                                setIsClearingSightings(false)
-                                            }
-                                        }
-                                    ])
-                            }
-                            else {
-                                dispatch(removeItem(item.itemID))
-                            }
-                        }}
-                        style={{ flex: 1 }}
-                        enableContextMenu={isClearingSightings}
-                    >
-                        <PrimaryActionButton
-                            label='More'
-                            icon='􀍢'
-                            onPress={() => { }}
-                            isLoading={isClearingSightings}
-                        />
-                    </ContextMenuButton>
+                    <MoreButton handleRemoveItem={handleRemoveItem} presentEditModal={() => setIsPresentingEditModal(true)} />
                 </VerticallyCenteringRow>
                 {
                     selectedReport && reports.length > 0 ?
                         <>
-                            <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.BigGap }]}>Sightings</Text>
-                            <Text style={[TextStyles.p2, { marginLeft: Spacing.ScreenPadding, marginTop: Spacing.QuarterGap }]}>{`${reports.length} total`}</Text>
-                            <ScrollView 
-                                horizontal={true}
-                                pagingEnabled
-                                style={{ zIndex: 2, paddingVertical: Spacing.ThreeQuartersGap }}
-                                showsHorizontalScrollIndicator={false}
-                                onScroll={handleScroll}
-                                scrollEventThrottle={36}
-                                ref={scrollRef}
-                                onLayout={() => scrollRef.current?.scrollToEnd()}
-                            >
-                                {
-                                    reports.map((report) => 
-                                        <ReportSummary 
-                                            report={report} 
-                                            isSelected={selectedReport?.reportID} 
-                                            key={report.reportID}
-                                        />
-                                    )
-                                }
-                            </ScrollView>
-                            <VerticallyCenteringRow style={{ paddingHorizontal: Spacing.ScreenPadding }}>
-                                <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={ ! canScrollToPrev}>
-                                    <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : 0.6 }]}>􀆉 Previous</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={ ! canScrollToNext}>
-                                    <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : 0.6 }]}>Next 􀯻</Text>
-                                </TouchableOpacity>
+                            <VerticallyCenteringRow style={{ marginTop: Spacing.BigGap, paddingRight: Spacing.ScreenPadding }}>
+                                <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding }]}>Sightings</Text>
+                                <IconButton icon='􀈒' onPress={handleClearSightings} disabled={isClearingSightings} />
                             </VerticallyCenteringRow>
+                            <View style={{ position: 'relative' }}>
+                                <ScrollView 
+                                    horizontal={true}
+                                    pagingEnabled
+                                    style={{ zIndex: 2, paddingTop: Spacing.ThreeQuartersGap, paddingBottom: reports.length > 1 ? Spacing.ThreeQuartersGap : 0 }}
+                                    showsHorizontalScrollIndicator={false}
+                                    onScroll={handleScroll}
+                                    scrollEventThrottle={36}
+                                    ref={scrollRef}
+                                    onLayout={() => scrollRef.current?.scrollToEnd()}
+                                >
+                                    {
+                                        reports.map((report) => 
+                                            <ReportSummary 
+                                                report={report} 
+                                                isSelected={selectedReport?.reportID} 
+                                                key={report.reportID}
+                                            />
+                                        )
+                                    }
+                                </ScrollView>
+                                {
+                                    isClearingSightings && isChangingLostState === 'none' ? 
+                                        <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -21 }, { translateY: -21 }], justifyContent: 'center' }}>
+                                            <ActivityIndicator size={'small'} />
+                                        </View>
+                                        :
+                                        null
+                                }
+                            </View>
+                            {
+                                reports.length > 1 ?
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
+                                        <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={ ! canScrollToPrev} style={{ position: 'absolute', left: Spacing.ScreenPadding }}>
+                                            <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]}>􀆉 Previous</Text>
+                                        </TouchableOpacity>
+                                        <Text style={[TextStyles.p2, { alignSelf: 'center' }]}>{`${selectedReport.reportIndex + 1} / ${reports.length}`}</Text>
+                                        <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={ ! canScrollToNext} style={{ position: 'absolute', right: Spacing.ScreenPadding }}>
+                                            <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]}>Next 􀯻</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    :
+                                    null
+                            }
                         </> :
                         <>
                             <Text 
-                                style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.BigGap, textAlign: 'center' }]}
+                                style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding * 3, marginTop: Spacing.BigGap, textAlign: 'center' }]}
                             >
                                 {
                                     item.isMissing ? 
-                                        'Nobody has spotted this item yet.' : 
-                                        `Nobody has spotted this item yet. If you want to be notified when it's spotted, mark it as lost.`
+                                        `Nobody has spotted this item yet. You'll be notified when it's spotted.` : 
+                                        `Nobody has spotted this item yet. If you want to be notified when it's spotted, set it as lost.`
                                 }
                                 
                             </Text>
@@ -354,7 +390,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 onRequestClose={() => {
                     setIsPresentingMarkAsLostModal(false)
                 }}>
-                <MarkAsLost itemID={item.itemID} onClose={() => setIsPresentingMarkAsLostModal(false)}/>
+                <MarkAsLost itemID={item.itemID} forceClose={() => {
+                    setIsPresentingMarkAsLostModal(false)
+                    setIsChangingLostState('none')
+                }} />
             </Modal>
         </View>
     )
@@ -413,143 +452,66 @@ function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, lab
     Linking.openURL(url)
 }
 
-function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLng | null, itemIcon: string, selectReportAtIndex: (index: number) => void }) {
-
-    const defaultRegion = {
-        latitude: 38.648785,
-        longitude: -97.910629,
-        latitudeDelta: 65,
-        longitudeDelta: 65
-    }
-
-    const [region, setRegion] = useState<Region | null>(null)
-    const mapRef = useRef<MapView>(null)
-
-    useEffect(() => {
-        if (props.locations && props.primaryLocation) {
-            setRegion(determineReportRegion([props.primaryLocation]))
-        } else {
-            fetchIPRegion()
-            .then((newIPRegion) => {
-                if (newIPRegion && ! region) {
-                    setRegion(region)
+function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () => void }) {    
+    return <ContextMenuButton
+        menuConfig={{
+            menuTitle: '',
+            menuItems: [{
+                actionKey: 'edit_item_details',
+                actionTitle: 'Edit Item',
+                icon: {
+                    type: 'IMAGE_SYSTEM',
+                    imageValue: {
+                        systemName: 'pencil',
+                    },
                 }
-            })
-            .catch((error) => {
-                console.error(`Failed to fetch IP region, ${error}`)
-            })
-        }
-    }, [props.locations])
-
-    useEffect(() => {
-        mapRef.current?.animateToRegion((region != null && region.longitude !== 0) ? region : defaultRegion)
-    }, [region])
-
-    const MapContents = () => {
-
-        const primaryLocation = props.primaryLocation
-
-        if ( ! props.locations || ! primaryLocation) {
-            return null
-        }
-
-        if (props.locations.length === 1) {
-            return (
-                <Marker coordinate={primaryLocation} key={primaryLocation.latitude}>
-                    <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
-                        <Text style={TextStyles.h3}>{props.itemIcon}</Text>
-                    </ItemIconContainer>
-                </Marker>
-            )
-        }
-
-        return (
-            <>
-                <Polyline
-                    coordinates={props.locations}
-                    strokeColor={Colors.Background}
-                    strokeWidth={4}
-                    lineCap={'butt'}
-                    lineDashPattern={[5, 5]}
-                />
-                {
-                    props.locations.map((loc, index) => {
-                        if (loc.latitude === primaryLocation.latitude && loc.longitude === primaryLocation.longitude) {
-                            return null
-                        }
-                        return (
-                            <Marker 
-                                coordinate={loc} 
-                                key={loc.latitude + index} 
-                                zIndex={1} 
-                                tappable={true}
-                                onPress={() => props.selectReportAtIndex(index)}>
-                                <ItemIconContainer style={{ ...Shadows.SmallShadow, backgroundColor: Colors.Background, width: 42 / 2, height: 42 / 2 }} />
-                            </Marker>
-                        )
-                    })
+            }, {
+                actionKey: 'delete_item',
+                actionTitle: 'Remove Item',
+                menuAttributes: ['destructive'],
+                icon: {
+                    type: 'IMAGE_SYSTEM',
+                    imageValue: {
+                        systemName: 'trash',
+                    },
                 }
-                <Marker coordinate={primaryLocation} key={primaryLocation.latitude} zIndex={2}>
-                    <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
-                        <Text style={TextStyles.h3}>{props.itemIcon}</Text>
-                    </ItemIconContainer>
-                </Marker>
-            </>
-        )
-    }
+            }]
+        }}
+        isMenuPrimaryAction={true}
+        onPressMenuItem={({ nativeEvent }) => {
+            if (nativeEvent.actionKey === 'edit_item_details') {
+                props.presentEditModal()
+            }
+            else {
+                props.handleRemoveItem()
+            }
+        } }
+        style={{ flex: 1 }}
+    >
+        <PrimaryActionButton
+            label='More'
+            icon='􀍢'
+            onPress={() => { } }
+        />
+    </ContextMenuButton>
+}
+
+function EmptyItemDetails() {
+
+    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
 
     return (
-        <MapView style={{ flexGrow: 1 }} ref={mapRef}>
-            <MapContents />
-        </MapView>
+        <View style={{ padding: 0, paddingBottom: safeAreaInsets?.bottom, backgroundColor: Colors.Background, flex: 1 }}>
+            <SightingMap 
+                locations={null} 
+                primaryLocation={null} 
+                itemIcon={' '}
+                selectReportAtIndex={() => { }} 
+            />
+            <BackButton />
+            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
+                
+            </View>
+        </View>
     )
-}
-
-async function fetchIPRegion(): Promise<Region | null> {
-    const res = await fetch('https://geolocation-db.com/json/')
-    const data = await res.json()
-    if (data.latitude && data.longitude) {
-        return { 
-            latitude: data.latitude, 
-            longitude: data.longitude,
-            latitudeDelta: 0.025,
-            longitudeDelta: 0.025
-        }
-    }
-    return null
-}
-
-function determineReportRegion(locations: LatLng[]): Region {
-    let minLat = Number.MAX_VALUE
-    let maxLat = -Number.MAX_VALUE
-    let minLng = Number.MAX_VALUE
-    let maxLng = -Number.MAX_VALUE
-
-    for (const location of locations) {
-        if (location.latitude < minLat) {
-            minLat = location.latitude
-        }
-
-        if (location.latitude > maxLat) {
-            maxLat = location.latitude
-        }
-
-        if (location.longitude < minLng) {
-            minLng = location.longitude
-        }
-
-        if (location.longitude > maxLng) {
-            maxLng = location.longitude
-        }
-    }
-
-    const latitudeDelta = Math.max(Math.abs(maxLat - minLat) * 1.3, 0.01)
-    const longitudeDelta = Math.max(Math.abs(maxLng - minLng) * 1.3, 0.01)
-
-    return {
-        latitude: (minLat + maxLat) / 2.0,
-        longitude: (minLng + maxLng) / 2.0,
-        latitudeDelta,
-        longitudeDelta
-    }
 }

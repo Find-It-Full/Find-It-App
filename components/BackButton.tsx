@@ -1,6 +1,6 @@
 import { NavigationContext } from '@react-navigation/native'
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { Colors } from '../ui-base/colors'
 import { Radii } from '../ui-base/radii'

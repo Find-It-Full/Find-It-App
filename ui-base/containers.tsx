@@ -1,14 +1,24 @@
-import React from 'react'
-import { KeyboardAvoidingView, TouchableOpacity, View, ViewStyle } from "react-native" 
-import { SafeAreaView } from "react-native-safe-area-context"
+import React, { useContext } from 'react'
+import { Keyboard, KeyboardAvoidingView, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native" 
+import { SafeAreaInsetsContext, SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"
 import { Spacer } from "./layouts"
 import { Radii } from "./radii"
 import { Spacing } from "./spacing"
 
 export function ScreenBase(props: { children?: React.ReactNode, style?: ViewStyle }) {
+
+    const safeAreaInsets = useContext(SafeAreaInsetsContext)
+
     return (
-        <SafeAreaView style={{ padding: Spacing.ScreenPadding, backgroundColor: Colors.Background, flex: 1, ...props.style }}>
+        <SafeAreaView style={{ 
+            paddingHorizontal: Spacing.ScreenPadding, 
+            paddingTop: Spacing.ScreenPadding,
+            paddingBottom: safeAreaInsets?.bottom ? 0 : Spacing.ScreenPadding,
+            backgroundColor: Colors.Background, 
+            flex: 1, 
+            ...props.style 
+        }}>
             {props.children}
         </SafeAreaView>
     )
@@ -23,16 +33,22 @@ export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: 
 }
 
 export function FormScreenBase(props: { children?: React.ReactNode, style?: ViewStyle }) {
+
+    const safeAreaInsets = useContext(SafeAreaInsetsContext)
+
     return (
         <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={64} style={{ 
-            padding: Spacing.ScreenPadding, 
+            padding: Spacing.ScreenPadding,
+            marginBottom: !!(safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
             backgroundColor: Colors.Background, 
             flex: 1, 
             justifyContent: 'center',
             alignItems: 'stretch',
             ...props.style 
         }}>
-            {props.children}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                {props.children}
+            </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     )
 }
@@ -40,6 +56,7 @@ export function FormScreenBase(props: { children?: React.ReactNode, style?: View
 export function ModalFormScreenBase(props: { children?: React.ReactNode, style?: ViewStyle, closeModal: () => void }) {
 
     const superViewRef = React.useRef<View>(null)
+    const safeAreaInsets = useContext(SafeAreaInsetsContext)
 
     return (
         <View 
@@ -52,7 +69,7 @@ export function ModalFormScreenBase(props: { children?: React.ReactNode, style?:
             }}
         >
             <KeyboardAvoidingView behavior='padding' style={{ 
-                padding: Spacing.ScreenPadding, 
+                paddingHorizontal: Spacing.ScreenPadding, 
                 backgroundColor: Colors.Background, 
                 flex: 0,
                 marginBottom: 0,
@@ -64,7 +81,11 @@ export function ModalFormScreenBase(props: { children?: React.ReactNode, style?:
                 borderTopLeftRadius: Radii.ModalRadius,
                 ...props.style 
             }}>
-                {props.children}
+                <View style={{ marginBottom: !!(safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding }}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                        {props.children}
+                    </TouchableWithoutFeedback>
+                </View>
             </KeyboardAvoidingView>
         </View>
     )
@@ -89,7 +110,7 @@ export function Panel(props: { children?: React.ReactNode, style?: ViewStyle }) 
 export function ActionButton(props: { children?: React.ReactNode, style?: ViewStyle, onPress?: () => void, disabled?: boolean }) {
     return (
         <TouchableOpacity 
-            style={{ backgroundColor: Colors.ButtonColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', opacity: props.disabled ? 0.6 : 1, ...props.style }}
+            style={{ backgroundColor: Colors.ButtonColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', opacity: props.disabled ? Colors.DisabledOpacity : 1, ...props.style }}
             onPress={props.onPress}
             disabled={!!props.disabled}
         >

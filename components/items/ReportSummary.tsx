@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Linking, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import { isContactInformation, isExactLocation, isMessage, Report } from '../../backend/databaseTypes';
+import { isContactInformation, isExactLocation, isMessage, Report, ReportViewStatus } from '../../backend/databaseTypes';
 import LocationCoder from '../../backend/LocationCoder';
 import { Colors } from '../../ui-base/colors';
 import { VerticallyCenteringGroupedRow, VerticallyCenteringRow } from '../../ui-base/layouts';
 import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
+import auth from '@react-native-firebase/auth'
 
 export default function ReportSummary(props: { report: Report, isSelected: string | null }) {
 
     const reportDate = new Date(props.report.timeOfCreation)
-    const contactInfo = props.report.fields.CONTACT_INFORMATION
     const dateString = `${reportDate.getMonth() + 1}/${reportDate.getDate()}`
     const timeString = `${reportDate.getHours()}:${reportDate.getMinutes()}`
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
 
     const messageField = props.report.fields.MESSAGE
     const [message, hasMessage] = isMessage(messageField) ? [messageField.message, true] : ['No message included.', false]
-    const [contact, hasContact] = isContactInformation(contactInfo) ? [contactInfo.contactInfo.toString(), true] : ['No contact info included.', false]
     const [locationString, setLocationString] = useState<string>('')
 
     useEffect(() => {
@@ -46,7 +45,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                 console.log(loc)
                 setLocationString(loc)
             })
-            .catch((err) => console.error(err))
+            .catch((err) => console.log(err))
 
     }, [props.isSelected])
 
@@ -54,7 +53,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
 
     const PhoneNumber = () => {
         if ( ! contactPhoneNumber) {
-            return <Text style={[TextStyles.p, { opacity: 0.6 }]}>No contact info provided</Text>
+            return <Text style={[TextStyles.p, { opacity: Colors.DisabledOpacity }]}>No contact info provided</Text>
         } else {
             return (
                 <>

@@ -5,7 +5,6 @@ import { Alert, AppState, Linking, Text, View } from 'react-native'
 import { Spacer, VerticallyCenteringRow } from '../ui-base/layouts'
 import { Spacing } from '../ui-base/spacing'
 import BigButton from '../components/BigButton'
-import { MarkAsLostProps } from './Navigator'
 import CancelButton from '../components/CancelButton'
 import messaging from '@react-native-firebase/messaging'
 import { useEffect, useRef, useState } from 'react'
@@ -14,19 +13,22 @@ import { setItemIsMissing } from '../reducers/items'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { FirestoreBackend } from '../backend/firestoreBackend'
 
-export default function MarkAsLost(props: { itemID: string, onClose: () => void }) {
+export default function MarkAsLost(props: { itemID: string, forceClose: () => void }) {
 
     const appState = useRef(AppState.currentState)
     const dispatch = useAppDispatch()
-    const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const [isMarkingAsLost, setIsMarkingAsLost] = useState(false)
     const [didGoToSettings, setDidGoToSettings] = useState(false)
 
     const setIsMissing = async () => {
         setIsMarkingAsLost(true)
-        await dispatch(setItemIsMissing(props.itemID))
-        setIsMarkingAsLost(false)
-        props.onClose()
+
+        const result = await dispatch(setItemIsMissing(props.itemID))
+
+        // If the operation failed, we can leave the modal open but we need to stop loading
+        if (result.meta.requestStatus === 'rejected') {
+            setIsMarkingAsLost(false)
+        }
     }
 
     const requestNotificationPermission = async () => {
@@ -73,13 +75,13 @@ export default function MarkAsLost(props: { itemID: string, onClose: () => void 
     }, [])
 
     return (
-        <ModalFormScreenBase closeModal={props.onClose}>
-            <Text style={TextStyles.h2}>Mark As Lost</Text>
+        <ModalFormScreenBase closeModal={props.forceClose}>
+            <Text style={TextStyles.h2}>Set as Lost</Text>
             <Spacer size={Spacing.BigGap} />
-            <Text style={TextStyles.p}>When you mark an item as lost, you'll get notified whenever someone spots it.</Text>
+            <Text style={TextStyles.p}>When you set this item as lost, you'll get notified whenever someone spots it.</Text>
             <Spacer size={Spacing.BigGap} />
-            <VerticallyCenteringRow style={{ marginBottom: safeAreaInsets?.bottom }}>
-                <CancelButton label='Cancel' onPress={props.onClose} disabled={isMarkingAsLost} />
+            <VerticallyCenteringRow>
+                <CancelButton label='Cancel' onPress={props.forceClose} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
                 <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
             </VerticallyCenteringRow>

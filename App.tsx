@@ -5,13 +5,14 @@ import firestore from '@react-native-firebase/firestore'
 import functions from '@react-native-firebase/functions'
 import { useEffect, useState } from "react"
 import DynamicLinkDelegate from "./components/DynamicLinkDelegate"
-import { Text } from "react-native"
+import { StatusBar, Text } from "react-native"
 import Navigator from "./screens/Navigator"
 import store from "./store"
 import { Provider } from "react-redux"
 import SubscriptionManager from "./backend/SubscriptionManager"
 import InAppNotificationManager from './components/InAppNotificationManager'
 import type {PropsWithChildren} from 'react';
+import EmojiManager from './backend/EmojiManager'
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -58,14 +59,21 @@ export default function App() {
     }, [isAuthenticated])
 
     return (
-        <Provider store={store}>
-            <SafeAreaProvider>
-                <DynamicLinkDelegate>
-                    <SubscriptionManager>
-                        <Navigator isAuthenticated={isAuthenticated} />
-                    </SubscriptionManager>
-                </DynamicLinkDelegate>
-            </SafeAreaProvider>
-        </Provider>
+        <>
+            <StatusBar
+                barStyle={'dark-content'}
+            />
+            <Provider store={store}>
+                <SafeAreaProvider>
+                    <DynamicLinkDelegate>
+                        <SubscriptionManager>
+                            <EmojiManager>
+                                <Navigator isAuthenticated={isAuthenticated} />
+                            </EmojiManager>
+                        </SubscriptionManager>
+                    </DynamicLinkDelegate>
+                </SafeAreaProvider>
+            </Provider>
+        </>
     )
 }
