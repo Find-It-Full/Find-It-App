@@ -67,10 +67,6 @@
 	
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Use you location to show you where your items are in relation to you. </string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Use you location to show you where your items are in relation to you. </string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SF-Pro.ttf</string>
