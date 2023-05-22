@@ -10,6 +10,7 @@ import auth from '@react-native-firebase/auth'
 import { Colors } from '../../ui-base/colors'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { Spacing } from '../../ui-base/spacing'
+import analytics from '@react-native-firebase/analytics';
 
 export default function EmailSignIn(props: EmailSignInProps) {
 
@@ -23,14 +24,22 @@ export default function EmailSignIn(props: EmailSignInProps) {
     const [emailError, setEmailError] = useState('')
 
     const createAccountOrSignIn = async () => {
+        
         try {
+            
             const methods = await auth().fetchSignInMethodsForEmail(email)
             if (methods.length > 0) {
+                console.log("analysitcs --- enter password")
+                await analytics().logEvent('enter_password', {})
                 props.navigation.navigate('EnterPassword', { email: email })
             } else {
+                console.log("analysitcs --- create account email")
+                await analytics().logEvent('create_email_account', {})
                 props.navigation.navigate('CreateAccount', { email: email })
             }
         } catch (error) {
+            console.log("analysitcs --- error create account email")
+            await analytics().logEvent('email_signin_error', {error:error})
             if (error.message === 'auth/invalid-email') {
                 setEmailError('Oops! That email is invalid.')
             } else {

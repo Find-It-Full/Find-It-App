@@ -19,7 +19,7 @@ import messaging from '@react-native-firebase/messaging';
 import { setDidNotify } from '../../reducers/reports'
 import { fetchAllItems } from '../../reducers/items'
 import { ItemID, ReportID } from '../../backend/databaseTypes'
-
+import analytics from '@react-native-firebase/analytics';
 interface RemoteNotificationPayload {
     itemID: ItemID
     reportID: ReportID
@@ -31,7 +31,7 @@ export default function Home(props: HomeProps) {
     const subscriptions = useContext(SubscriptionManagerContext)
     const items = useAppSelector(state => state.items.items)
     const [incomingNotificationPayload, setIncomingNotificationPayload] = useState<RemoteNotificationPayload | null>(null)
-
+    
     console.log(`Got item count ${Object.keys(items)}`)
     
     useEffect(() => {
@@ -53,14 +53,18 @@ export default function Home(props: HomeProps) {
     }, [])
 
     useEffect(() => {
-        messaging().onNotificationOpenedApp(remoteMessage => {
+        messaging().onNotificationOpenedApp(async remoteMessage => {
+            console.log("analysitcs --- app opened from notification")
+            await analytics().logEvent('app_opened_from_notification', {message:remoteMessage})
             if (remoteMessage.data != null && remoteMessage.data.itemID != null && remoteMessage.data.reportID != null) {
                 setIncomingNotificationPayload({ itemID: remoteMessage.data.itemID, reportID: remoteMessage.data.reportID })
             }
         })
 
-        messaging().getInitialNotification().then(remoteMessage => {
+        messaging().getInitialNotification().then(async remoteMessage => {
             if (remoteMessage) {
+                console.log("analysitcs --- app opened from notification 2")
+                await analytics().logEvent('app_opened_from_notification', {message:remoteMessage})
                 if (remoteMessage.data != null && remoteMessage.data.itemID != null && remoteMessage.data.reportID != null) {
                     setIncomingNotificationPayload({ itemID: remoteMessage.data.itemID, reportID: remoteMessage.data.reportID })
                 }
@@ -80,7 +84,9 @@ export default function Home(props: HomeProps) {
             <VerticallyCenteringRow style={{ marginBottom: Spacing.BigGap }}>
                 <Text style={TextStyles.h1}>Items</Text>
                 <TouchableOpacity
-                    onPress={() => { props.navigation.navigate('AccountSettings') }}
+                    onPress={async () => { console.log("analysitcs --- open settings")
+                    await analytics().logEvent('open_settings', {})
+                    props.navigation.navigate('AccountSettings') }}
                     style={{ padding: Spacing.HalfGap, marginRight: -Spacing.HalfGap }}
                 >
                     <Text style={TextStyles.b1}>􀣌</Text>
@@ -96,7 +102,10 @@ export default function Home(props: HomeProps) {
                 ListEmptyComponent={() => <Text style={TextStyles.p}>You don't have any items yet.</Text>}
             />
 
-            <BigButton label='Add Item' isInColumn onPress={() => {
+            <BigButton label='Add Item' isInColumn onPress={async () => {
+                console.log("analysitcs --- add item")
+                await analytics().logEvent('add_item_clicked', {})
+
                 props.navigation.navigate('AddItemFlow')
             }} />
 

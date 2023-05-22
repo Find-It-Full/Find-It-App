@@ -6,7 +6,7 @@ import { useAppDispatch } from "../../store/hooks"
 import { addNewItem } from "../../reducers/items"
 import ItemDetailsForm from "../../components/items/ItemDetailsForm"
 import { FormScreenBase } from "../../ui-base/containers"
-
+import analytics from '@react-native-firebase/analytics';
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
     const dispatch = useAppDispatch()
@@ -20,7 +20,8 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                 name,
                 icon
             }))
-
+            console.log("analysitcs --- item added")
+            await analytics().logEvent('item_added', {tagID:tagID,name:name,icon:icon})
             navigation.navigate('Home')
 
         } catch (error) {

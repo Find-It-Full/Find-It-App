@@ -15,6 +15,8 @@ import { Spacing } from "../../ui-base/spacing"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import BigPrimaryActionButton from "../../components/BigPrimaryActionButton"
 import InAppNotificationManager from "../../components/InAppNotificationManager"
+import analytics from '@react-native-firebase/analytics';
+
 
 
 export default function SignIn(props: SignInProps) {
@@ -54,6 +56,7 @@ export default function SignIn(props: SignInProps) {
         const googleCredential = auth.GoogleAuthProvider.credential(idToken)
 
         // Sign-in the user with the credential
+        
         return auth().signInWithCredential(googleCredential)
     }
 
@@ -81,9 +84,14 @@ export default function SignIn(props: SignInProps) {
                     icon='􀀑'
                     label='Continue with Google'
                     onPress={() =>
-                        onGoogleSignIn().then(() =>
+                        onGoogleSignIn().then(async () => {
+                            console.log("analysitcs --- google signin worked")
+                        await analytics().logEvent('signin_google_worked', {})
                             console.log("Signed in with Google!")
-                        ).catch((e) => {
+                        }
+                        ).catch(async (e) => {
+                            console.log("analysitcs --- google signin failed")
+                            await analytics().logEvent('signin_apple_worked', {error:e})
                             if (e.code !== '-5') {
                                 setShowMiscError(true)
                             }
@@ -96,9 +104,14 @@ export default function SignIn(props: SignInProps) {
                     icon='􀣺'
                     label='Continue with Apple'
                     onPress={() =>
-                        onAppleButtonPress().then(() =>
+                        onAppleButtonPress().then(async () => {
+                            console.log("analysitcs --- apple signin worked")
+                            await analytics().logEvent('signin_apple_worked', {})
                             console.log("Signed in with Apple!")
-                        ).catch((e) => {
+                        }
+                        ).catch(async (e) => {
+                            console.log("analysitcs --- apple signin failed")
+                            await analytics().logEvent('signin_apple_error', {error:e})
                             if (e.code === '1000') {
                                 setShowNoInternetError(true)
                             } else if (e.code !== '1001') {

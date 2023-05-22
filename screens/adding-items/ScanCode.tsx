@@ -11,7 +11,7 @@ import auth from '@react-native-firebase/auth'
 import { FirestoreBackend } from "../../backend/firestoreBackend"
 import { TagID } from "../../backend/databaseTypes"
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import analytics from '@react-native-firebase/analytics';
 export default function ScanCode({ navigation }: ScanCodeProps) {
 
     const scannerRef = React.useRef<QRCodeScanner>(null)
@@ -20,6 +20,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     
     async function onSuccess(data: BarCodeReadEvent) {
         console.log(`Scanned QR code with data: ${data.data}`)
+        
         try {
             const url = data.data
             const pathSegments = url.split('/')
@@ -27,9 +28,12 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             const id = pathSegments[(pathSegments.length)-1]
             console.log(id)
             const tagID = await FirestoreBackend.getTagID(id)
-            
+            console.log("analysitcs --- item scanned valid")
+            await analytics().logEvent('item_scanned', {valid_tag:true})
             navigation.navigate('EnterItemDetails', { tagID: tagID })
         } catch (e) {
+            console.log("analysitcs --- item scanned error")
+            await analytics().logEvent('item_scanned', {valid_tag:false,error:e})
             console.log(`Read invalid URL: ${e}`)
             scannerRef.current?.reactivate()
         }
@@ -102,10 +106,16 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             console.error(error)
         }
     }
-
+    
     useEffect(() => {
         checkForCameraPermission().then(() => setDidCheckForCameraPermission(true))
     }, [])
+
+
+    // useEffect(() => {
+
+    //     onSuccess({data:"https://gobilabsllc.page.link/nsDwXrdJZek4MTSSA"} as BarCodeReadEvent)
+    // }, [])
 
     useEffect(() => {
         if (didCheckForCameraPermission && ! cameraAllowed) {

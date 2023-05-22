@@ -23,7 +23,7 @@ import { viewReport } from '../../reducers/reports';
 import SightingMap from '../../components/SightingMap';
 import IconButton from '../../components/IconButton';
 import { Radii } from '../../ui-base/radii';
-
+import analytics from '@react-native-firebase/analytics';
 export default function ItemDetails(props: ItemDetailsProps) {
 
     const dispatch = useAppDispatch()
@@ -101,7 +101,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
         setIsPresentingEditModal(false)
     }
 
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const handleScroll = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
             setSelectedReport(null)
@@ -127,6 +127,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
             reportIndex: index,
             location: isExactLocation(locationField) ? locationField : null
         }
+        console.log("analysitcs --- new selected report")
+        await analytics().logEvent('new_selected_report', {newSelectedReport})
         setSelectedReport(newSelectedReport)
     }
 
@@ -162,10 +164,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
         dispatch(viewReport({ reportID: selectedReport.reportID, itemID: itemID, userID: item.ownerID }))
     }, [selectedReport])
 
-    const handleChangeLostState = () => {
-
+    const handleChangeLostState = async () => {
+        
         // If the item isn't missing, we're setting it as lost, hand over control to the modal
         if ( ! item.isMissing) {
+            console.log("analysitcs --- set item lost")
+            await analytics().logEvent('item_marked_lost', item)
             setIsChangingLostState('set-lost')
             setIsPresentingMarkAsLostModal(true)
             return
@@ -173,6 +177,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
         // Else, we're setting it as found
         setIsChangingLostState('set-found')
+        console.log("analysitcs --- set item found")
+        await analytics().logEvent('item_marked_found', item)
 
         const handleSetItemIsFound = async (clearRecentReports: boolean) => {
 
@@ -215,10 +221,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
         )
     }
 
-    const handleRequestDirections = () => {
+    const handleRequestDirections = async () => {
         if ( ! selectedReport || ! selectedReport.location || ! item) {
             return
         }
+        await analytics().logEvent('open_in_maps', selectedReport)
         openLocationInMaps({ lat: selectedReport.location.latitude, lng: selectedReport.location.longitude, label: `${item.name} location` })
     }
 
@@ -290,6 +297,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         textSyle={{ color: item.isMissing ? Colors.White : Colors.Red }}
                         isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
+                        
                     />
                     <PrimaryActionButton
                         label='Directions'
@@ -436,7 +444,7 @@ function getAllLocations(reports: Report[]): LatLng[] {
     return locations
 }
 
-function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
+async function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
     const scheme = Platform.select({ ios: 'http://maps.apple.com/?q=', android: 'geo:0,0?q=' })
     const latLng = `${lat},${lng}`
     const url = Platform.select({
@@ -449,6 +457,8 @@ function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, lab
         return
     }
     console.warn(url)
+    console.log("analysitcs --- open maps")
+    await analytics().logEvent('open_directions', {lat:lat, lng:lng, label:label})
     Linking.openURL(url)
 }
 

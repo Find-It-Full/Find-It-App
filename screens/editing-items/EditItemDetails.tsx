@@ -4,6 +4,7 @@ import { EditItemFlowProps } from "../Navigator"
 import ItemDetailsForm from "../../components/items/ItemDetailsForm"
 import { useAppDispatch } from "../../store/hooks"
 import { editItemDetails } from "../../reducers/items"
+import analytics from '@react-native-firebase/analytics';
 
 type EditItemStackParams = {
     EditItemDetails: { itemID: string, name: string, icon: string }
@@ -26,6 +27,8 @@ function EditItemDetails({ navigation, route }: EditItemDetailsProps) {
     const dispatch = useAppDispatch()
 
     const onSubmit = async (name: string, icon: string) => {
+        console.log("analysitcs --- edit item details")
+        await analytics().logEvent('edit_item_details', {name:name,icon:icon})
         await dispatch(editItemDetails({ name, icon, itemID: route.params.itemID }))
         navigation.goBack()
     }

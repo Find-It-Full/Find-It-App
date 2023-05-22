@@ -13,6 +13,7 @@ import auth from '@react-native-firebase/auth'
 import { useAppDispatch } from '../../store/hooks'
 import { handleExternalError } from '../../reducers/items'
 import { deleteUser } from '../../reducers/userData'
+import analytics from '@react-native-firebase/analytics';
 
 export default function DeleteAccountForm(props: { onClose: () => void }) {
 
@@ -27,6 +28,8 @@ export default function DeleteAccountForm(props: { onClose: () => void }) {
     }, [confirmationText])
 
     const onDelete = async () => {
+        console.log("analysitcs --- delete account")
+        await analytics().logEvent('account_deleted', {})
         setIsDeletingAccount(true)
 
         await dispatch(deleteUser())

@@ -7,6 +7,7 @@ import { VerticallyCenteringGroupedRow, VerticallyCenteringRow } from '../../ui-
 import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
 import auth from '@react-native-firebase/auth'
+import analytics from '@react-native-firebase/analytics';
 
 export default function ReportSummary(props: { report: Report, isSelected: string | null }) {
 
@@ -59,7 +60,12 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                 <>
                     <Text style={TextStyles.p}>Contact: </Text>
                     <TouchableOpacity
-                    onPress={() => Linking.openURL(`sms://${contactPhoneNumber}`)}
+                    
+                    onPress={async () => {
+                        console.log("analysitcs --- open mesages")
+                        await analytics().logEvent('open_messages', {report:props.report})
+                        Linking.openURL(`sms://${contactPhoneNumber}`)}
+                    }
                     >
                         <Text style={[TextStyles.p, { textDecorationLine: 'underline' }]}>+1 {contactPhoneNumber}</Text>
                     </TouchableOpacity>
