@@ -3,8 +3,8 @@ import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-nat
 import { Colors } from '../ui-base/colors'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
-
-export default function IconButton(props: { icon: string, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
+import Icon from 'react-native-vector-icons/FontAwesome'
+export default function IconButton(props: { icon: Icon, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
 
     const disabled = props.disabled || props.isLoading
 

@@ -24,6 +24,9 @@ import SightingMap from '../../components/SightingMap';
 import IconButton from '../../components/IconButton';
 import { Radii } from '../../ui-base/radii';
 import analytics from '@react-native-firebase/analytics';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import ContextMenu from "react-native-context-menu-view";
+
 export default function ItemDetails(props: ItemDetailsProps) {
 
     const dispatch = useAppDispatch()
@@ -293,15 +296,15 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
                         label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
-                        icon={item.isMissing ? '􀇻' : '􀇿'}
-                        textSyle={{ color: item.isMissing ? Colors.White : Colors.Red }}
+                        icon={item.isMissing ? <Icon color={Colors.Green} style = {TextStyles.h3Logo}  name='check-square'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='crosshairs'/>}
+                        textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
                         isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
                         
                     />
                     <PrimaryActionButton
                         label='Directions'
-                        icon='􀙋'
+                        icon = {<Icon style = {TextStyles.h3} name='map'/>}
                         disabled={ ! selectedReport || ! selectedReport.location}
                         onPress={handleRequestDirections}
                     />
@@ -312,7 +315,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <>
                             <VerticallyCenteringRow style={{ marginTop: Spacing.BigGap, paddingRight: Spacing.ScreenPadding }}>
                                 <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding }]}>Sightings</Text>
-                                <IconButton icon='􀈒' onPress={handleClearSightings} disabled={isClearingSightings} />
+                                <IconButton icon={<Icon style = {TextStyles.h4} name='trash'/>} onPress={handleClearSightings} disabled={isClearingSightings} />
                             </VerticallyCenteringRow>
                             <View style={{ position: 'relative' }}>
                                 <ScrollView 
@@ -348,11 +351,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 reports.length > 1 ?
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
                                         <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={ ! canScrollToPrev} style={{ position: 'absolute', left: Spacing.ScreenPadding }}>
-                                            <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]}>􀆉 Previous</Text>
+                                            <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]}> <Icon style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]} name="chevron-left"/> Previous</Text>
                                         </TouchableOpacity>
                                         <Text style={[TextStyles.p2, { alignSelf: 'center' }]}>{`${selectedReport.reportIndex + 1} / ${reports.length}`}</Text>
                                         <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={ ! canScrollToNext} style={{ position: 'absolute', right: Spacing.ScreenPadding }}>
-                                            <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]}>Next 􀯻</Text>
+                                            <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]}>Next {<Icon style = {[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]} name='chevron-right'/>}</Text>
                                         </TouchableOpacity>
                                     </View>
                                     :
@@ -463,33 +466,11 @@ async function openLocationInMaps({ lat, lng, label }: { lat: number, lng: numbe
 }
 
 function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () => void }) {    
-    return <ContextMenuButton
-        menuConfig={{
-            menuTitle: '',
-            menuItems: [{
-                actionKey: 'edit_item_details',
-                actionTitle: 'Edit Item',
-                icon: {
-                    type: 'IMAGE_SYSTEM',
-                    imageValue: {
-                        systemName: 'pencil',
-                    },
-                }
-            }, {
-                actionKey: 'delete_item',
-                actionTitle: 'Remove Item',
-                menuAttributes: ['destructive'],
-                icon: {
-                    type: 'IMAGE_SYSTEM',
-                    imageValue: {
-                        systemName: 'trash',
-                    },
-                }
-            }]
-        }}
-        isMenuPrimaryAction={true}
-        onPressMenuItem={({ nativeEvent }) => {
-            if (nativeEvent.actionKey === 'edit_item_details') {
+    return <ContextMenu
+        actions={[{title:"Edit Item", systemIcon: 'pencil'},{title:"Remove Item", systemIcon: 'trash'}]}
+        onPress={({ nativeEvent }) => {
+            console.log(nativeEvent)
+            if (nativeEvent.name === 'Edit Item') {
                 props.presentEditModal()
             }
             else {
@@ -497,13 +478,14 @@ function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () 
             }
         } }
         style={{ flex: 1 }}
+        dropdownMenuMode ={true}
     >
         <PrimaryActionButton
             label='More'
-            icon='􀍢'
-            onPress={() => { } }
+            icon={<Icon style = {TextStyles.h3}  name='sliders'/>}
+            onPress={() => { console.log("here")} }
         />
-    </ContextMenuButton>
+    </ContextMenu>
 }
 
 function EmptyItemDetails() {

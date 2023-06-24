@@ -10,7 +10,7 @@ import ItemProfile from "./ItemProfile";
 import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts";
 import { useAppSelector } from "../../store/hooks";
 import { Colors } from "../../ui-base/colors";
-
+import Icon from 'react-native-vector-icons/FontAwesome'
 export default function ItemSummary(props: Item) {
 
     const navigation = useNavigation<ItemDetailsProps['navigation']>()
@@ -33,7 +33,7 @@ export default function ItemSummary(props: Item) {
                                 null
                         }
                         <Spacer size={Spacing.HalfGap} />
-                        <Text style={TextStyles.h3}>􀆊</Text>
+                        <Text style={TextStyles.h3}><Icon style={TextStyles.h3}name="chevron-right"/></Text>
                     </VerticallyCenteringRow>
                 </VerticallyCenteringRow>
             </TouchableOpacity>

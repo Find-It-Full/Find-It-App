@@ -4,10 +4,10 @@ import { Text, StyleSheet, ActivityIndicator, StyleProp, TextStyle } from 'react
 import { TextStyles } from '../ui-base/text'
 import { Spacing } from '../ui-base/spacing'
 import { Colors } from '../ui-base/colors'
-
+import Icon from 'react-native-vector-icons/FontAwesome'
 interface PrimaryActionButtonProps {
     label: string
-    icon: string
+    icon: Icon
     onPress: () => void
     disabled?: boolean
     isLoading?: boolean
