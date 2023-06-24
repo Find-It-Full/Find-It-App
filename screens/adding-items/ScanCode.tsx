@@ -4,7 +4,6 @@ import { Text, Button, TouchableOpacity, View, Linking, Alert } from "react-nati
 import { ScanCodeProps } from "./AddItemFlowContainer"
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions"
 import QRCodeScanner from "react-native-qrcode-scanner"
-import { BarCodeReadEvent } from "react-native-camera"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import auth from '@react-native-firebase/auth'
@@ -18,7 +17,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     const [cameraAllowed, setCameraAllowed] = useState(false)
     const [didCheckForCameraPermission, setDidCheckForCameraPermission] = useState(false)
     
-    async function onSuccess(data: BarCodeReadEvent) {
+    async function onSuccess(data: any) {
         console.log(`Scanned QR code with data: ${data.data}`)
         
         try {
@@ -135,6 +134,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
                 <Text style={[TextStyles.i1, { color: 'white' }]}>􀆄</Text>
             </TouchableOpacity>
             <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', height: '100%' }}>
+
                 <QRCodeScanner
                     onRead={onSuccess}
                     cameraStyle={{ height: '100%' }}

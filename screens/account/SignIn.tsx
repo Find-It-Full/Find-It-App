@@ -90,6 +90,7 @@ export default function SignIn(props: SignInProps) {
                             console.log("Signed in with Google!")
                         }
                         ).catch(async (e) => {
+                            console.log(e)
                             console.log("analysitcs --- google signin failed")
                             await analytics().logEvent('signin_apple_worked', {error:e})
                             if (e.code !== '-5') {

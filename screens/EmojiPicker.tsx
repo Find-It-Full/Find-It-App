@@ -8,7 +8,7 @@ import IconButton from '../components/IconButton'
 import { EmojiManagerContext } from '../backend/EmojiManager'
 import { Panel } from '../ui-base/containers'
 import { Radii } from '../ui-base/radii'
-
+import Icon from 'react-native-vector-icons/FontAwesome'
 interface IEmojiData {
     categories: { id: string, emojis: string[] }[]
     emojis: {
@@ -83,7 +83,7 @@ export default function EmojiPicker(props: { currentValue: string, onSelect: (em
                             :
                             <Text style={[TextStyles.h3, { color: 'rgba(0.24, 0.24, 0.26, 0.3)' }]}>Icon</Text>
                     }
-                    <Text style={[TextStyles.h3]}>{ showEmojis ? '􀆇' : '􀆈' }</Text>
+                    <Text style={[TextStyles.h3]}>{ showEmojis ? <Icon style = {[TextStyles.h3]} name='chevron-down'/> : <Icon style = {[TextStyles.h3]} name='chevron-up'/> }</Text>
                 </VerticallyCenteringRow>
             </TouchableOpacity>
             {

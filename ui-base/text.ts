@@ -24,6 +24,12 @@ export namespace TextStyles {
         color: Colors.TextColor
     }
 
+    export const h3Logo: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Bold',
+        fontSize: 18,
+        fontWeight: 'bold'
+    }
+
     export const h4: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
         fontSize: 14,

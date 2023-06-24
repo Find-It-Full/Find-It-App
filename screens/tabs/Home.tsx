@@ -20,6 +20,8 @@ import { setDidNotify } from '../../reducers/reports'
 import { fetchAllItems } from '../../reducers/items'
 import { ItemID, ReportID } from '../../backend/databaseTypes'
 import analytics from '@react-native-firebase/analytics';
+import Icon from 'react-native-vector-icons/FontAwesome'
+
 interface RemoteNotificationPayload {
     itemID: ItemID
     reportID: ReportID
@@ -89,7 +91,8 @@ export default function Home(props: HomeProps) {
                     props.navigation.navigate('AccountSettings') }}
                     style={{ padding: Spacing.HalfGap, marginRight: -Spacing.HalfGap }}
                 >
-                    <Text style={TextStyles.b1}>􀣌</Text>
+                    {/* ICON */}
+                    <Text style={TextStyles.b1}><Icon style={TextStyles.b1} name = 'cog'/></Text>
                 </TouchableOpacity>
             </VerticallyCenteringRow>
 

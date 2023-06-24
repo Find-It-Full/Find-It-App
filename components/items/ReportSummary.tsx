@@ -37,16 +37,16 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
             return
         }
 
-        LocationCoder.geocodePosition({ lat: location.latitude, lng: location.longitude })
-            .then((codedLocation) => { 
-                if (codedLocation.length === 0) {
-                    return console.error('got no coded locations')
-                }
-                const loc = (` • ${codedLocation[0].streetNumber ? codedLocation[0].streetNumber + ' ' : ''}${codedLocation[0].streetName}`)
-                console.log(loc)
-                setLocationString(loc)
-            })
-            .catch((err) => console.log(err))
+        // LocationCoder.geocodePosition({ lat: location.latitude, lng: location.longitude })
+        //     .then((codedLocation) => { 
+        //         if (codedLocation.length === 0) {
+        //             return console.error('got no coded locations')
+        //         }
+        //         const loc = (` • ${codedLocation[0].streetNumber ? codedLocation[0].streetNumber + ' ' : ''}${codedLocation[0].streetName}`)
+        //         console.log(loc)
+        //         setLocationString(loc)
+        //     })
+        //     .catch((err) => console.log(err))
 
     }, [props.isSelected])
 
