@@ -13,7 +13,12 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
 
     const reportDate = new Date(props.report.timeOfCreation)
     const dateString = `${reportDate.getMonth() + 1}/${reportDate.getDate()}`
-    const timeString = `${reportDate.getHours()}:${reportDate.getMinutes()}`
+    const AM_PM = `${reportDate.getHours() > 12 ? "PM" : 'AM'}`
+    console.log(reportDate.getHours() )
+    console.log('here')
+    console.log(reportDate.getHours()-12)
+    const hour =`${reportDate.getHours() ==0? 12: reportDate.getHours() > 12? reportDate.getHours() -12: reportDate.getHours()}`
+    const timeString = `${hour}:${reportDate.getMinutes() } ${AM_PM}`
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
 
     const messageField = props.report.fields.MESSAGE
