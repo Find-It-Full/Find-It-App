@@ -9,12 +9,13 @@ export namespace DarkModeColors {
     export const ButtonColor = '#2C2C2C'
     export const ItemBorder = 'rgba(255, 255, 255, 0.1)'
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
-    export const Red = PlatformColor('systemRed')
-    export const Green = PlatformColor('systemGreen')
+    export const Red = '#FF0000'//PlatformColor('systemRed')
+    export const Green = '#208041'//PlatformColor('systemGreen')
     export const DisabledOpacity = 0.6
 }
 
 export namespace Colors {
+    export const Line = '#696666'
     export const White = '#151515'
     export const Black = '#FFFFFF'
     export const Background = Black
@@ -23,7 +24,7 @@ export namespace Colors {
     export const ButtonColor = '#f1f1f1'
     export const ItemBorder = 'rgba(0, 0, 0, 0.1)'
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
-    export const Red = PlatformColor('systemRed')
-    export const Green = PlatformColor('systemGreen')
+    export const Red = '#FF0000'//PlatformColor('systemRed')
+    export const Green = '#208041'//PlatformColor('systemGreen')
     export const DisabledOpacity = 0.75
 }

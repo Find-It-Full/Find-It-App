@@ -63,7 +63,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
             <>
                 <Polyline
                     coordinates={props.locations}
-                    strokeColor={Colors.Background}
+                    strokeColor={Colors.Line}
                     strokeWidth={4}
                     lineCap={'butt'}
                     lineDashPattern={[5, 5]}

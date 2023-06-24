@@ -1,46 +1,63 @@
 {
-    "project_info": {
-        "project_number": "199074098912",
-        "project_id": "whereisit-d66b1",
-        "storage_bucket": "whereisit-d66b1.appspot.com"
-    },
-    "client": [
-        {
-            "client_info": {
-                "mobilesdk_app_id": "1:199074098912:android:c8c8ce6ac6649bc0b8ea85",
-                "android_client_info": {
-                    "package_name": "com.whereisit"
-                }
-            },
-            "oauth_client": [
-                {
-                    "client_id": "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
-                    "client_type": 3
-                }
-            ],
-            "api_key": [
-                {
-                    "current_key": "AIzaSyBCdOph1FqRHjuTRwy3P0zp4-zoiqeZYz8"
-                }
-            ],
-            "services": {
-                "appinvite_service": {
-                    "other_platform_oauth_client": [
-                        {
-                            "client_id": "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
-                            "client_type": 3
-                        },
-                        {
-                            "client_id": "199074098912-iui4ms5i3jcnr9sooqll7ovbm92di023.apps.googleusercontent.com",
-                            "client_type": 2,
-                            "ios_info": {
-                                "bundle_id": "com.gobilabsllc.FindIt"
-                            }
-                        }
-                    ]
-                }
-            }
+  "project_info": {
+    "project_number": "199074098912",
+    "project_id": "whereisit-d66b1",
+    "storage_bucket": "whereisit-d66b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199074098912:android:c8c8ce6ac6649bc0b8ea85",
+        "android_client_info": {
+          "package_name": "com.whereisit"
         }
-    ],
-    "configuration_version": "1"
+      },
+      "oauth_client": [
+        {
+          "client_id": "199074098912-iidrnoutf1403flhgal3ta6q388eamnq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whereisit",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "199074098912-inmnr7couia1m8sqjekng9igvsc7oc96.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whereisit",
+            "certificate_hash": "d51c5558d145e6228870f82ecc25b0b8a1290df5"
+          }
+        },
+        {
+          "client_id": "199074098912-np9b1220ailpsbsn2ma5psoeabsm3pm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCdOph1FqRHjuTRwy3P0zp4-zoiqeZYz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "199074098912-7vgbem99jf6vr2netm6km0p0qj2uk52v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "199074098912-atv71ptra6pa5duo334s6pqdml9badln.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "gobi.app.Findit",
+                "app_store_id": "12345678"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }
