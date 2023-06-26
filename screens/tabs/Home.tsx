@@ -92,7 +92,7 @@ export default function Home(props: HomeProps) {
                     style={{ padding: Spacing.HalfGap, marginRight: -Spacing.HalfGap }}
                 >
                     {/* ICON */}
-                    <Text style={TextStyles.b1}><Icon style={TextStyles.b1} name = 'cog'/></Text>
+                    <Text style={TextStyles.b1}><Icon style={TextStyles.accountIcon} name = 'cog'/></Text>
                 </TouchableOpacity>
             </VerticallyCenteringRow>
 

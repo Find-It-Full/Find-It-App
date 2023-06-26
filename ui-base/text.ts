@@ -79,6 +79,13 @@ export namespace TextStyles {
         color: Colors.TextColor,
     }
 
+    export const accountIcon: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Bold',
+        fontSize: 24,
+        fontWeight: '800',
+        color: Colors.TextColor,
+    }
+
     export const i1: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
         fontSize: 24,
