@@ -483,7 +483,7 @@ function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () 
         <PrimaryActionButton
             label='More'
             icon={<Icon style = {TextStyles.h3}  name='sliders'/>}
-            onPress={() => { console.log("here")} }
+            onPress={() => { } }
         />
     </ContextMenu>
 }

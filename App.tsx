@@ -13,6 +13,7 @@ import SubscriptionManager from "./backend/SubscriptionManager"
 import InAppNotificationManager from './components/InAppNotificationManager'
 import type {PropsWithChildren} from 'react';
 import EmojiManager from './backend/EmojiManager'
+import { FirestoreBackend } from './backend/firestoreBackend'
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -57,6 +58,12 @@ export default function App() {
     useEffect(() => {
         return subscribeToAuthStateChanges(setIsAuthenticated)
     }, [isAuthenticated])
+
+
+
+    
+    FirestoreBackend.updateLastLogin()
+    
 
     return (
         <>

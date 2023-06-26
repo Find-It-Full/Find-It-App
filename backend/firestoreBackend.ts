@@ -80,6 +80,10 @@ export class FirestoreBackend {
         const query = await this.items().where("ownerID", "==", uid).get()
         return query.docs.map((snap) => snap.data() as Item)
     }
+    public static async updateLastLogin() {
+        const uid = auth().currentUser?.uid
+        return (await this.users().doc(uid).update({"lastLogin": new Date().getTime()}))
+    }
 
     public static async getUserProfile(): Promise<UserData> {
         const uid = auth().currentUser?.uid
@@ -142,6 +146,11 @@ export class FirestoreBackend {
             error: onError
         })
     }
+
+    // public static async checkRequirements(){
+        
+
+    // }
 
     public static async setViewedReport(reportID: ReportID) {
 
