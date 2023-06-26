@@ -30,8 +30,8 @@ export default function AccountSettings(props: AccountSettingsProps) {
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon={<Icon name = 'book' style = {TextStyles.b1}/>} label='Terms of Service' onPress={() => Alert.alert('Coming soon! lol')} />
-                <ActionButtonListItem icon={<Icon name = 'lock' style = {TextStyles.b1}/>} label='Privacy Policy' onPress={() => Alert.alert('Coming soon! lol')} />
+                <ActionButtonListItem icon={<Icon name = 'book' style = {TextStyles.b1}/>} label='Terms of Service' onPress={() => Linking.openURL("https://docs.google.com/document/d/1ADa4cqyyv6kZRBu4bHC1CvfNxGd8KaTdHQaCYVlZWfg/edit?usp=sharing")} />
+                <ActionButtonListItem icon={<Icon name = 'lock' style = {TextStyles.b1}/>} label='Privacy Policy' onPress={() => Linking.openURL("https://docs.google.com/document/d/1qciVUlpEBy3Pzk7LQfCNo_VKVw1xymsOAGgz71yoF14/edit?usp=sharing")} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
