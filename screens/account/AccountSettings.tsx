@@ -12,7 +12,8 @@ import DeleteAccountForm from './DeleteAccountForm'
 import auth from '@react-native-firebase/auth'
 import { useAppDispatch } from '../../store/hooks'
 import { signOut } from '../../reducers/userData'
-
+import { TextStyles } from '../../ui-base/text'
+import Icon from 'react-native-vector-icons/FontAwesome'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
@@ -24,17 +25,17 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon='􀱍' label='Log Out' onPress={() => dispatch(signOut())} />
-                <ActionButtonListItem icon='􀈒' label='Delete Account' onPress={() => setIsPresentingModal(true)} />
+                <ActionButtonListItem icon={<Icon name = 'reply' style = {TextStyles.b1}/>} label='Log Out' onPress={() => dispatch(signOut())} />
+                <ActionButtonListItem icon={<Icon name = 'trash' style = {TextStyles.b1}/>} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon='􀙤' label='Terms of Service' onPress={() => Alert.alert('Coming soon! lol')} />
-                <ActionButtonListItem icon='􀎡' label='Privacy Policy' onPress={() => Alert.alert('Coming soon! lol')} />
+                <ActionButtonListItem icon={<Icon name = 'book' style = {TextStyles.b1}/>} label='Terms of Service' onPress={() => Alert.alert('Coming soon! lol')} />
+                <ActionButtonListItem icon={<Icon name = 'lock' style = {TextStyles.b1}/>} label='Privacy Policy' onPress={() => Alert.alert('Coming soon! lol')} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon='􀣌' label='Manage Permissions' onPress={() => Linking.openSettings()} />
+                <ActionButtonListItem icon={<Icon name = 'gear' style = {TextStyles.b1}/>} label='Manage Permissions' onPress={() => Linking.openSettings()} />
             </ActionButtonList>
             <Modal
                 animationType='fade'

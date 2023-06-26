@@ -6,7 +6,7 @@ import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-export default function ActionButtonListItem(props: { icon: string, label: string, onPress: () => void }) {
+export default function ActionButtonListItem(props: { icon: Icon, label: string, onPress: () => void }) {
     return (
         <TouchableOpacity onPress={props.onPress} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: Spacing.ThreeQuartersGap }}>
             <VerticallyCenteringGroupedRow style={{ padding: Spacing.ThreeQuartersGap, justifyContent: 'flex-start' }}>

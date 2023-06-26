@@ -61,9 +61,7 @@
         "preset": "react-native"
     },
     "reactNativePermissionsIOS": [
-        "AppTrackingTransparency",
-        "Camera",
-        "LocationWhenInUse"
+        "Camera"
     ],
     "resolutions": {
         "react-native-permissions": "^3.8.0"

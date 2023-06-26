@@ -27,10 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>Bundle ID</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>gobi.app.Findit</string>
-			</array>
+			
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
@@ -45,10 +42,7 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>FirebaseDynamicLinksCustomDomains</key>
-	<array>
-		<string>https://gobilabsllc.page.link</string>
-	</array>
+	
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -63,10 +57,8 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera permission is required to scan and add tags.</string>
+	<string>Camera permission is required to scan and add tags to your account.</string>
 	
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Use you location to show you where your items are in relation to you. </string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SF-Pro.ttf</string>
