@@ -14,6 +14,7 @@ import CreateAccount from './account/CreateAccount'
 import InAppNotificationManager from '../components/InAppNotificationManager'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { resetMiscErrorNotification, resetNoInternetNotification } from '../reducers/items'
+import EnterPassword from './account/EnterPassword'
 
 export type RootStackParamList = {
     Home: {itemGoTo:string}
@@ -35,6 +36,7 @@ export type AccountSettingsProps = NativeStackScreenProps<RootStackParamList, 'A
 export type SignInProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>
 export type EmailSignInProps = NativeStackScreenProps<RootStackParamList, 'EmailSignIn'>
 export type CreateAccountProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>
+export type EnterPasswordProps = NativeStackScreenProps<RootStackParamList, 'EnterPassword'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -77,6 +79,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                         <>
                             <RootStack.Screen name="SignIn" component={SignIn} />
                             <RootStack.Screen name="EmailSignIn" component={EmailSignIn} />
+                            <RootStack.Screen name="EnterPassword" component={EnterPassword} />
                             <RootStack.Screen name="CreateAccount" component={CreateAccount} />
                         </>
                     )

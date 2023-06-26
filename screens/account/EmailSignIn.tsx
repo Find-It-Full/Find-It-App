@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { FormScreenBase } from '../../ui-base/containers'
-import { Text, View } from 'react-native'
+import { Alert, Text, View } from 'react-native'
 import { TextStyles } from '../../ui-base/text'
 import BackButton from '../../components/BackButton'
 import TextField from '../../components/TextField'
@@ -28,11 +28,27 @@ export default function EmailSignIn(props: EmailSignInProps) {
         try {
             
             const methods = await auth().fetchSignInMethodsForEmail(email)
-            if (methods.length > 0) {
+            let noOther = true
+            methods.forEach((method) => {
+                if(method == 'google.com'){
+                    Alert.alert("Please sign in with google")
+                    noOther = false
+                    props.navigation.goBack()
+                    
+                } 
+                if(method == 'apple.com'){
+                    Alert.alert("Please sign in with apple")
+                    noOther = false
+                    props.navigation.goBack()
+                } 
+              });
+            
+            if (methods.length > 0 && noOther) {
                 console.log("analysitcs --- enter password")
                 await analytics().logEvent('enter_password', {})
                 props.navigation.navigate('EnterPassword', { email: email })
-            } else {
+            } 
+            else if (noOther) {
                 console.log("analysitcs --- create account email")
                 await analytics().logEvent('create_email_account', {})
                 props.navigation.navigate('CreateAccount', { email: email })

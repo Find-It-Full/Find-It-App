@@ -51,6 +51,12 @@ export namespace TextStyles {
         color: Colors.TextColor
     }
 
+    export const pRed: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Regular',
+        fontSize: 14,
+        color: Colors.Red
+    }
+
     export const emoji: StyleProp<TextStyle> = {
         fontSize: 24
     }

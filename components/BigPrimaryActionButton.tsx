@@ -5,8 +5,8 @@ import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
 import { VerticallyCenteringRow } from '../ui-base/layouts'
 import { ActionButton } from '../ui-base/containers'
-
-export default function BigPrimaryActionButton(props: { label: string, icon?: string, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
+import Icon from 'react-native-vector-icons/FontAwesome'
+export default function BigPrimaryActionButton(props: { label: string, icon?: Icon, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
 
     const disabled = props.disabled || props.isLoading
 
