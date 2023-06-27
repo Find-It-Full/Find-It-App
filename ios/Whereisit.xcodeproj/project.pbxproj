@@ -501,7 +501,7 @@
 				DEVELOPMENT_TEAM = 4X5A3KKR32;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Whereisit/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FindIT;
+				INFOPLIST_KEY_CFBundleDisplayName = Beacon;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -533,7 +533,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4X5A3KKR32;
 				INFOPLIST_FILE = Whereisit/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FindIT;
+				INFOPLIST_KEY_CFBundleDisplayName = Beacon;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (

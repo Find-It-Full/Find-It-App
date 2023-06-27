@@ -69,7 +69,7 @@ export default function SignIn(props: SignInProps) {
         <>
             <ScreenBase>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={TextStyles.h1}>FoundHound</Text>
+                    <Text style={TextStyles.h1}>Beacon Tags</Text>
                 </View>
                 {/* <EmailAndPasswordInput error={error} sent={sent} forgotPassword={async (email) => { await forgotPassword(email) }} onSubmit={async (email, password) => { await emailSignIn(email, password) }} /> */}
                 <BigPrimaryActionButton
