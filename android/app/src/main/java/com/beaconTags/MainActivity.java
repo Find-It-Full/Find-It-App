@@ -1,4 +1,4 @@
-package com.whereisit;
+package com.beaconTags;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

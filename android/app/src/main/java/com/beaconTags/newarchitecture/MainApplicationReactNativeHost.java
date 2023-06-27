@@ -1,4 +1,4 @@
-package com.whereisit.newarchitecture;
+package com.beaconTags.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.whereisit.BuildConfig;
-import com.whereisit.newarchitecture.components.MainComponentsRegistry;
-import com.whereisit.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.beaconTags.BuildConfig;
+import com.beaconTags.newarchitecture.components.MainComponentsRegistry;
+import com.beaconTags.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

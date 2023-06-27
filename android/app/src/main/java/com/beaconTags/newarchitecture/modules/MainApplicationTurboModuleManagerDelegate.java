@@ -1,4 +1,4 @@
-package com.whereisit.newarchitecture.modules;
+package com.beaconTags.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
