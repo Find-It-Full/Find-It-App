@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react"
-import { Text, Button, TouchableOpacity, View, Linking, Alert } from "react-native"
+import { Text, Button, TouchableOpacity, View, Linking, Alert, Platform } from "react-native"
 import { ScanCodeProps } from "./AddItemFlowContainer"
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions"
 import QRCodeScanner from "react-native-qrcode-scanner"
@@ -41,7 +41,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
 
     async function checkForCameraPermission() {
         console.log("Checking camera permissions...")
-
+        if(Platform.OS === 'ios'){
         const checkResult = await check(PERMISSIONS.IOS.CAMERA)
         console.log(`Got result: ${checkResult}`)
 
@@ -67,20 +67,22 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
         if (requestResult === RESULTS.GRANTED) {
             setCameraAllowed(true)
         }
-
+    }
+    else{
         // TODO: handle Android permissions
-        // const checkResultAndroid = await check(PERMISSIONS.ANDROID.CAMERA)
-        // if (checkResultAndroid === RESULTS.UNAVAILABLE) {
-        //     Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
-        //     setDidCheckForCameraPermission(true)
-        //     return
-        // }
+        const checkResultAndroid = await check(PERMISSIONS.ANDROID.CAMERA)
+        if (checkResultAndroid === RESULTS.UNAVAILABLE) {
+            Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
+            setDidCheckForCameraPermission(true)
+            return
+        }
 
-        // const requestResultAndroid = await request(PERMISSIONS.ANDROID.CAMERA)
+        const requestResultAndroid = await request(PERMISSIONS.ANDROID.CAMERA)
 
-        // if (requestResultAndroid === RESULTS.GRANTED) {
-        //     setCameraAllowed(true)
-        // }
+        if (requestResultAndroid === RESULTS.GRANTED) {
+            setCameraAllowed(true)
+        }
+    }
     }
 
     async function checkForPriorCameraDenial() {
