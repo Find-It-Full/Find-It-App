@@ -37,7 +37,7 @@ export function FormScreenBase(props: { children?: React.ReactNode, style?: View
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
 
     return (
-        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={64} style={{ 
+        <KeyboardAvoidingView behavior='padding' style={{ 
             padding: Spacing.ScreenPadding,
             marginBottom: !!(safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
             backgroundColor: Colors.Background, 

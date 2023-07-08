@@ -5,7 +5,7 @@
 
     <application
       android:name="com.beaconTags.MainApplication"
-      android:label="@string/app_name"
+      android:label="Beacon"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
@@ -13,7 +13,7 @@
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBCdOph1FqRHjuTRwy3P0zp4-zoiqeZYz8"></meta-data>
       <activity
         android:name="com.beaconTags.MainActivity"
-        android:label="@string/app_name"
+        android:label="Beacon"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
