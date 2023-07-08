@@ -6,7 +6,7 @@ import { Colors } from '../ui-base/colors'
 import { Radii } from '../ui-base/radii'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 export default function BackButton() {
 
@@ -16,7 +16,7 @@ export default function BackButton() {
     return (
         <TouchableOpacity style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} onPress={()=>{
         navigation?.goBack()}}>
-            <Text style={TextStyles.h3}><Icon style={TextStyles.h3} name="chevron-left"/></Text>
+            <Text style={TextStyles.h3}><Icon style={TextStyles.h2} name="ios-chevron-back"/></Text>
         </TouchableOpacity>
     )
 }

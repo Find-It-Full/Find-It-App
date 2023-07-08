@@ -18,7 +18,7 @@
 		956F2C5AC2E1084C22917B19 /* Pods_Whereisit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5240679B86BE3C2540D9D86 /* Pods_Whereisit.framework */; };
 		A7F88C4E239911B51CCC5BDB /* Pods_Whereisit_WhereisitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E57BE434478818E428B67AB /* Pods_Whereisit_WhereisitTests.framework */; };
 		B402D59B295FAB82002C2419 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B402D59A295FAB82002C2419 /* GoogleService-Info.plist */; };
-		B41074D32A47763D0066B5E8 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B41074D22A47763D0066B5E8 /* FontAwesome.ttf */; };
+		B460E6CB2A59F929006BAEB7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B460E6CA2A59F929006BAEB7 /* Ionicons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,8 +51,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Whereisit/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B0235E2B4350F7760077C48 /* Pods-Whereisit-WhereisitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Whereisit-WhereisitTests.release.xcconfig"; path = "Target Support Files/Pods-Whereisit-WhereisitTests/Pods-Whereisit-WhereisitTests.release.xcconfig"; sourceTree = "<group>"; };
 		B402D59A295FAB82002C2419 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Whereisit/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		B41074D22A47763D0066B5E8 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = ../../assets/FontAwesome.ttf; sourceTree = "<group>"; };
 		B4315E1F295E5ABF00412553 /* Whereisit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Whereisit.entitlements; path = Whereisit/Whereisit.entitlements; sourceTree = "<group>"; };
+		B460E6CA2A59F929006BAEB7 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
 		C8A868989D478A8DB4D02186 /* Pods-Whereisit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Whereisit.release.xcconfig"; path = "Target Support Files/Pods-Whereisit/Pods-Whereisit.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F5240679B86BE3C2540D9D86 /* Pods_Whereisit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Whereisit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,7 +126,7 @@
 		56035ECD296BD81200EE2BFD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B41074D22A47763D0066B5E8 /* FontAwesome.ttf */,
+				B460E6CA2A59F929006BAEB7 /* Ionicons.ttf */,
 				56035ED0296BD8F500EE2BFD /* SF-Pro.ttf */,
 			);
 			path = Resources;
@@ -268,8 +268,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B460E6CB2A59F929006BAEB7 /* Ionicons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				B41074D32A47763D0066B5E8 /* FontAwesome.ttf in Resources */,
 				56035ED1296BD8F500EE2BFD /* SF-Pro.ttf in Resources */,
 				B402D59B295FAB82002C2419 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,

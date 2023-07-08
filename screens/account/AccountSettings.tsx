@@ -13,7 +13,7 @@ import auth from '@react-native-firebase/auth'
 import { useAppDispatch } from '../../store/hooks'
 import { signOut } from '../../reducers/userData'
 import { TextStyles } from '../../ui-base/text'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
@@ -25,17 +25,17 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon={<Icon name = 'reply' style = {TextStyles.b1}/>} label='Log Out' onPress={() => dispatch(signOut())} />
-                <ActionButtonListItem icon={<Icon name = 'trash' style = {TextStyles.b1}/>} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
+                <ActionButtonListItem icon={<Icon name = 'ios-log-out' style = {TextStyles.b1}/>} label='Log Out' onPress={() => dispatch(signOut())} />
+                <ActionButtonListItem icon={<Icon name = 'ios-trash' style = {TextStyles.b1}/>} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon={<Icon name = 'book' style = {TextStyles.b1}/>} label='Terms of Service' onPress={() => Linking.openURL("https://docs.google.com/document/d/1ADa4cqyyv6kZRBu4bHC1CvfNxGd8KaTdHQaCYVlZWfg/edit?usp=sharing")} />
-                <ActionButtonListItem icon={<Icon name = 'lock' style = {TextStyles.b1}/>} label='Privacy Policy' onPress={() => Linking.openURL("https://docs.google.com/document/d/1qciVUlpEBy3Pzk7LQfCNo_VKVw1xymsOAGgz71yoF14/edit?usp=sharing")} />
+                <ActionButtonListItem icon={<Icon name = 'ios-book' style = {TextStyles.b1}/>} label='Terms of Service' onPress={() => Linking.openURL("https://docs.google.com/document/d/1ADa4cqyyv6kZRBu4bHC1CvfNxGd8KaTdHQaCYVlZWfg/edit?usp=sharing")} />
+                <ActionButtonListItem icon={<Icon name = 'ios-lock-closed' style = {TextStyles.b1}/>} label='Privacy Policy' onPress={() => Linking.openURL("https://docs.google.com/document/d/1qciVUlpEBy3Pzk7LQfCNo_VKVw1xymsOAGgz71yoF14/edit?usp=sharing")} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon={<Icon name = 'gear' style = {TextStyles.b1}/>} label='Manage Permissions' onPress={() => Linking.openSettings()} />
+                <ActionButtonListItem icon={<Icon name = 'ios-cog' style = {TextStyles.b1}/>} label='Manage Permissions' onPress={() => Linking.openSettings()} />
             </ActionButtonList>
             <Modal
                 animationType='fade'

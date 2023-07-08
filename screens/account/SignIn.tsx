@@ -16,7 +16,7 @@ import { appleAuth } from '@invertase/react-native-apple-authentication';
 import BigPrimaryActionButton from "../../components/BigPrimaryActionButton"
 import InAppNotificationManager from "../../components/InAppNotificationManager"
 import analytics from '@react-native-firebase/analytics';
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 
 export default function SignIn(props: SignInProps) {
@@ -73,7 +73,7 @@ export default function SignIn(props: SignInProps) {
                 </View>
                 {/* <EmailAndPasswordInput error={error} sent={sent} forgotPassword={async (email) => { await forgotPassword(email) }} onSubmit={async (email, password) => { await emailSignIn(email, password) }} /> */}
                 <BigPrimaryActionButton
-                    icon = {<Icon name = 'envelope-o' style ={TextStyles.h3}/>}
+                    icon = {<Icon name = 'ios-mail-outline' style ={TextStyles.h3}/>}
                     label='Continue with Email'
                     onPress={async () =>{
                         await analytics().logEvent('signin_google_worked', {})
@@ -84,7 +84,7 @@ export default function SignIn(props: SignInProps) {
                 />
                 <Spacer size={Spacing.Gap} />
                 <BigPrimaryActionButton
-                    icon= {<Icon name = 'google' style ={TextStyles.h3}/>}
+                    icon= {<Icon name = 'ios-logo-google' style ={TextStyles.h3}/>}
                     label='Continue with Google'
                     onPress={() =>
                         onGoogleSignIn().then(async () => {
@@ -105,7 +105,7 @@ export default function SignIn(props: SignInProps) {
                 />
                 <Spacer size={Spacing.Gap} />
                 <BigPrimaryActionButton
-                    icon={<Icon name = 'apple' style ={TextStyles.h3}/>}
+                    icon={<Icon name = 'ios-logo-apple' style ={TextStyles.h3}/>}
                     label='Continue with Apple'
                     onPress={() =>
                         onAppleButtonPress().then(async () => {

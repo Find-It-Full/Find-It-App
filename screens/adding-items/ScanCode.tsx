@@ -11,6 +11,7 @@ import { FirestoreBackend } from "../../backend/firestoreBackend"
 import { TagID } from "../../backend/databaseTypes"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import analytics from '@react-native-firebase/analytics';
+import Icon from 'react-native-vector-icons/Ionicons'
 export default function ScanCode({ navigation }: ScanCodeProps) {
 
     const scannerRef = React.useRef<QRCodeScanner>(null)
@@ -131,7 +132,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
                     <Text>Grant camera permission to scan QR code.</Text>
             }
             <TouchableOpacity style={{ margin: Spacing.Gap * 1.5, zIndex: 1 }} onPress={() => navigation.goBack()}>
-                <Text style={[TextStyles.i1, { color: 'white' }]}>􀆄</Text>
+                <Text style={[TextStyles.i1, { color: 'white' }]}><Icon style={[TextStyles.i1, { color: 'white' }]} name = 'ios-close'/></Text>
             </TouchableOpacity>
             <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', height: '100%' }}>
 

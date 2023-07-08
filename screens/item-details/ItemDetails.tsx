@@ -24,7 +24,7 @@ import SightingMap from '../../components/SightingMap';
 import IconButton from '../../components/IconButton';
 import { Radii } from '../../ui-base/radii';
 import analytics from '@react-native-firebase/analytics';
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 import ContextMenu from "react-native-context-menu-view";
 
 export default function ItemDetails(props: ItemDetailsProps) {
@@ -296,7 +296,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
                         label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
-                        icon={item.isMissing ? <Icon color={Colors.Green} style = {TextStyles.h3Logo}  name='check-square'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='crosshairs'/>}
+                        icon={item.isMissing ? <Icon color={Colors.Green} style = {TextStyles.h3Logo}  name='ios-checkbox-outline'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='ios-alert'/>}
                         textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
                         isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
@@ -304,7 +304,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     />
                     <PrimaryActionButton
                         label='Directions'
-                        icon = {<Icon style = {TextStyles.h3} name='map'/>}
+                        icon = {<Icon style = {TextStyles.h3} name='ios-map'/>}
                         disabled={ ! selectedReport || ! selectedReport.location}
                         onPress={handleRequestDirections}
                     />
@@ -315,7 +315,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <>
                             <VerticallyCenteringRow style={{ marginTop: Spacing.BigGap, paddingRight: Spacing.ScreenPadding }}>
                                 <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding }]}>Sightings</Text>
-                                <IconButton icon={<Icon style = {TextStyles.h4} name='trash'/>} onPress={handleClearSightings} disabled={isClearingSightings} />
+                                <IconButton icon={<Icon style = {TextStyles.h3} name='ios-trash'/>} onPress={handleClearSightings} disabled={isClearingSightings} />
                             </VerticallyCenteringRow>
                             <View style={{ position: 'relative' }}>
                                 <ScrollView 
@@ -351,11 +351,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 reports.length > 1 ?
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
                                         <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={ ! canScrollToPrev} style={{ position: 'absolute', left: Spacing.ScreenPadding }}>
-                                            <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]}> <Icon style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]} name="chevron-left"/> Previous</Text>
+                                            <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]}> <Icon style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]} name="ios-chevron-back"/> Previous</Text>
                                         </TouchableOpacity>
                                         <Text style={[TextStyles.p2, { alignSelf: 'center' }]}>{`${selectedReport.reportIndex + 1} / ${reports.length}`}</Text>
                                         <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={ ! canScrollToNext} style={{ position: 'absolute', right: Spacing.ScreenPadding }}>
-                                            <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]}>Next {<Icon style = {[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]} name='chevron-right'/>}</Text>
+                                            <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]}>Next {<Icon style = {[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]} name='ios-chevron-forward'/>}</Text>
                                         </TouchableOpacity>
                                     </View>
                                     :
@@ -482,7 +482,7 @@ function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () 
     >
         <PrimaryActionButton
             label='More'
-            icon={<Icon style = {TextStyles.h3}  name='sliders'/>}
+            icon={<Icon style = {TextStyles.h3}  name='ios-ellipsis-horizontal'/>}
             onPress={() => { } }
         />
     </ContextMenu>

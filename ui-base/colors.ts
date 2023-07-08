@@ -9,8 +9,8 @@ export namespace DarkModeColors {
     export const ButtonColor = '#2C2C2C'
     export const ItemBorder = 'rgba(255, 255, 255, 0.1)'
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
-    export const Red = '#FF0000'//PlatformColor('systemRed')
-    export const Green = '#208041'//PlatformColor('systemGreen')
+    export const Red = 'rgba(255, 59, 48, 1)'//PlatformColor('systemRed')
+    export const Green = 'rgba(52, 199, 89, 1)'//PlatformColor('systemGreen')
     export const DisabledOpacity = 0.6
 }
 

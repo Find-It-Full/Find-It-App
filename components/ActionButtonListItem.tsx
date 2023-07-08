@@ -4,7 +4,7 @@ import { Colors } from '../ui-base/colors'
 import { Spacer, VerticallyCenteringGroupedRow } from '../ui-base/layouts'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 export default function ActionButtonListItem(props: { icon: Icon, label: string, onPress: () => void }) {
     return (
@@ -16,7 +16,7 @@ export default function ActionButtonListItem(props: { icon: Icon, label: string,
                 <Spacer size={Spacing.ThreeQuartersGap} />
                 <Text style={TextStyles.h4}>{props.label}</Text>
             </VerticallyCenteringGroupedRow>
-            <Text style={TextStyles.b1}><Icon style={TextStyles.h3}name="chevron-right"/></Text>
+            <Text style={TextStyles.b1}><Icon style={TextStyles.h2}name="ios-chevron-forward"/></Text>
         </TouchableOpacity>
     )
 }

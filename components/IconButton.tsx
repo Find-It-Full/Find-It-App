@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-nat
 import { Colors } from '../ui-base/colors'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 export default function IconButton(props: { icon: Icon, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
 
     const disabled = props.disabled || props.isLoading

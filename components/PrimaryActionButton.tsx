@@ -4,7 +4,7 @@ import { Text, StyleSheet, ActivityIndicator, StyleProp, TextStyle } from 'react
 import { TextStyles } from '../ui-base/text'
 import { Spacing } from '../ui-base/spacing'
 import { Colors } from '../ui-base/colors'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/Ionicons'
 interface PrimaryActionButtonProps {
     label: string
     icon: Icon
