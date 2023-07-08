@@ -26,7 +26,7 @@ export namespace TextStyles {
 
     export const h3Logo: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: 'bold'
     }
 

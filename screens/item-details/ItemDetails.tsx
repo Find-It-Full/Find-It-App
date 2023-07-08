@@ -296,7 +296,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
                         label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
-                        icon={item.isMissing ? <Icon color={Colors.Green} style = {TextStyles.h3Logo}  name='ios-checkbox-outline'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='ios-alert'/>}
+                        icon={item.isMissing ? <Icon color={Colors.Green} style = {TextStyles.h3Logo}  name='ios-checkbox-outline'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='ios-warning'/>}
                         textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
                         isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
@@ -304,7 +304,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     />
                     <PrimaryActionButton
                         label='Directions'
-                        icon = {<Icon style = {TextStyles.h3} name='ios-map'/>}
+                        icon = {<Icon style = {TextStyles.h3Logo} name='ios-map'/>}
                         disabled={ ! selectedReport || ! selectedReport.location}
                         onPress={handleRequestDirections}
                     />
@@ -482,7 +482,7 @@ function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () 
     >
         <PrimaryActionButton
             label='More'
-            icon={<Icon style = {TextStyles.h3}  name='ios-ellipsis-horizontal'/>}
+            icon={<Icon style = {TextStyles.h3Logo}  name='ios-ellipsis-horizontal-circle-sharp'/>}
             onPress={() => { } }
         />
     </ContextMenu>
