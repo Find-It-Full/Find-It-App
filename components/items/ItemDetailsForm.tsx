@@ -19,7 +19,7 @@ import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
-import EmojiPicker from '../../screens/EmojiPicker'
+import EmojiPickerManager from '../../screens/EmojiPicker'
 
 export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
 
@@ -52,7 +52,7 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                             setName(text)
                         }}
                     />
-                    <EmojiPicker currentValue={icon} onSelect={setIcon} />               
+                    <EmojiPickerManager currentValue={icon} onSelect={setIcon} />               
                 </>
             </View>
             <VerticallyCenteringRow>
