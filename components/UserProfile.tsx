@@ -11,7 +11,7 @@ export default function UserProfile() {
     const name = user.displayName ?? '_ _'
     let initials: ReactElement | string = name.split(' ').map((str) => str[0]).reduce((prev, cur) => `${prev}${cur}`)
     if (initials == "__"){
-        initials = <Icon style={TextStyles.h1}name="ios-person-outline"/>
+        initials = <Icon style={TextStyles.h1}name="ios-person"/>
     }
     return (
         <View style={{ justifyContent: 'center', alignItems: 'stretch', flexDirection: 'row' }}>

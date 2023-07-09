@@ -35,7 +35,7 @@ export default function AccountSettings(props: AccountSettingsProps) {
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon={<Icon name = 'ios-cog' style = {TextStyles.b1}/>} label='Manage Permissions' onPress={() => Linking.openSettings()} />
+                <ActionButtonListItem icon={<Icon name = 'settings-sharp' style = {TextStyles.b1}/>} label='Manage Permissions' onPress={() => Linking.openSettings()} />
             </ActionButtonList>
             <Modal
                 animationType='fade'
