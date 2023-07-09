@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { FormScreenBase } from '../../ui-base/containers'
-import { Alert, Text, View } from 'react-native'
+import { Alert, Linking, Text, View } from 'react-native'
 import { TextStyles } from '../../ui-base/text'
 import BackButton from '../../components/BackButton'
 import TextField from '../../components/TextField'
@@ -11,6 +11,7 @@ import { Colors } from '../../ui-base/colors'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { Spacing } from '../../ui-base/spacing'
 import analytics from '@react-native-firebase/analytics';
+import { Link } from '@react-navigation/native'
 
 export default function EmailSignIn(props: EmailSignInProps) {
 
@@ -94,6 +95,17 @@ export default function EmailSignIn(props: EmailSignInProps) {
                     disabled={ ! isValidEmail}
                     isInColumn
                 />
+            <View style ={{justifyContent: "center", alignItems: "center", paddingTop: Spacing.ThreeQuartersGap}}>
+            <Text style={[TextStyles.p, { marginBottom: Spacing.BigGap }]}>Having Trouble Signing In<Text onPress={async ()=>{ 
+                const canOpen = await Linking.canOpenURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
+                console.warn(canOpen)
+            if(canOpen){
+            Linking.openURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")}
+            else{
+                Linking.openURL("https://beacontags.com/support")
+            }
+            }}style={[TextStyles.p, { color: Colors.Blue }]}> Contact Support</Text></Text>    
+            </View>
             </View>
         </FormScreenBase>
     )
