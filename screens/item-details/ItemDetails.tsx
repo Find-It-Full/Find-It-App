@@ -296,8 +296,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
                         label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
-                        icon={item.isMissing ? <Icon color={Colors.Green} style = {TextStyles.h3Logo}  name='ios-checkbox-outline'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='ios-warning'/>}
-                        textSyle={{ color: item.isMissing ? Colors.Green : Colors.Red }}
+                        icon={item.isMissing ? Platform.OS ==="ios"?<Text style = {TextStyles.h3} >􀇻</Text>:<Icon color={Colors.TextColor} style = {TextStyles.h3}  name='ios-checkbox'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='ios-warning'/>}
+                        textSyle={{ color: item.isMissing ? Colors.TextColor : Colors.Red }}
                         isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
                         
