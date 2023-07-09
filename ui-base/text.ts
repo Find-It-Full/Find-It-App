@@ -24,12 +24,6 @@ export namespace TextStyles {
         color: Colors.TextColor
     }
 
-    export const h3Logo: StyleProp<TextStyle> = {
-        fontFamily: 'SFPro-Bold',
-        fontSize: 22,
-        fontWeight: 'bold'
-    }
-
     export const h4: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
         fontSize: 14,
@@ -51,12 +45,6 @@ export namespace TextStyles {
         color: Colors.TextColor
     }
 
-    export const pRed: StyleProp<TextStyle> = {
-        fontFamily: 'SFPro-Regular',
-        fontSize: 14,
-        color: Colors.Red
-    }
-
     export const emoji: StyleProp<TextStyle> = {
         fontSize: 24
     }
@@ -72,16 +60,16 @@ export namespace TextStyles {
         opacity: Colors.DisabledOpacity
     }
 
-    export const b1: StyleProp<TextStyle> = {
+    export const b0: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
-        fontSize: 16,
+        fontSize: 19,
         fontWeight: '800',
         color: Colors.TextColor,
     }
 
-    export const accountIcon: StyleProp<TextStyle> = {
+    export const b1: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
-        fontSize: 28,
+        fontSize: 16,
         fontWeight: '800',
         color: Colors.TextColor,
     }

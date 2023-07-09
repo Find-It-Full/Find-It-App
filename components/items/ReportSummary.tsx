@@ -64,7 +64,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                     <TouchableOpacity
                     
                     onPress={async () => {
-                        console.log("analysitcs --- open mesages")
+                        console.log("analytics --- open mesages")
                         await analytics().logEvent('open_messages', {report:props.report})
                         Linking.openURL(`sms://${contactPhoneNumber}`)}
                     }

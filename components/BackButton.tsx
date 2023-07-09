@@ -5,8 +5,7 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { Colors } from '../ui-base/colors'
 import { Radii } from '../ui-base/radii'
 import { Spacing } from '../ui-base/spacing'
-import { TextStyles } from '../ui-base/text'
-import Icon from 'react-native-vector-icons/Ionicons'
+import PlatformIcon, { Icons } from './PlatformIcon'
 
 export default function BackButton() {
 
@@ -14,9 +13,13 @@ export default function BackButton() {
     const navigation = React.useContext(NavigationContext)
 
     return (
-        <TouchableOpacity style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} onPress={()=>{
-        navigation?.goBack()}}>
-            <Text style={TextStyles.h3}><Icon style={TextStyles.h2} name="ios-chevron-back"/></Text>
+        <TouchableOpacity
+            style={[styles.backButton, { top: (safeAreaInsets?.top ?? 0) }]} 
+            onPress={ () => {
+                navigation?.goBack()
+            }}
+        >
+            <PlatformIcon icon={Icons.BACK} />
         </TouchableOpacity>
     )
 }

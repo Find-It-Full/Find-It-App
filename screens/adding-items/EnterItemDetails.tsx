@@ -20,7 +20,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                 name,
                 icon
             }))
-            console.log("analysitcs --- item added")
+            console.log("analytics --- item added")
             await analytics().logEvent('item_added', {tagID:tagID,name:name,icon:icon})
             navigation.navigate('Home')
 

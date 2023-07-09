@@ -45,17 +45,17 @@ export default function EmailSignIn(props: EmailSignInProps) {
               });
             
             if (methods.length > 0 && noOther) {
-                console.log("analysitcs --- enter password")
+                console.log("analytics --- enter password")
                 await analytics().logEvent('enter_password', {})
                 props.navigation.navigate('EnterPassword', { email: email })
             } 
             else if (noOther) {
-                console.log("analysitcs --- create account email")
+                console.log("analytics --- create account email")
                 await analytics().logEvent('create_email_account', {})
                 props.navigation.navigate('CreateAccount', { email: email })
             }
         } catch (error) {
-            console.log("analysitcs --- error create account email")
+            console.log("analytics --- error create account email")
             await analytics().logEvent('email_signin_error', {error:error})
             if (error.message === 'auth/invalid-email') {
                 setEmailError('Oops! That email is invalid.')

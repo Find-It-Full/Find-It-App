@@ -25,7 +25,6 @@ end
 target 'Whereisit' do
   config = use_native_modules!
   use_frameworks! :linkage => :static
-  use_frameworks!
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
   
 

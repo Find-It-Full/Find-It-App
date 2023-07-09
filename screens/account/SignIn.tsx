@@ -88,13 +88,13 @@ export default function SignIn(props: SignInProps) {
                     label='Continue with Google'
                     onPress={() =>
                         onGoogleSignIn().then(async () => {
-                            console.log("analysitcs --- google signin worked")
+                            console.log("analytics --- google signin worked")
                         await analytics().logEvent('signin_google_worked', {})
                             console.log("Signed in with Google!")
                         }
                         ).catch(async (e) => {
                             console.log(e)
-                            console.log("analysitcs --- google signin failed")
+                            console.log("analytics --- google signin failed")
                             await analytics().logEvent('signin_apple_worked', {error:e})
                             if (e.code !== '-5') {
                                 setShowMiscError(true)
@@ -109,12 +109,12 @@ export default function SignIn(props: SignInProps) {
                     label='Continue with Apple'
                     onPress={() =>
                         onAppleButtonPress().then(async () => {
-                            console.log("analysitcs --- apple signin worked")
+                            console.log("analytics --- apple signin worked")
                             await analytics().logEvent('signin_apple_worked', {})
                             console.log("Signed in with Apple!")
                         }
                         ).catch(async (e) => {
-                            console.log("analysitcs --- apple signin failed")
+                            console.log("analytics --- apple signin failed")
                             await analytics().logEvent('signin_apple_error', {error:e})
                             if (e.code === '1000') {
                                 setShowNoInternetError(true)

@@ -28,7 +28,7 @@ export default function DeleteAccountForm(props: { onClose: () => void }) {
     }, [confirmationText])
 
     const onDelete = async () => {
-        console.log("analysitcs --- delete account")
+        console.log("analytics --- delete account")
         await analytics().logEvent('account_deleted', {})
         setIsDeletingAccount(true)
 

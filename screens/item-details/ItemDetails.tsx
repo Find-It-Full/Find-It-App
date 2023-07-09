@@ -26,6 +26,7 @@ import { Radii } from '../../ui-base/radii';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import ContextMenu from "react-native-context-menu-view";
+import PlatformIcon, { Icons } from '../../components/PlatformIcon';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -130,7 +131,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             reportIndex: index,
             location: isExactLocation(locationField) ? locationField : null
         }
-        console.log("analysitcs --- new selected report")
+        console.log("analytics --- new selected report")
         await analytics().logEvent('new_selected_report', {newSelectedReport})
         setSelectedReport(newSelectedReport)
     }
@@ -171,7 +172,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
         
         // If the item isn't missing, we're setting it as lost, hand over control to the modal
         if ( ! item.isMissing) {
-            console.log("analysitcs --- set item lost")
+            console.log("analytics --- set item lost")
             await analytics().logEvent('item_marked_lost', item)
             setIsChangingLostState('set-lost')
             setIsPresentingMarkAsLostModal(true)
@@ -180,7 +181,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
         // Else, we're setting it as found
         setIsChangingLostState('set-found')
-        console.log("analysitcs --- set item found")
+        console.log("analytics --- set item found")
         await analytics().logEvent('item_marked_found', item)
 
         const handleSetItemIsFound = async (clearRecentReports: boolean) => {
@@ -296,7 +297,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
                     <PrimaryActionButton 
                         label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
-                        icon={item.isMissing ? Platform.OS ==="ios"?<Text style = {TextStyles.h3} >􀇻</Text>:<Icon color={Colors.TextColor} style = {TextStyles.h3}  name='ios-checkbox'/> : <Icon style = {TextStyles.h3Logo} color ={Colors.Red} name='ios-warning'/>}
+                        icon={<PlatformIcon icon={item.isMissing ? Icons.SEAL : Icons.ALERT} style={{ color: item.isMissing ? Colors.TextColor : Colors.Red }} />}
                         textSyle={{ color: item.isMissing ? Colors.TextColor : Colors.Red }}
                         isLoading={isChangingLostState !== 'none'}
                         onPress={handleChangeLostState}
@@ -304,7 +305,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     />
                     <PrimaryActionButton
                         label='Directions'
-                        icon = {<Icon style = {TextStyles.h3Logo} name='ios-map'/>}
+                        icon={<PlatformIcon icon={Icons.MAP} />}
                         disabled={ ! selectedReport || ! selectedReport.location}
                         onPress={handleRequestDirections}
                     />
@@ -315,7 +316,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <>
                             <VerticallyCenteringRow style={{ marginTop: Spacing.BigGap, paddingRight: Spacing.ScreenPadding }}>
                                 <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding }]}>Sightings</Text>
-                                <IconButton icon={<Icon style = {TextStyles.h3} name='ios-trash'/>} onPress={handleClearSightings} disabled={isClearingSightings} />
+                                <IconButton icon={<PlatformIcon icon={Icons.TRASH} />} onPress={handleClearSightings} disabled={isClearingSightings} />
                             </VerticallyCenteringRow>
                             <View style={{ position: 'relative' }}>
                                 <ScrollView 
@@ -460,7 +461,7 @@ async function openLocationInMaps({ lat, lng, label }: { lat: number, lng: numbe
         return
     }
     console.warn(url)
-    console.log("analysitcs --- open maps")
+    console.log("analytics --- open maps")
     await analytics().logEvent('open_directions', {lat:lat, lng:lng, label:label})
     Linking.openURL(url)
 }
@@ -482,7 +483,7 @@ function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () 
     >
         <PrimaryActionButton
             label='More'
-            icon={<Icon style = {TextStyles.h3Logo}  name='ios-ellipsis-horizontal-circle-sharp'/>}
+            icon={<PlatformIcon icon={Icons.MORE} />}
             onPress={() => { } }
         />
     </ContextMenu>

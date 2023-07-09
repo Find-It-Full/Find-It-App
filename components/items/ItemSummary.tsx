@@ -11,6 +11,7 @@ import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts";
 import { useAppSelector } from "../../store/hooks";
 import { Colors } from "../../ui-base/colors";
 import Icon from 'react-native-vector-icons/Ionicons'
+import PlatformIcon, { Icons } from "../PlatformIcon";
 export default function ItemSummary(props: Item) {
 
     const navigation = useNavigation<ItemDetailsProps['navigation']>()
@@ -33,7 +34,7 @@ export default function ItemSummary(props: Item) {
                                 null
                         }
                         <Spacer size={Spacing.HalfGap} />
-                        <Text style={TextStyles.h3}><Icon style={TextStyles.h2}name="ios-chevron-forward"/></Text>
+                        <PlatformIcon icon={Icons.FORWARD} />
                     </VerticallyCenteringRow>
                 </VerticallyCenteringRow>
             </TouchableOpacity>

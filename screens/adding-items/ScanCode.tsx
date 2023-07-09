@@ -28,11 +28,11 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             const id = pathSegments[(pathSegments.length)-1]
             console.log(id)
             const tagID = await FirestoreBackend.getTagID(id)
-            console.log("analysitcs --- item scanned valid")
+            console.log("analytics --- item scanned valid")
             await analytics().logEvent('item_scanned', {valid_tag:true})
             navigation.navigate('EnterItemDetails', { tagID: tagID })
         } catch (e) {
-            console.log("analysitcs --- item scanned error")
+            console.log("analytics --- item scanned error")
             await analytics().logEvent('item_scanned', {valid_tag:false,error:e})
             console.log(`Read invalid URL: ${e}`)
             scannerRef.current?.reactivate()
