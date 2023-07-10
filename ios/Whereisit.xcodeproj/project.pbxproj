@@ -18,7 +18,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8A42C55B6505EA2E1B53C74F /* Pods_Whereisit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE8EBE0CD3CE2CE7EF0B29 /* Pods_Whereisit.framework */; };
 		B402D59B295FAB82002C2419 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B402D59A295FAB82002C2419 /* GoogleService-Info.plist */; };
-		B460E6CB2A59F929006BAEB7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B460E6CA2A59F929006BAEB7 /* Ionicons.ttf */; };
+		B460E6CC2A5B8017006BAEB7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B460E6CA2A59F929006BAEB7 /* Ionicons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,7 +268,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B460E6CB2A59F929006BAEB7 /* Ionicons.ttf in Resources */,
+				B460E6CC2A5B8017006BAEB7 /* Ionicons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				56035ED1296BD8F500EE2BFD /* SF-Pro.ttf in Resources */,
 				B402D59B295FAB82002C2419 /* GoogleService-Info.plist in Resources */,
