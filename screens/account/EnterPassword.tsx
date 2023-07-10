@@ -9,6 +9,7 @@ import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
 import { EnterPasswordProps } from '../Navigator';
 import auth from "@react-native-firebase/auth"
+import { Colors } from '../../ui-base/colors';
 
 export default function EnterPassword(props: EnterPasswordProps) {
 
@@ -35,20 +36,21 @@ export default function EnterPassword(props: EnterPasswordProps) {
                         autoFocus: true,
                     }}
                 />
-                 {wrongPassword?<Text style={TextStyles.pRed} >{"Wrong Password"}</Text>:<></>}
+                 {wrongPassword?<Text style={[TextStyles.p, { color: Colors.Red }]} >{"Wrong Password"}</Text>:<></>}
 
-
-                 <SmallButton label='Forgot Password' onPress={() => {
-                try{
-                auth().sendPasswordResetEmail(props.route.params.email)
-            Alert.alert("Email Reset Sent")
-        props.navigation.navigate("SignIn")}
-                catch(err){
-                    console.error(err)
-                }
-                
-                
-                }}  isInColumn />
+                 <Text
+                        style = {[TextStyles.p, { color: Colors.Blue }]}
+                        onPress={ async () => {
+                            try{
+                                auth().sendPasswordResetEmail(props.route.params.email)
+                            Alert.alert("Email Reset Sent")
+                        props.navigation.navigate("SignIn")}
+                                catch(err){
+                                    console.error(err)
+                                }
+                        }}
+                    >Forgot Password</Text>
+                 
             </View>
             <BigButton label='Next' onPress={() => {
                 try{

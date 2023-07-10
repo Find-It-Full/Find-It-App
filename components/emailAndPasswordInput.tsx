@@ -67,16 +67,14 @@ export default function EmailAndPasswordInput(props: { forgotPassword: (email: s
                             setIsSubmitting(false)
                         }}
                     />
-                    <BigButton 
-                        label={"Forgot Password"} 
-                        disabled={ ! nameValid} 
-                        isLoading={isSubmitting}
+                    <Text
+                        style = {[TextStyles.p, { color: Colors.Blue }]}
                         onPress={ async () => {
                             setIsSubmitting(true)
                             await props.forgotPassword(email)
                             setIsSubmitting(false)
                         }}
-                    />
+                    >Forgot Password</Text>
                     </View>
                     </View>
             </>
