@@ -2,6 +2,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import auth from "@react-native-firebase/auth"
 import React, { useState } from "react"
 import {
+    Platform,
     Text,
     View,
 } from "react-native"
@@ -104,7 +105,7 @@ export default function SignIn(props: SignInProps) {
                     isInColumn
                 />
                 <Spacer size={Spacing.Gap} />
-                <BigPrimaryActionButton
+                {Platform.OS === "ios"?<BigPrimaryActionButton
                     icon={<Icon name = 'ios-logo-apple' style ={TextStyles.h3}/>}
                     label='Continue with Apple'
                     onPress={() =>
@@ -124,7 +125,7 @@ export default function SignIn(props: SignInProps) {
                         })
                     }
                     isInColumn
-                />
+                />:null}
             </ScreenBase>
             <InAppNotificationManager 
                 shouldShowMiscError={showMiscError}
