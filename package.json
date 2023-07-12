@@ -8,7 +8,9 @@
         "lint": "eslint .",
         "start": "react-native start",
         "test": "jest",
-        "postinstall": "react-native setup-ios-permissions"
+        "postinstall": "react-native setup-ios-permissions",
+        "dev":"bash dev.sh",
+        "prod":"bash prod.sh"
     },
     "dependencies": {
         "@invertase/react-native-apple-authentication": "^2.2.2",
