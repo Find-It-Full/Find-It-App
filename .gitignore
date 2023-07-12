@@ -55,6 +55,8 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 
+/ios/Whereisit/GoogleService-Info.plist
+
 # Expo
 .expo/
 web-build/
