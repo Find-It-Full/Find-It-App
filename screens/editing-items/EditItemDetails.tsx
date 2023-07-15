@@ -29,7 +29,7 @@ function EditItemDetails({ navigation, route }: EditItemDetailsProps) {
     const onSubmit = async (name: string, icon: string) => {
         console.log("analytics --- edit item details")
         await analytics().logEvent('edit_item_details', {name:name,icon:icon})
-        await dispatch(editItemDetails({ name, icon, itemID: route.params.itemID }))
+        await dispatch(editItemDetails({ name, icon, itemID: route.params.itemID, emailNotifications:"missing",pushNotifications:"missing" }))
         navigation.goBack()
     }
 

@@ -18,7 +18,9 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
             await dispatch(addNewItem({
                 tagID,
                 name,
-                icon
+                icon,
+                emailNotifications:"always",
+                pushNotifications:"always"
             }))
             console.log("analytics --- item added")
             await analytics().logEvent('item_added', {tagID:tagID,name:name,icon:icon})
