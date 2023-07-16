@@ -62,7 +62,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
 
     }, [])
     useEffect(() => {
-        setHasUserData(userData.firstName.length >0 && userData.lastName.length > 0)
+        setHasUserData(userData.firstName?.length >0 && userData.lastName?.length > 0)
         console.warn(userData)
 
     }, [userData])
@@ -74,7 +74,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
         dispatch(resetMiscErrorNotification())
     }
 
-    const [hasUserData,setHasUserData]  = React.useState(userData.firstName.length >0 && userData.lastName.length > 0)
+    const [hasUserData,setHasUserData]  = React.useState(userData.firstName?.length >0 && userData.lastName?.length > 0)
     
     const initialScreen = props.isAuthenticated ? (hasUserData? "Home" : "SetAccountDetails"  ) : "SignIn"
 
