@@ -9,6 +9,7 @@ export namespace Icons {
     export const BACK = ios ? '􀯶' : 'chevron-back'
     export const FORWARD = ios ? '􀯻' : 'chevron-forward'
     export const LOG_OUT = ios ? '􀱍' : 'log-out'
+    export const ACCOUNT_DETAILS = ios ? '􀈊' : 'pencil'
     export const TOS = ios ? '􀙤' : 'document'
     export const COG = ios ? '􀣌' : 'settings'
     export const ALERT = ios ? '􀇿' : 'alert-circle'

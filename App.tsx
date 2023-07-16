@@ -51,6 +51,8 @@ function subscribeToAuthStateChanges(onChange: (isAuthenticated: boolean) => voi
     return unsubscribe
 }
 
+
+
 export default function App() {
 
     const [isAuthenticated, setIsAuthenticated] = useState(auth().currentUser !== null)
@@ -58,6 +60,10 @@ export default function App() {
     useEffect(() => {
         return subscribeToAuthStateChanges(setIsAuthenticated)
     }, [isAuthenticated])
+
+    
+
+    
 
 
 

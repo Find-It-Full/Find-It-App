@@ -25,6 +25,12 @@ export interface Report {
 }
 
 export interface UserData {
+    firstName: string
+    lastName: string
+    secondaryEmail: string
+}
+
+export interface UserData {
     items: { [key: ItemID]: boolean }
     notificationTokens: string[]
     viewedReports: { [key: ReportID]: ReportViewStatus }

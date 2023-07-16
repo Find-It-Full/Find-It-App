@@ -7,6 +7,7 @@ import { DocChanges } from "./appOnlyDatabaseTypes"
 import functions from "@react-native-firebase/functions"
 
 export class FirestoreBackend {
+    
     private static users() {
         return firestore().collection(Collections.Users)
     }
@@ -120,6 +121,14 @@ export class FirestoreBackend {
         const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).get()).data() as UserData
     }
+
+    public static async editAccount(accountDetails: {firstName: string, lastName: string,  secondaryEmail: string}) {
+        const uid = auth().currentUser?.uid
+        return await this.users().doc(uid).set(accountDetails,{merge:true})
+    }
+    
+
+
 
     public static async addNotificationToken(token: string) {
         const uid = auth().currentUser?.uid
