@@ -20,11 +20,16 @@ export default function DropDown(props: { currentValue: string, onSelect: (value
                 {key:'3', value:'Never'}
                 
             ]
+
+            const keys = {'Always':{key:"1",value:"Always"}, "When Missing":{key:"2",value:"When Missing"}, "Never":{key:"3",value:"Never"}}
+                
+            const keysBack = {"1":"Always", "2":"When Missing", "3":"Never"}
           
     const [showOptions, setShowOptions] = useState(false)
     const [selection, setSelection] = useState(props.currentValue)
 
     const onSelect = (value: string) => {
+        value = keysBack[value]
         setSelection(value)
         props.onSelect(value)
     }
@@ -38,38 +43,16 @@ export default function DropDown(props: { currentValue: string, onSelect: (value
     
 
     return (
-        <View style={{
-            backgroundColor: Colors.ButtonColor,
-            paddingVertical: Spacing.ThreeQuartersGap,
-            paddingBottom: 0,
-            borderRadius: Radii.ItemRadius,
-            borderWidth: 1,
-            borderColor: Colors.ItemBorder,
-            marginBottom: Spacing.Gap
-        }}>
-            <TouchableOpacity 
-                activeOpacity={1} 
-                onPress={() => setShowOptions( ! showOptions)}
-                style={{ marginBottom: showOptions ? 0 : Spacing.ThreeQuartersGap }}
-            >
-                <VerticallyCenteringRow 
-                    style={{ marginHorizontal: Spacing.ThreeQuartersGap }}
-                    
-                >
-                    
-                <Text style={[TextStyles.emoji]}>{selection}</Text>
-                            
-                    
-                    <Text style={[TextStyles.h3]}>{ showOptions ? <Icon style = {[TextStyles.h3]} name='ios-chevron-up'/> : <Icon style = {[TextStyles.h3]} name='ios-chevron-down'/> }</Text>
-                </VerticallyCenteringRow>
-            </TouchableOpacity>
+       
             <SelectList 
-        setSelected={(val) => setSelection(val)} 
+            defaultOption = {props.currentValue?keys[props.currentValue]:{key:1,value:"always"}}
+        setSelected={(val) => onSelect(val)} 
         data={data} 
-        save="value"
+        save="key"
     />
 
-        </View>
+
+        // </View>
     )
 }
 

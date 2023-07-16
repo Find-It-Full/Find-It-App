@@ -62,7 +62,7 @@ export default function EmojiPickerManager(props: { currentValue: string, onSele
                     <Text style={[TextStyles.h3]}>{ showEmojis ? <Icon style = {[TextStyles.h3]} name='ios-chevron-up'/> : <Icon style = {[TextStyles.h3]} name='ios-chevron-down'/> }</Text>
                 </VerticallyCenteringRow>
             </TouchableOpacity>
-            {showEmojis?<View style = {{paddingTop:250}}/>:null}
+            {showEmojis?<View style = {{marginTop:50}}/>:null}
             <EmojiPicker defaultHeight = {300} expandable={false} onEmojiSelected={(emojiData)=>{onSelect(emojiData.emoji)}} open={showEmojis} onClose={() => setShowEmojis(false)} />
 
         </View>

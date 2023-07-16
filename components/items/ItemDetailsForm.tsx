@@ -65,7 +65,7 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                         null
                 }
                 <BigButton 
-                    label={props.currentValues ? `Save Changes` : `Add Item`} 
+                    label={props.currentValues ? `Save Changes` : `Next`} 
                     disabled={ ! nameValid || ! iconValid || (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {
