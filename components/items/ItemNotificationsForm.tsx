@@ -20,15 +20,16 @@ import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
 import EmojiPickerManager from '../../screens/EmojiPicker'
+import DropDown from '../DropDown'
 
-export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
+export default function ItemNotificationsForm(props: { onSubmit: (emailNotifications: string, pushNotifications: string) => Promise<void>, currentValues?: { emailNotifications: string, pushNotifications: string }, onCancel?: () => void }) {
 
-    const [name, setName] = useState(props.currentValues?.name ?? '')
-    const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
+    const [emailNotifications, setEmailNotifications] = useState(props.currentValues?.emailNotifications ?? "Always")
+    const [pushNotifications, setPushNotifications] = useState(props.currentValues?.pushNotifications ?? "Always")
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const nameValid = name.length > 0
-    const iconValid = icon.length > 0
+    const emailNotificationsValid =  ["Always","Never","When Missing"].includes(emailNotifications); 
+    const pushNotificationsValid =   ["Always","Never","When Missing"].includes(pushNotifications); 
 
     const navigation = useNavigation()
 
@@ -39,24 +40,26 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
             navigation.goBack()
         }
     }
-
+    
     return (
         <>
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
                 <>
                     <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                    <TextField
-                        placeholder='Name'
-                        value={name}
-                        onChangeText={(text) => {
-                            setName(text)
-                        }}
-                    />
-                    <EmojiPickerManager currentValue={icon} onSelect={setIcon} />               
+                    <Text style={[TextStyles.h3, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Email Notifications"}</Text>
+                    <DropDown currentValue={emailNotifications} onSelect={setEmailNotifications}></DropDown>  
+                    <Text style={[TextStyles.h3, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Push Notifications"}</Text>
+                    <DropDown currentValue={pushNotifications} onSelect={setPushNotifications}></DropDown>
+
                 </>
+                <Text style = {[TextStyles.p,{paddingTop:Spacing.Gap}]}>* Always: Always get notified when your item is scanned</Text>
+                <Text style = {[TextStyles.p,{paddingTop:Spacing.HalfGap}]}>* When Missing: Only get notified when you mark your item as lost</Text>
+                <Text style = {[TextStyles.p,{paddingTop:Spacing.HalfGap}]}>* Never: Never get notified</Text>
             </View>
+
             <VerticallyCenteringRow>
-                {
+
+            {
                     props.currentValues ? 
                         <>
                             <CancelButton label='Cancel' onPress={cancel} disabled={isSubmitting}/>
@@ -65,15 +68,16 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                         null
                 }
                 <BigButton 
-                    label={props.currentValues ? `Save Changes` : `Next`} 
-                    disabled={ ! nameValid || ! iconValid || (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name))} 
+                    label={props.currentValues ? `Save Changes` : `Add Item`} 
+                    disabled={ ! emailNotificationsValid || ! pushNotificationsValid || (props.currentValues && (props.currentValues.pushNotifications === pushNotifications && props.currentValues.emailNotifications === emailNotifications))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {
                         setIsSubmitting(true)
-                        await props.onSubmit(name, icon)
+                        await props.onSubmit(emailNotifications, pushNotifications)
                         setIsSubmitting(false)
                     }}
                 />
+                
             </VerticallyCenteringRow>
         </>
     )

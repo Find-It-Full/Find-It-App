@@ -31,7 +31,7 @@ export class FirestoreBackend {
         return firestore().collection(Collections.Links)
     }
 
-    public static async addItem(item: { name: string, icon: string, tagID: string }): Promise<void> {
+    public static async addItem(item: { name: string, icon: string, tagID: string, emailNotifications:string, pushNotifications:string }): Promise<void> {
 
         // 1. Attempt to register tag associated with item
         const addItem = functions().httpsCallable('addItem')
@@ -39,7 +39,7 @@ export class FirestoreBackend {
 
     }
 
-    public static async editItem(item: { itemID: string, name: string, icon: string }): Promise<RegisterTagResult> {
+    public static async editItem(item: { itemID: string, name: string, icon: string,emailNotifications:string, pushNotifications:string }): Promise<RegisterTagResult> {
         const itemRef = this.items().doc(item.itemID)
         console.log('Starting update...')
         return firestore().runTransaction(async (transaction) => {
@@ -54,12 +54,43 @@ export class FirestoreBackend {
 
             transaction.update(itemRef, {
                 name: item.name,
-                icon: item.icon
+                icon: item.icon,
+                emailNotifications: item.emailNotifications, 
+                pushNotifications: item.pushNotifications
             })
 
             return 'success'
         })
     }
+
+
+    public static async editItemNotifications(item: { itemID: string, emailNotifications:string, pushNotifications:string }): Promise<RegisterTagResult> {
+        const itemRef = this.items().doc(item.itemID)
+        console.log('Starting update...')
+        return firestore().runTransaction(async (transaction) => {
+            const itemDoc = await transaction.get(itemRef)
+
+            if ( ! itemDoc.exists) {
+                console.log('Item DNE.')
+                return 'no-such-tag'
+            }
+
+            console.log('Updating...')
+
+            transaction.update(itemRef, {
+                emailNotifications: item.emailNotifications, 
+                pushNotifications: item.pushNotifications
+            })
+
+            return 'success'
+        })
+    }
+
+
+
+
+
+
 
     public static async removeItem(itemID: ItemID) {
 

@@ -12,6 +12,7 @@ import { TagID } from "../../backend/databaseTypes"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
+import { BarCodeReadEvent } from 'react-native-camera'
 export default function ScanCode({ navigation }: ScanCodeProps) {
 
     const scannerRef = React.useRef<QRCodeScanner>(null)
@@ -114,10 +115,10 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     }, [])
 
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     onSuccess({data:"https://gobilabsllc.page.link/nsDwXrdJZek4MTSSA"} as BarCodeReadEvent)
-    // }, [])
+        onSuccess({data:"https://tags.beacontags.com/ZN3C1EJHAjwrpZ946"} as BarCodeReadEvent)
+    }, [])
 
     useEffect(() => {
         if (didCheckForCameraPermission && ! cameraAllowed) {

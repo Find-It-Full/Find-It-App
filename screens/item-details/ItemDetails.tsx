@@ -27,6 +27,7 @@ import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import ContextMenu from "react-native-context-menu-view";
 import PlatformIcon, { Icons } from '../../components/PlatformIcon';
+import EditItemDetails from '../editing-items/EditItemDetails';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -100,10 +101,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
     }, [reports])
 
-    const onEditSubmit = async (name: string, icon: string) => {
-        await dispatch(editItemDetails({ name, icon, itemID: item.itemID }))
+    const onEditSubmit = async (name: string, icon: string, emailNotifications:string, pushNotifications:string) => {
+        await dispatch(editItemDetails({ name, icon, itemID: item.itemID, emailNotifications:emailNotifications,pushNotifications:pushNotifications }))
         setIsPresentingEditModal(false)
     }
+
+    
 
     const handleScroll = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
@@ -387,9 +390,9 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     setIsPresentingEditModal(false)
                 }}>
                 <ModalFormScreenBase closeModal={() => setIsPresentingEditModal(false)}>
-                    <ItemDetailsForm 
+                    <EditItemDetails 
                         onSubmit={onEditSubmit}
-                        currentValues={{ name: item.name, icon: item.icon }}
+                        currentValues={{ name: item.name, icon: item.icon, emailNotifications:item.emailNotifications, pushNotifications:item.pushNotifications }}
                         onCancel={() => setIsPresentingEditModal(false)}
                     />
                 </ModalFormScreenBase>
