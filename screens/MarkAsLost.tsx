@@ -78,12 +78,12 @@ export default function MarkAsLost(props: { itemID: string, forceClose: () => vo
         <ModalFormScreenBase closeModal={props.forceClose}>
             <Text style={TextStyles.h2}>Set as Lost</Text>
             <Spacer size={Spacing.BigGap} />
-            <Text style={TextStyles.p}>When you set this item as lost, you'll get notified whenever someone spots it.</Text>
+            <Text style={TextStyles.p}>When you set this item as lost, you'll be notified if your notification setting are set to When Missing or Always .</Text>
             <Spacer size={Spacing.BigGap} />
             <VerticallyCenteringRow>
                 <CancelButton label='Cancel' onPress={props.forceClose} disabled={isMarkingAsLost} />
                 <Spacer size={Spacing.BigGap} />
-                <BigButton label='Get Notified' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
+                <BigButton label='Set As Lost' onPress={requestNotificationPermission} isLoading={isMarkingAsLost} />
             </VerticallyCenteringRow>
         </ModalFormScreenBase>
     )
