@@ -7,6 +7,7 @@ const ios = Platform.OS === 'ios'
 
 export namespace Icons {
     export const BACK = ios ? '􀯶' : 'chevron-back'
+    export const PENCIL = ios ? '􀈊' : 'pencil'
     export const FORWARD = ios ? '􀯻' : 'chevron-forward'
     export const LOG_OUT = ios ? '􀱍' : 'log-out'
     export const ACCOUNT_DETAILS = ios ? '􀈊' : 'pencil'
