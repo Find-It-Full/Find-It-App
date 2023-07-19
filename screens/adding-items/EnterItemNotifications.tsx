@@ -17,7 +17,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemNotific
     const icon = route.params.icon
     
     
-    const onSubmit = async (emailNotifications: string, pushNotifications: string) => {
+    const onSubmit = async (emailNotifications: boolean, pushNotifications: boolean) => {
         
         try {
             await dispatch(addNewItem({

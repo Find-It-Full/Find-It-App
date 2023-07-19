@@ -117,7 +117,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
 
     useEffect(() => {
 
-        onSuccess({data:"https://tags.beacontags.com/ZN3C1EJHAjwrpZ946"} as BarCodeReadEvent)
+        onSuccess({data:"https://tags.beacontags.com/syyJ28HARsmwDdgs9"} as BarCodeReadEvent)
     }, [])
 
     useEffect(() => {

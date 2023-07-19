@@ -51,7 +51,6 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
     const dispatch = useAppDispatch()
     const shouldShowMiscError = useAppSelector(state => state.items.notifyOfMiscError)
     const shouldShowNoInternetError = useAppSelector(state => state.items.notifyOfNoInternet)
-    const userData = useAppSelector((state) => state.userData)
     
     
 
@@ -61,11 +60,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
         
 
     }, [])
-    useEffect(() => {
-        setHasUserData(userData.firstName?.length >0 && userData.lastName?.length > 0)
-        console.warn(userData)
 
-    }, [userData])
     const resetNoInternetError = () => {
         dispatch(resetNoInternetNotification())
     }
@@ -74,15 +69,15 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
         dispatch(resetMiscErrorNotification())
     }
 
-    const [hasUserData,setHasUserData]  = React.useState(userData.firstName?.length >0 && userData.lastName?.length > 0)
     
-    const initialScreen = props.isAuthenticated ? (hasUserData? "Home" : "SetAccountDetails"  ) : "SignIn"
+    
+    const initialScreen = props.isAuthenticated ?  "Home" : "SignIn"
 
     return (
         <NavigationContainer>
             <RootStack.Navigator initialRouteName={initialScreen} screenOptions={{ headerShown: false }}>
                 {
-                    props.isAuthenticated ? hasUserData? (
+                    props.isAuthenticated ? (
                         <>
                             <RootStack.Group>
                                 <RootStack.Screen name='Home' component={Home} />
@@ -97,13 +92,14 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                                 <RootStack.Screen name="EditItemFlow" component={EditItemFlowContainer} />
                             </RootStack.Group>
                         </>
-                    ) : <RootStack.Screen name="SetAccountDetails" component={SetAccountDetails} /> :
+                    )  :
                     (
                         <>
                             <RootStack.Screen name="SignIn" component={SignIn} />
                             <RootStack.Screen name="EmailSignIn" component={EmailSignIn} />
                             <RootStack.Screen name="EnterPassword" component={EnterPassword} />
                             <RootStack.Screen name="CreateAccount" component={CreateAccount} />
+                            <RootStack.Screen name="SetAccountDetails" component={SetAccountDetails} />
                             
                             
                         </>

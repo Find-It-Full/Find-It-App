@@ -101,7 +101,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
     }, [reports])
 
-    const onEditSubmit = async (name: string, icon: string, emailNotifications:string, pushNotifications:string) => {
+    const onEditSubmit = async (name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean) => {
         await dispatch(editItemDetails({ name, icon, itemID: item.itemID, emailNotifications:emailNotifications,pushNotifications:pushNotifications }))
         setIsPresentingEditModal(false)
     }

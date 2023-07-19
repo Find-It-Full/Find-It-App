@@ -32,7 +32,7 @@ export class FirestoreBackend {
         return firestore().collection(Collections.Links)
     }
 
-    public static async addItem(item: { name: string, icon: string, tagID: string, emailNotifications:string, pushNotifications:string }): Promise<void> {
+    public static async addItem(item: { name: string, icon: string, tagID: string, emailNotifications:boolean, pushNotifications:boolean }): Promise<void> {
 
         // 1. Attempt to register tag associated with item
         const addItem = functions().httpsCallable('addItem')
@@ -40,7 +40,7 @@ export class FirestoreBackend {
 
     }
 
-    public static async editItem(item: { itemID: string, name: string, icon: string,emailNotifications:string, pushNotifications:string }): Promise<RegisterTagResult> {
+    public static async editItem(item: { itemID: string, name: string, icon: string,emailNotifications:boolean, pushNotifications:boolean }): Promise<RegisterTagResult> {
         const itemRef = this.items().doc(item.itemID)
         console.log('Starting update...')
         return firestore().runTransaction(async (transaction) => {
@@ -65,7 +65,7 @@ export class FirestoreBackend {
     }
 
 
-    public static async editItemNotifications(item: { itemID: string, emailNotifications:string, pushNotifications:string }): Promise<RegisterTagResult> {
+    public static async editItemNotifications(item: { itemID: string, emailNotifications:boolean, pushNotifications:boolean }): Promise<RegisterTagResult> {
         const itemRef = this.items().doc(item.itemID)
         console.log('Starting update...')
         return firestore().runTransaction(async (transaction) => {

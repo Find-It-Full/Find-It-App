@@ -6,7 +6,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
-    Keyboard
+    Keyboard,
+    Switch
 } from "react-native"
 import { FormScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
 import { Spacing } from "../../ui-base/spacing"
@@ -24,16 +25,15 @@ import CancelButton from '../../components/CancelButton'
 import TextField from '../../components/TextField'
 import DropDown from '../../components/DropDown'
 
-export default function EditItemDetails(props: { onSubmit: (name: string, icon: string, emailNotifications:string, pushNotifications:string) => Promise<void>, currentValues?: { name: string, icon: string, emailNotifications:string, pushNotifications:string }, onCancel?: () => void }) {
+export default function EditItemDetails(props: { onSubmit: (name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean) => Promise<void>, currentValues?: { name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean }, onCancel?: () => void }) {
 
     const [name, setName] = useState(props.currentValues?.name ?? '')
     const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
-    const [emailNotifications, setEmailNotifications] = useState(props.currentValues?.emailNotifications ?? 'Always')
-    const [pushNotifications, setPushNotifications] = useState(props.currentValues?.pushNotifications ?? 'Always')
+    const [emailNotifications, setEmailNotifications] = useState(props.currentValues?.emailNotifications ?? true)
+    const [pushNotifications, setPushNotifications] = useState(props.currentValues?.pushNotifications ?? true)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const emailNotificationsValid = emailNotifications in ["Always","Never","When Missing"]
-    const pushNotificationsValid =  pushNotifications in ["Always","Never","When Missing"]
+
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
 
@@ -63,11 +63,16 @@ export default function EditItemDetails(props: { onSubmit: (name: string, icon: 
 
 
 
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Email Notifications"}</Text>
-                    <DropDown currentValue={emailNotifications} onSelect={setEmailNotifications}></DropDown>  
+                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Push Notifications "}
+                    </Text>
+                    <Switch style ={TextStyles.h3} value = {pushNotifications} onValueChange={setPushNotifications}/>
+                    
+                    
                     <View style ={{paddingBottom:Spacing.BigGap}}/>
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Push Notifications"}</Text>
-                    <DropDown currentValue={pushNotifications} onSelect={setPushNotifications}></DropDown> 
+                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Email Notifications "}
+                    </Text>
+                    <Switch value = {emailNotifications} onValueChange={setEmailNotifications}/>
+
                     <View style ={{paddingBottom:Spacing.BigGap}}/>    
                 </>
             </View>
@@ -88,8 +93,6 @@ export default function EditItemDetails(props: { onSubmit: (name: string, icon: 
                     disabled={ 
                         ! nameValid || 
                         ! iconValid || 
-                        ! pushNotifications || 
-                        ! emailNotifications ||
                         (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name &&props.currentValues.emailNotifications === emailNotifications && props.currentValues.pushNotifications === pushNotifications))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {

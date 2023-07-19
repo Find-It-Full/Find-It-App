@@ -7,8 +7,8 @@ export interface Item {
     tagID: string
     name: string
     icon: string
-    emailNotifications: string
-    pushNotifications: string
+    emailNotifications: boolean
+    pushNotifications: boolean
     reports: { [key: string]: boolean }
     isMissing: boolean,
     ownerID: string,
