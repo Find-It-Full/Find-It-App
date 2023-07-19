@@ -18,7 +18,7 @@ import EnterPassword from './account/EnterPassword'
 import SetAccountDetails from './onboarding/SetAccountDetails'
 import auth from "@react-native-firebase/auth"
 import { FirestoreBackend } from '../backend/firestoreBackend'
-import userData, { editAccountDetails, fetchAccountDetails, setAccountDetails } from '../reducers/userData'
+import userData, { fetchAccountDetails, setAccountDetails } from '../reducers/userData'
 export type RootStackParamList = {
     Home: {itemGoTo:string}
     ItemDetails: { itemID: ItemID }
@@ -69,9 +69,9 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
         dispatch(resetMiscErrorNotification())
     }
 
+    const hasUserData = true
     
-    
-    const initialScreen = props.isAuthenticated ?  "Home" : "SignIn"
+    const initialScreen = props.isAuthenticated ? "Home"  : "SignIn"
 
     return (
         <NavigationContainer>
@@ -92,7 +92,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                                 <RootStack.Screen name="EditItemFlow" component={EditItemFlowContainer} />
                             </RootStack.Group>
                         </>
-                    )  :
+                    ) : 
                     (
                         <>
                             <RootStack.Screen name="SignIn" component={SignIn} />

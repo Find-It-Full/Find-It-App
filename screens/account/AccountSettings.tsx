@@ -11,12 +11,13 @@ import { AccountSettingsProps } from '../Navigator'
 import DeleteAccountForm from './DeleteAccountForm'
 import auth from '@react-native-firebase/auth'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { editAccountDetails, signOut } from '../../reducers/userData'
+import { signOut } from '../../reducers/userData'
 import { TextStyles } from '../../ui-base/text'
 import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from '../../components/PlatformIcon'
 import SetAccountDetails from '../onboarding/SetAccountDetails'
 import EditAccountDetails from './EditAccountDetails'
+import { FirestoreBackend } from '../../backend/firestoreBackend'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
@@ -25,7 +26,7 @@ export default function AccountSettings(props: AccountSettingsProps) {
     const userData = useAppSelector((state) => state.userData)
 
     const onSubmit = async (firstName: string, lastName: string, secondaryEmail:string) => {
-        dispatch(editAccountDetails({firstName:firstName, lastName:lastName, secondaryEmail:secondaryEmail}))
+        await FirestoreBackend.editAccount({firstName:firstName, lastName:lastName, secondaryEmail:secondaryEmail})
         setIsPresentingEditAccountModal(false)
      }
     return (

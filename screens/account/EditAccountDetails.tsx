@@ -8,14 +8,13 @@ import { FormScreenBase } from "../../ui-base/containers"
 import analytics from '@react-native-firebase/analytics';
 import AccountDetailsForm from '../../components/account/AccountDetailsForm'
 import { EnterAccountDetailsProps } from '../Navigator'
-import { editAccountDetails } from '../../reducers/userData'
 export default function EditAccountDetails( props: { onSubmit: (firstName: string, lastName: string, secondaryEmail:string) => Promise<void>, currentValues?: { firstName: string, lastName: string, secondaryEmail:string }, onCancel?: () => void }) {
 
     
 
     return (
         <FormScreenBase>
-            <AccountDetailsForm onSubmit={props.onSubmit} currentValues={props.currentValues} onCancel={props.onCancel}/>
+            <AccountDetailsForm onSubmit={props.onSubmit} currentValues={props.currentValues} onCancel={props.onCancel} onboarding={false}/>
         </FormScreenBase>
     )
 }

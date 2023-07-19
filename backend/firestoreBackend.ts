@@ -187,6 +187,27 @@ export class FirestoreBackend {
         })
     }
 
+
+    public static attachAccountListener(onNewAccountData: (docs: any) => void, onError: (error: Error) => void): () => void {
+        const userID = auth().currentUser?.uid
+
+        if ( ! userID) {
+            onError(new Error('Cannot retrieve items; user is not authenticated.'))
+        }
+
+        const query = this.users().doc(userID)
+        
+        
+        return query.onSnapshot((doc) => {
+            if(doc.exists){
+                onNewAccountData(doc.data())
+
+            }
+        }, onError);
+
+        
+    }
+
     // public static async checkRequirements(){
         
 

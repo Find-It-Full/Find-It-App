@@ -31,10 +31,7 @@ export const deleteUser = createAsyncThunk('userData/deleteUser', async (_props:
     }
 })
 
-export const editAccountDetails = createAsyncThunk('userData/editAccountDetails', async (props: { firstName: string, lastName: string, secondaryEmail: string}, thunkAPI): Promise<void> => {
-    const result = await FirestoreBackend.editAccount(props)
-    thunkAPI.dispatch(setAccountDetails(props))
-})
+
 export const fetchAccountDetails = createAsyncThunk('userData/fetchAccountDetails', async (): Promise<UserData> => {
     const userData = await FirestoreBackend.getUserProfile()
     return userData

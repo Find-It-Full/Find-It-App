@@ -21,7 +21,7 @@ import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
 import EmojiPickerManager from '../../screens/EmojiPicker'
 
-export default function AccountDetailsForm(props: { onSubmit: (firstName: string, lastName: string, secondaryEmail:string) => Promise<void>, currentValues?: { firstName: string, lastName: string, secondaryEmail:string }, onCancel?: () => void }) {
+export default function AccountDetailsForm(props: {onboarding:boolean, onSubmit: (firstName: string, lastName: string, secondaryEmail:string) => Promise<void>, currentValues?: { firstName: string, lastName: string, secondaryEmail:string }, onCancel?: () => void }) {
 
     const [firstName, setFirstName] = useState(props.currentValues?.firstName ?? '')
     const [lastName, setLastName] = useState(props.currentValues?.lastName ?? '')
@@ -33,7 +33,7 @@ export default function AccountDetailsForm(props: { onSubmit: (firstName: string
     const secondaryEmailValid = secondaryEmail.length ==  0 ||( secondaryEmail.indexOf("@") != -1 && secondaryEmail.indexOf(".") != -1)
 
     const navigation = useNavigation()
-
+    
     const cancel = () => {
         if (props.onCancel) {
             props.onCancel()
@@ -41,7 +41,7 @@ export default function AccountDetailsForm(props: { onSubmit: (firstName: string
             navigation.goBack()
         }
     }
-
+    
     return (
         <>
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
@@ -61,7 +61,8 @@ export default function AccountDetailsForm(props: { onSubmit: (firstName: string
                             setLastName(text)
                         }}
                     />
-
+                    {!props.onboarding?
+                    <>
                     <TextField
                         placeholder='Secondary Email'
                         value={secondaryEmail}
@@ -71,6 +72,8 @@ export default function AccountDetailsForm(props: { onSubmit: (firstName: string
                     />
                     <Spacer size={Spacing.QuarterGap}/>
                     <Text style={TextStyles.p}>A secondary email is optional and is someone else who will be emailed when your item is found. This can be a parent, child, caregiver, ect... </Text>
+                    </>
+                    : null}
                     <Spacer size={Spacing.QuarterGap}/>        
                 </>
             </View>
