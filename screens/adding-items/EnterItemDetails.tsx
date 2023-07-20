@@ -7,6 +7,7 @@ import { addNewItem } from "../../reducers/items"
 import ItemDetailsForm from "../../components/items/ItemDetailsForm"
 import { FormScreenBase } from "../../ui-base/containers"
 import analytics from '@react-native-firebase/analytics';
+
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
     const dispatch = useAppDispatch()
@@ -25,7 +26,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
             navigation.navigate('Home')
 
         } catch (error) {
-            Alert.alert('Failed to add item', error.message)
+            Alert.alert('Error Adding Item', 'Please try again.')
         }
     }
 
