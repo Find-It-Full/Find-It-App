@@ -25,30 +25,30 @@ export default function EmailSignIn(props: EmailSignInProps) {
     const [emailError, setEmailError] = useState('')
 
     const createAccountOrSignIn = async () => {
-        
+
         try {
-            
+
             const methods = await auth().fetchSignInMethodsForEmail(email)
             let noOther = true
             methods.forEach((method) => {
-                if(method == 'google.com'){
-                    Alert.alert("Please sign in with google")
+                if (method === 'google.com') {
+                    Alert.alert('Email Already in Use', 'A Google account with that email has already been set up. Please continue with Google.')
                     noOther = false
                     props.navigation.goBack()
-                    
-                } 
-                if(method == 'apple.com'){
-                    Alert.alert("Please sign in with apple")
+
+                }
+                if (method === 'apple.com') {
+                    Alert.alert('Email Already in Use', 'An Apple account with that email has already been set up. Please continue with Apple.')
                     noOther = false
                     props.navigation.goBack()
-                } 
-              });
-            
+                }
+            });
+
             if (methods.length > 0 && noOther) {
                 console.log("analytics --- enter password")
                 await analytics().logEvent('enter_password', {})
                 props.navigation.navigate('EnterPassword', { email: email })
-            } 
+            }
             else if (noOther) {
                 console.log("analytics --- create account email")
                 await analytics().logEvent('create_email_account', {})
@@ -56,7 +56,7 @@ export default function EmailSignIn(props: EmailSignInProps) {
             }
         } catch (error) {
             console.log("analytics --- error create account email")
-            await analytics().logEvent('email_signin_error', {error:error})
+            await analytics().logEvent('email_signin_error', { error: error })
             if (error.message === 'auth/invalid-email') {
                 setEmailError('Oops! That email is invalid.')
             } else {
@@ -67,11 +67,11 @@ export default function EmailSignIn(props: EmailSignInProps) {
 
     return (
         <FormScreenBase>
-            
+
             <View style={{ flex: 1, justifyContent: 'center' }}>
-            <BackButton />
+                <BackButton />
                 <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>What's your email?</Text>
-                <TextField 
+                <TextField
                     onChangeText={setEmail}
                     placeholder={'someone@something.com'}
                     value={email}
@@ -83,29 +83,30 @@ export default function EmailSignIn(props: EmailSignInProps) {
                     }}
                 />
                 {
-                    emailError.length > 0 ? 
-                        <Text style={[TextStyles.p, { color: Colors.Red }]}></Text> : 
+                    emailError.length > 0 ?
+                        <Text style={[TextStyles.p, { color: Colors.Red }]}></Text> :
                         null
                 }
             </View>
             <View style={{ marginBottom: 0 }}>
-                <BigButton 
+                <BigButton
                     label='Next'
                     onPress={createAccountOrSignIn}
-                    disabled={ ! isValidEmail}
+                    disabled={!isValidEmail}
                     isInColumn
                 />
-            <View style ={{justifyContent: "center", alignItems: "center", paddingTop: Spacing.ThreeQuartersGap}}>
-            <Text style={[TextStyles.p, { marginBottom: Spacing.BigGap }]}>Having Trouble Signing In<Text onPress={async ()=>{ 
-                const canOpen = await Linking.canOpenURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
-                console.warn(canOpen)
-            if(canOpen){
-            Linking.openURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")}
-            else{
-                Linking.openURL("https://beacontags.com/support")
-            }
-            }}style={[TextStyles.p, { color: Colors.Blue }]}> Contact Support</Text></Text>    
-            </View>
+                <View style={{ justifyContent: "center", alignItems: "center", paddingTop: Spacing.ThreeQuartersGap }}>
+                    <Text style={[TextStyles.p, { marginBottom: Spacing.BigGap }]}>Having Trouble Signing In<Text onPress={async () => {
+                        const canOpen = await Linking.canOpenURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
+                        console.warn(canOpen)
+                        if (canOpen) {
+                            Linking.openURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
+                        }
+                        else {
+                            Linking.openURL("https://beacontags.com/support")
+                        }
+                    }} style={[TextStyles.p, { color: Colors.Blue }]}> Contact Support</Text></Text>
+                </View>
             </View>
         </FormScreenBase>
     )
