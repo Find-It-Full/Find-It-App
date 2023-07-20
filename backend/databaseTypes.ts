@@ -7,6 +7,8 @@ export interface Item {
     tagID: string
     name: string
     icon: string
+    emailNotifications: boolean
+    pushNotifications: boolean
     reports: { [key: string]: boolean }
     isMissing: boolean,
     ownerID: string,
@@ -20,6 +22,12 @@ export interface Report {
     fields: { [key in ReportFieldType]: ReportField }
     timeOfCreation: number
     viewStatus: { [key: UserID]: ReportViewStatus }
+}
+
+export interface UserData {
+    firstName: string
+    lastName: string
+    secondaryEmail: string
 }
 
 export interface UserData {

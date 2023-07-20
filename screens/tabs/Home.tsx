@@ -56,6 +56,11 @@ export default function Home(props: HomeProps) {
     }, [])
 
     useEffect(() => {
+        const unsubscribe = subscriptions.subscribeToAccount()
+        return unsubscribe
+    }, [])
+
+    useEffect(() => {
         messaging().onNotificationOpenedApp(async remoteMessage => {
             console.log("analytics --- app opened from notification")
             await analytics().logEvent('app_opened_from_notification', {message:remoteMessage})

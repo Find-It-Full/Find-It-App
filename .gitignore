@@ -54,6 +54,7 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+/ios-dev/Pods/
 
 # Expo
 .expo/

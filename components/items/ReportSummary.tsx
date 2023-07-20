@@ -58,6 +58,24 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
         if ( ! contactPhoneNumber) {
             return <Text style={[TextStyles.p, { opacity: Colors.DisabledOpacity }]}>No contact info provided</Text>
         } else {
+            if(contactPhoneNumber.toString().indexOf("@") != -1){
+                return (
+                    <>
+                        <Text style={TextStyles.p}>Contact: </Text>
+                        <TouchableOpacity
+                        
+                        onPress={async () => {
+                            console.log("analytics --- open mesages")
+                            await analytics().logEvent('open_messages', {report:props.report})
+                            Linking.openURL(`mailto:${contactPhoneNumber}`)}
+                        }
+                        >
+                            <Text style={[TextStyles.p, { color:Colors.Blue,textDecorationLine: 'underline' }]}> Email Address</Text>
+                        </TouchableOpacity>
+                    </>
+
+                )
+            }
             return (
                 <>
                     <Text style={TextStyles.p}>Contact: </Text>

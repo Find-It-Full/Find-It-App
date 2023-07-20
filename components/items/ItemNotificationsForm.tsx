@@ -16,26 +16,20 @@ import { Colors } from "../../ui-base/colors"
 import { Radii } from "../../ui-base/radii"
 import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts"
 import { useNavigation } from "@react-navigation/native"
-
+import CancelButton from "../CancelButton"
+import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
-
+import TextField from "../TextField"
 import EmojiPickerManager from '../../screens/EmojiPicker'
-import BigButton from '../../components/BigButton'
-import CancelButton from '../../components/CancelButton'
-import TextField from '../../components/TextField'
-import DropDown from '../../components/DropDown'
+import DropDown from '../DropDown'
 
-export default function EditItemDetails(props: { onSubmit: (name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean) => Promise<void>, currentValues?: { name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean }, onCancel?: () => void }) {
+export default function ItemNotificationsForm(props: { onSubmit: (emailNotifications: boolean, pushNotifications: boolean) => Promise<void>, currentValues?: { emailNotifications: boolean, pushNotifications: boolean }, onCancel?: () => void }) {
 
-    const [name, setName] = useState(props.currentValues?.name ?? '')
-    const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
     const [emailNotifications, setEmailNotifications] = useState(props.currentValues?.emailNotifications ?? true)
     const [pushNotifications, setPushNotifications] = useState(props.currentValues?.pushNotifications ?? true)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-
-    const nameValid = name.length > 0
-    const iconValid = icon.length > 0
+    
 
     const navigation = useNavigation()
 
@@ -46,26 +40,18 @@ export default function EditItemDetails(props: { onSubmit: (name: string, icon: 
             navigation.goBack()
         }
     }
-
+    
     return (
         <>
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
                 <>
                     <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                    <TextField
-                        placeholder='Name'
-                        value={name}
-                        onChangeText={(text) => {
-                            setName(text)
-                        }}
-                    />
-                    <EmojiPickerManager currentValue={icon} onSelect={setIcon} />          
-
-
-
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Push Notifications "}
-                    </Text>
-                    <Switch style ={TextStyles.h3} value = {pushNotifications} onValueChange={setPushNotifications}/>
+                    
+                    
+                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap, paddingRight:Spacing.BigGap }]}>{"Push Notifications "}</Text>
+                    <Switch value = {pushNotifications} onValueChange={setPushNotifications}/>
+                    
+                    
                     
                     
                     <View style ={{paddingBottom:Spacing.BigGap}}/>
@@ -73,14 +59,13 @@ export default function EditItemDetails(props: { onSubmit: (name: string, icon: 
                     </Text>
                     <Switch value = {emailNotifications} onValueChange={setEmailNotifications}/>
 
-                    <View style ={{paddingBottom:Spacing.BigGap}}/>    
                 </>
+                
             </View>
+
             <VerticallyCenteringRow>
 
-
-
-                {
+            {
                     props.currentValues ? 
                         <>
                             <CancelButton label='Cancel' onPress={cancel} disabled={isSubmitting}/>
@@ -89,18 +74,16 @@ export default function EditItemDetails(props: { onSubmit: (name: string, icon: 
                         null
                 }
                 <BigButton 
-                    label={props.currentValues ? `Save Changes` : `Next`} 
-                    disabled={ 
-                        ! nameValid || 
-                        ! iconValid || 
-                        (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name &&props.currentValues.emailNotifications === emailNotifications && props.currentValues.pushNotifications === pushNotifications))} 
+                    label={props.currentValues ? `Save Changes` : `Add Item`} 
+                    disabled={  (props.currentValues && (props.currentValues.pushNotifications === pushNotifications && props.currentValues.emailNotifications === emailNotifications))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {
                         setIsSubmitting(true)
-                        await props.onSubmit(name, icon, emailNotifications, pushNotifications)
+                        await props.onSubmit(emailNotifications, pushNotifications)
                         setIsSubmitting(false)
                     }}
                 />
+                
             </VerticallyCenteringRow>
         </>
     )

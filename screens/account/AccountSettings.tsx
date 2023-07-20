@@ -10,22 +10,32 @@ import { Spacing } from '../../ui-base/spacing'
 import { AccountSettingsProps } from '../Navigator'
 import DeleteAccountForm from './DeleteAccountForm'
 import auth from '@react-native-firebase/auth'
-import { useAppDispatch } from '../../store/hooks'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { signOut } from '../../reducers/userData'
 import { TextStyles } from '../../ui-base/text'
 import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from '../../components/PlatformIcon'
+import SetAccountDetails from '../onboarding/SetAccountDetails'
+import EditAccountDetails from './EditAccountDetails'
+import { FirestoreBackend } from '../../backend/firestoreBackend'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
+    const [isPresentingEditAccountModal, setIsPresentingEditAccountModal] = React.useState(false)
     const dispatch = useAppDispatch()
+    const userData = useAppSelector((state) => state.userData)
 
+    const onSubmit = async (firstName: string, lastName: string, secondaryEmail:string) => {
+        await FirestoreBackend.editAccount({firstName:firstName, lastName:lastName, secondaryEmail:secondaryEmail})
+        setIsPresentingEditAccountModal(false)
+     }
     return (
         <ScreenBase style={{ alignItems: 'stretch' }}>
             <Spacer size={Spacing.BigGap} />
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
+            <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Info' onPress={() => setIsPresentingEditAccountModal(true)} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={() => dispatch(signOut())} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.TRASH} />} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
@@ -46,8 +56,19 @@ export default function AccountSettings(props: AccountSettingsProps) {
                 onRequestClose={() => {
                     setIsPresentingModal(false)
                 }}>
+                    
                 <DeleteAccountForm onClose={() => setIsPresentingModal(false)}/>
             </Modal>
+            <Modal
+                animationType='fade'
+                presentationStyle='overFullScreen'
+                transparent={true}
+                visible={isPresentingEditAccountModal}
+                onRequestClose={() => {
+                    setIsPresentingEditAccountModal(false)
+                }}>
+                    <EditAccountDetails onCancel={() => { setIsPresentingEditAccountModal(false) } } currentValues={userData} onSubmit={onSubmit} />
+                </Modal>
             <BackButton />
         </ScreenBase>
     )

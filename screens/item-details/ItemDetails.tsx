@@ -5,7 +5,7 @@ import { LatLng } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { VerticallyCenteringRow } from "../../ui-base/layouts";
+import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts";
 import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
@@ -27,6 +27,7 @@ import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import ContextMenu from "react-native-context-menu-view";
 import PlatformIcon, { Icons } from '../../components/PlatformIcon';
+import EditItemDetails from '../editing-items/EditItemDetails';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -100,10 +101,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
     }, [reports])
 
-    const onEditSubmit = async (name: string, icon: string) => {
-        await dispatch(editItemDetails({ name, icon, itemID: item.itemID }))
+    const onEditSubmit = async (name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean) => {
+        await dispatch(editItemDetails({ name, icon, itemID: item.itemID, emailNotifications:emailNotifications,pushNotifications:pushNotifications }))
         setIsPresentingEditModal(false)
     }
+
+    
 
     const handleScroll = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
@@ -291,32 +294,44 @@ export default function ItemDetails(props: ItemDetailsProps) {
             />
             <BackButton />
             <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
-                <View style={{ paddingVertical: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding }}>
+                <View style={{ paddingVertical: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding, flexDirection:"row", alignItems:"center" }}>
+                    
                     <ItemProfile {...item} />
+                    <Spacer size={Spacing.HalfGap}/>
+                    <RemoveItemButton handleRemoveItem={handleRemoveItem}/>
+                    
                 </View>
                 <VerticallyCenteringRow style={{ paddingRight: Spacing.Gap }}>
-                    <PrimaryActionButton 
-                        label={item.isMissing ? 'Set as Found' : 'Set as Lost'}
-                        icon={<PlatformIcon icon={item.isMissing ? Icons.SEAL : Icons.ALERT} style={{ color: item.isMissing ? Colors.TextColor : Colors.Red }} />}
-                        textSyle={{ color: item.isMissing ? Colors.TextColor : Colors.Red }}
-                        isLoading={isChangingLostState !== 'none'}
-                        onPress={handleChangeLostState}
-                        
-                    />
+                    
                     <PrimaryActionButton
                         label='Directions'
                         icon={<PlatformIcon icon={Icons.MAP} />}
                         disabled={ ! selectedReport || ! selectedReport.location}
                         onPress={handleRequestDirections}
                     />
-                    <MoreButton handleRemoveItem={handleRemoveItem} presentEditModal={() => setIsPresentingEditModal(true)} />
+                    <PrimaryActionButton
+                        label='Edit Item'
+                        icon={<PlatformIcon icon={Icons.PENCIL} />}
+                        
+                        onPress={()=>{setIsPresentingEditModal(true)}}
+                    />
+
+                    <PrimaryActionButton
+                        label='Clear Sightings'
+                        icon={<PlatformIcon icon={Icons.TRASH} />}
+                        disabled={reports.length == 0}
+                        onPress={handleClearSightings}
+                    />
+                    
                 </VerticallyCenteringRow>
                 {
                     selectedReport && reports.length > 0 ?
                         <>
                             <VerticallyCenteringRow style={{ marginTop: Spacing.BigGap, paddingRight: Spacing.ScreenPadding }}>
                                 <Text style={[TextStyles.h3, { marginLeft: Spacing.ScreenPadding }]}>Sightings</Text>
-                                <IconButton icon={<PlatformIcon icon={Icons.TRASH} />} onPress={handleClearSightings} disabled={isClearingSightings} />
+                                
+                                
+                                
                             </VerticallyCenteringRow>
                             <View style={{ position: 'relative' }}>
                                 <ScrollView 
@@ -364,6 +379,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             }
                         </> :
                         <>
+                        
                             <Text 
                                 style={[TextStyles.p, { marginHorizontal: Spacing.ScreenPadding * 3, marginTop: Spacing.BigGap, textAlign: 'center' }]}
                             >
@@ -374,6 +390,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 }
                                 
                             </Text>
+                            
                         </>
                 }
                 
@@ -387,9 +404,9 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     setIsPresentingEditModal(false)
                 }}>
                 <ModalFormScreenBase closeModal={() => setIsPresentingEditModal(false)}>
-                    <ItemDetailsForm 
+                    <EditItemDetails 
                         onSubmit={onEditSubmit}
-                        currentValues={{ name: item.name, icon: item.icon }}
+                        currentValues={{ name: item.name, icon: item.icon, emailNotifications:item.emailNotifications, pushNotifications:item.pushNotifications }}
                         onCancel={() => setIsPresentingEditModal(false)}
                     />
                 </ModalFormScreenBase>
@@ -466,26 +483,17 @@ async function openLocationInMaps({ lat, lng, label }: { lat: number, lng: numbe
     Linking.openURL(url)
 }
 
-function MoreButton(props: { presentEditModal: () => void, handleRemoveItem: () => void }) {    
+function RemoveItemButton(props: {  handleRemoveItem: () => void }) {    
     return <ContextMenu
-        actions={[{title:"Edit Item", systemIcon: 'pencil'},{title:"Remove Item", systemIcon: 'trash'}]}
+        actions={[{title:"Remove Item", systemIcon: 'trash'}]}
         onPress={({ nativeEvent }) => {
-            console.log(nativeEvent)
-            if (nativeEvent.name === 'Edit Item') {
-                props.presentEditModal()
-            }
-            else {
+
                 props.handleRemoveItem()
-            }
         } }
-        style={{ flex: 1 }}
+        
         dropdownMenuMode ={true}
     >
-        <PrimaryActionButton
-            label='More'
-            icon={<PlatformIcon icon={Icons.MORE} />}
-            onPress={() => { } }
-        />
+    <IconButton icon={<PlatformIcon icon={Icons.MORE} />} onPress={()=>{}}  />
     </ContextMenu>
 }
 

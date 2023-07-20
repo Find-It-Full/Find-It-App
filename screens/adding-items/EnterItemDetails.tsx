@@ -10,24 +10,9 @@ import analytics from '@react-native-firebase/analytics';
 
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
-    const dispatch = useAppDispatch()
-
     const tagID = route.params.tagID
-
     const onSubmit = async (name: string, icon: string) => {
-        try {
-            await dispatch(addNewItem({
-                tagID,
-                name,
-                icon
-            }))
-            console.log("analytics --- item added")
-            await analytics().logEvent('item_added', {tagID:tagID,name:name,icon:icon})
-            navigation.navigate('Home')
-
-        } catch (error) {
-            Alert.alert('Error Adding Item', 'Please try again.')
-        }
+        navigation.navigate('EnterItemNotifications',{name:name, icon:icon, tagID:tagID})
     }
 
     return (

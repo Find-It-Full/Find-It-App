@@ -7,10 +7,13 @@ import { isReport, Item, ItemID, Report, ReportViewStatus, UserData } from "./da
 import { FirestoreBackend } from "./firestoreBackend"
 import { DocChanges } from "./appOnlyDatabaseTypes"
 import auth from '@react-native-firebase/auth'
+import { User } from "@react-native-google-signin/google-signin"
+import { setAccountDetails } from "../reducers/userData"
 
 interface SubscriptionManagerInterface {
     subscribeToItemReports: (itemID: ItemID) => (() => void)
     subscribeToItems: () => (() => void)
+    subscribeToAccount: () => (() => void)
 }
 
 const SubscriptionManagerContext = createContext({ } as SubscriptionManagerInterface)
@@ -110,9 +113,34 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
         return unsubscribe
     }
 
+    const subscribeToAccount = () => {
+
+        const onNewAccountData = (data: any) => {
+
+
+
+
+                dispatch(setAccountDetails(data as UserData))
+
+
+
+                
+            
+        }
+
+        const onError = (error: Error) => {
+            console.error(`Error when attempting to retrieve User Data: ${error.message}`)
+        }
+
+        const unsubscribe = FirestoreBackend.attachAccountListener(onNewAccountData, onError)
+
+        return unsubscribe
+    }
+
     const subscriptions: SubscriptionManagerInterface = {
         subscribeToItemReports: subscribeToItemReports,
-        subscribeToItems: subscribeToItems
+        subscribeToItems: subscribeToItems,
+        subscribeToAccount: subscribeToAccount
     }
 
     return (

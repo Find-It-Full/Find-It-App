@@ -17,17 +17,27 @@ const initialState: ItemsData = {
     notifyOfMiscError: false
 }
 
-export const addNewItem = createAsyncThunk('items/addNewItem', async (itemInfo: { name: string, icon: string, tagID: string }): Promise<{ name: string, icon: string, tagID: string }> => {
+export const addNewItem = createAsyncThunk('items/addNewItem', async (itemInfo: { name: string, icon: string, tagID: string, emailNotifications:boolean, pushNotifications:boolean }): Promise<{ name: string, icon: string, tagID: string,emailNotifications:boolean, pushNotifications:boolean }> => {
     itemInfo.icon = itemInfo.icon.trim()
     itemInfo.name = itemInfo.name.trim()
     await FirestoreBackend.addItem(itemInfo)
     return itemInfo
 })
 
-export const editItemDetails = createAsyncThunk('items/editItemDetails', async (item: { name: string, icon: string, itemID: string }): Promise<void> => {
+export const editItemDetails = createAsyncThunk('items/editItemDetails', async (item: { name: string, icon: string, itemID: string, emailNotifications:boolean, pushNotifications:boolean }): Promise<void> => {
     item.icon = item.icon.trim()
     item.name = item.name.trim()
     const result = await FirestoreBackend.editItem(item)
+
+    console.log(`Got result: ${result}`)
+
+    if (result !== 'success') {
+        throw new Error(result)
+    }
+})
+
+export const editItemNotifications = createAsyncThunk('items/editItemNotifications', async (item: { itemID: string, emailNotifications:boolean, pushNotifications:boolean }): Promise<void> => {
+    const result = await FirestoreBackend.editItemNotifications(item)
 
     console.log(`Got result: ${result}`)
 

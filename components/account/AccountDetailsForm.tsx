@@ -21,17 +21,19 @@ import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
 import EmojiPickerManager from '../../screens/EmojiPicker'
 
-export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
+export default function AccountDetailsForm(props: {onboarding:boolean, onSubmit: (firstName: string, lastName: string, secondaryEmail:string) => Promise<void>, currentValues?: { firstName: string, lastName: string, secondaryEmail:string }, onCancel?: () => void }) {
 
-    const [name, setName] = useState(props.currentValues?.name ?? '')
-    const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
+    const [firstName, setFirstName] = useState(props.currentValues?.firstName ?? '')
+    const [lastName, setLastName] = useState(props.currentValues?.lastName ?? '')
+    const [secondaryEmail, setSecondaryEmail] = useState(props.currentValues?.secondaryEmail ?? '')
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const nameValid = name.length > 0
-    const iconValid = icon.length > 0
+    const firstNameValid = firstName.length > 0
+    const lastNameValid = lastName.length > 0
+    const secondaryEmailValid = secondaryEmail.length ==  0 ||( secondaryEmail.indexOf("@") != -1 && secondaryEmail.indexOf(".") != -1)
 
     const navigation = useNavigation()
-
+    
     const cancel = () => {
         if (props.onCancel) {
             props.onCancel()
@@ -39,20 +41,40 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
             navigation.goBack()
         }
     }
-
+    
     return (
         <>
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
                 <>
-                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
+                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Account Info' : 'Account Info'}</Text>
                     <TextField
-                        placeholder='Name'
-                        value={name}
+                        placeholder='First Name'
+                        value={firstName}
                         onChangeText={(text) => {
-                            setName(text)
+                            setFirstName(text)
                         }}
                     />
-                    <EmojiPickerManager currentValue={icon} onSelect={setIcon} />               
+                    <TextField
+                        placeholder='Last Name'
+                        value={lastName}
+                        onChangeText={(text) => {
+                            setLastName(text)
+                        }}
+                    />
+                    {!props.onboarding?
+                    <>
+                    <TextField
+                        placeholder='Secondary Email'
+                        value={secondaryEmail}
+                        onChangeText={(text) => {
+                            setSecondaryEmail(text)
+                        }}
+                    />
+                    <Spacer size={Spacing.QuarterGap}/>
+                    <Text style={TextStyles.p}>A secondary email is optional and is someone else who will be emailed when your item is found. This can be a parent, child, caregiver, ect... </Text>
+                    </>
+                    : null}
+                    <Spacer size={Spacing.QuarterGap}/>        
                 </>
             </View>
             <VerticallyCenteringRow>
@@ -66,11 +88,11 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
                 }
                 <BigButton 
                     label={props.currentValues ? `Save Changes` : `Next`} 
-                    disabled={ ! nameValid || ! iconValid || (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name))} 
+                    disabled={ ! firstNameValid || ! lastNameValid || !secondaryEmailValid || (props.currentValues && (props.currentValues.firstName === firstName && props.currentValues.lastName === lastName && props.currentValues.secondaryEmail === secondaryEmail))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {
                         setIsSubmitting(true)
-                        await props.onSubmit(name, icon)
+                        await props.onSubmit(firstName, lastName, secondaryEmail)
                         setIsSubmitting(false)
                     }}
                 />
