@@ -97,7 +97,6 @@ export default function Home(props: HomeProps) {
                     props.navigation.navigate('AccountSettings') }}
                     style={{ padding: Spacing.HalfGap, marginRight: -Spacing.HalfGap }}
                 >
-                    {/* ICON */}
                     <SettingsButton />
                 </TouchableOpacity>
             </VerticallyCenteringRow>

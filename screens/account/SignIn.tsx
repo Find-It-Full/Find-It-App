@@ -1,5 +1,5 @@
 import { GoogleSignin } from "@react-native-google-signin/google-signin"
-import auth from "@react-native-firebase/auth"
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth"
 import React, { useState } from "react"
 import {
     Platform,
@@ -18,6 +18,7 @@ import BigPrimaryActionButton from "../../components/BigPrimaryActionButton"
 import InAppNotificationManager from "../../components/InAppNotificationManager"
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
+import PlatformIcon, { Icons } from "../../components/PlatformIcon"
 
 
 export default function SignIn(props: SignInProps) {
@@ -72,30 +73,45 @@ export default function SignIn(props: SignInProps) {
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={TextStyles.h1}>Beacon Tags</Text>
                 </View>
-                <BigPrimaryActionButton
-                    icon = {<Icon name = 'ios-mail-outline' style ={TextStyles.h3}/>}
-                    label='Continue with Email'
-                    onPress={async () =>{
-                        await analytics().logEvent('signin_google_worked', {})
-                        console.log("Signed in with Google!")
-                        props.navigation.navigate('EmailSignIn')
-                    }}
+                
+                {Platform.OS === "ios" ? <BigPrimaryActionButton
+                    icon={<PlatformIcon icon={Icons.APPLE_LOGO} />}
+                    label='Continue with Apple'
+                    onPress={() =>
+                        onAppleButtonPress().then(async () => {
+                            console.log("analytics --- apple signin worked")
+                            await analytics().logEvent('signin_apple_worked', {})
+                            console.log("Signed in with Apple!")
+                        }
+                        ).catch(async (e: FirebaseAuthTypes.NativeFirebaseAuthError) => {
+                            console.log("analytics --- apple signin failed")
+                            await analytics().logEvent('signin_apple_error', { error: e })
+                            if (e.message.includes('AuthorizationError')) {
+                                setShowMiscError(true)
+                            }
+                            else if (e.code === '1000') {
+                                setShowNoInternetError(true)
+                            } else if (e.code !== '1001') {
+                                setShowMiscError(true)
+                            }
+                        })
+                    }
                     isInColumn
-                />
+                /> : null}
                 <Spacer size={Spacing.Gap} />
                 <BigPrimaryActionButton
-                    icon= {<Icon name = 'ios-logo-google' style ={TextStyles.h3}/>}
+                    icon={<Icon name='ios-logo-google' style={TextStyles.h3} />}
                     label='Continue with Google'
                     onPress={() =>
                         onGoogleSignIn().then(async () => {
                             console.log("analytics --- google signin worked")
-                        await analytics().logEvent('signin_google_worked', {})
+                            await analytics().logEvent('signin_google_worked', {})
                             console.log("Signed in with Google!")
                         }
                         ).catch(async (e) => {
                             console.log(e)
                             console.log("analytics --- google signin failed")
-                            await analytics().logEvent('signin_apple_worked', {error:e})
+                            await analytics().logEvent('signin_google_error', { error: e })
                             if (e.code !== '-5') {
                                 setShowMiscError(true)
                             }
@@ -104,27 +120,16 @@ export default function SignIn(props: SignInProps) {
                     isInColumn
                 />
                 <Spacer size={Spacing.Gap} />
-                {Platform.OS === "ios"?<BigPrimaryActionButton
-                    icon={<Icon name = 'ios-logo-apple' style ={TextStyles.h3}/>}
-                    label='Continue with Apple'
-                    onPress={() =>
-                        onAppleButtonPress().then(async () => {
-                            console.log("analytics --- apple signin worked")
-                            await analytics().logEvent('signin_apple_worked', {})
-                            console.log("Signed in with Apple!")
-                        }
-                        ).catch(async (e) => {
-                            console.log("analytics --- apple signin failed")
-                            await analytics().logEvent('signin_apple_error', {error:e})
-                            if (e.code === '1000') {
-                                setShowNoInternetError(true)
-                            } else if (e.code !== '1001') {
-                                setShowMiscError(true)
-                            }
-                        })
-                    }
+                <BigPrimaryActionButton
+                    icon = {<PlatformIcon icon={Icons.ENVELOPE} />}
+                    label='Continue with Email'
+                    onPress={async () =>{
+                        await analytics().logEvent('signin_google_worked', {})
+                        console.log("Signed in with Google!")
+                        props.navigation.navigate('EmailSignIn')
+                    }}
                     isInColumn
-                />:null}
+                />
             </ScreenBase>
             <InAppNotificationManager 
                 shouldShowMiscError={showMiscError}

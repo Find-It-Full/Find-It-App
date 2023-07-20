@@ -9,11 +9,9 @@ import analytics from '@react-native-firebase/analytics';
 import AccountDetailsForm from '../../components/account/AccountDetailsForm'
 import { EnterAccountDetailsProps } from '../Navigator'
 import { FirestoreBackend } from '../../backend/firestoreBackend'
+
 export default function SetAccountDetails({ navigation, route }: EnterAccountDetailsProps) {
 
-
-    const dispatch = useAppDispatch()
-    const userData = useAppSelector((state) => state.userData)
     const onSubmit = async (firstName: string, lastName: string, secondaryEmail:string) => {
         await FirestoreBackend.editAccount({firstName:firstName, lastName:lastName, secondaryEmail:secondaryEmail})
     }

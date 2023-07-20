@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'absolute',
         left: Spacing.ScreenPadding,
-        borderRadius: Radii.ItemRadius
+        borderRadius: Radii.ItemRadius,
+        zIndex: 10000
     }
 })

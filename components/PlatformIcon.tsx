@@ -19,6 +19,8 @@ export namespace Icons {
     export const SEAL = ios ? '􀇻' : 'checkmark-circle'
     export const TRASH = ios ? '􀈒' : 'trash'
     export const LOCK = ios ? '􀎡' : 'lock-closed'
+    export const ENVELOPE = ios ? '􀍖' : 'mail'
+    export const APPLE_LOGO = ios ? '􀣺' : 'logo-apple'
 }
 
 export default function PlatformIcon(props: { icon: string, style?: TextStyle }) {
