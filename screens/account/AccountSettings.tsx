@@ -21,21 +21,21 @@ import { FirestoreBackend } from '../../backend/firestoreBackend'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
-    const [isPresentingEditAccountModal, setIsPresentingEditAccountModal] = React.useState(false)
     const dispatch = useAppDispatch()
     const userData = useAppSelector((state) => state.userData)
 
-    const onSubmit = async (firstName: string, lastName: string, secondaryEmail:string) => {
-        await FirestoreBackend.editAccount({firstName:firstName, lastName:lastName, secondaryEmail:secondaryEmail})
-        setIsPresentingEditAccountModal(false)
-     }
+    function editAccountDetails() {
+        props.navigation.navigate('EditAccountDetails', { firstName: userData.firstName, lastName: userData.lastName })
+    }
+
     return (
         <ScreenBase style={{ alignItems: 'stretch' }}>
+            <BackButton />
             <Spacer size={Spacing.BigGap} />
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-            <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Info' onPress={() => setIsPresentingEditAccountModal(true)} />
+            <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Info' onPress={editAccountDetails} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={() => dispatch(signOut())} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.TRASH} />} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
@@ -59,17 +59,6 @@ export default function AccountSettings(props: AccountSettingsProps) {
                     
                 <DeleteAccountForm onClose={() => setIsPresentingModal(false)}/>
             </Modal>
-            <Modal
-                animationType='fade'
-                presentationStyle='overFullScreen'
-                transparent={true}
-                visible={isPresentingEditAccountModal}
-                onRequestClose={() => {
-                    setIsPresentingEditAccountModal(false)
-                }}>
-                    <EditAccountDetails onCancel={() => { setIsPresentingEditAccountModal(false) } } currentValues={userData} onSubmit={onSubmit} />
-                </Modal>
-            <BackButton />
         </ScreenBase>
     )
 }

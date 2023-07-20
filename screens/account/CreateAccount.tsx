@@ -11,6 +11,7 @@ import { CreateAccountProps } from '../Navigator';
 import auth from "@react-native-firebase/auth"
 import { Colors } from '../../ui-base/colors';
 import { SafeAuth } from '../../backend/safeAuth';
+import { FirestoreBackend } from '../../backend/firestoreBackend';
 
 export default function CreateAccount(props: CreateAccountProps) {
 
@@ -18,38 +19,17 @@ export default function CreateAccount(props: CreateAccountProps) {
     const [passwordRe, setPasswordRe] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
-    const [passwordError, setPasswordError] = useState('')
 
     const samePassword = password === passwordRe
     const isValidPassword = (password.length >= 5) && samePassword && firstName.length > 0 && lastName.length > 0
 
     const createUser = async () => {
-        SafeAuth.createUserWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))
-        // catch (e) {
-        //     console.log(e)
-        //     if (e.message.includes('auth/email-already-in-use')) {
-        //         // we should not hit this.
-        //     }
-        //     else if (e.message.includes('auth/invalid-email')) {
-        //         // we should not hit this either
-        //         // but just in case...
-        //         Alert.alert('Invalid Email', 'Looks like there was an error in email you entered.')
-        //         props.navigation.navigate('EmailSignIn');
-        //     }
-        //     else if (e.message.includes('auth/weak-password')) {
-        //         setPasswordError(`That password isn't strong enough. Passwords must be at least six characters and include something that isn't a letter or number.`)
-        //     }
-        //     else if (e.message.includes('auth/network-request-failed')) {
-        //         setPasswordError(`Connection failed. Please try again.`)
-        //     }
-        // }
+        await SafeAuth.createUserWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))
+        await FirestoreBackend.editAccount({ firstName, lastName })
     }
 
     const passwordErrorComponent = samePassword || passwordRe.length === 0 || password.length === 0 ? 
-        passwordError.length > 0 ?
-            <Text style={[TextStyles.p, { marginTop: -Spacing.BigGap + Spacing.HalfGap, color:Colors.Red }]}>{passwordError}</Text>
-            :
-            null
+        null
         :
         <Text style={[TextStyles.p, { marginTop: -Spacing.BigGap + Spacing.HalfGap, color:Colors.Red }]}>Passwords don't match.</Text>
 
@@ -113,7 +93,7 @@ export default function CreateAccount(props: CreateAccountProps) {
                     passwordErrorComponent
                 }
             </View>
-            <BigButton label='Next' onPress={createUser} disabled={ ! isValidPassword} isInColumn />
+            <BigButton label='Finish' onPress={createUser} disabled={ ! isValidPassword} isInColumn />
         </ScreenBase>
     )
 }

@@ -15,10 +15,10 @@ import InAppNotificationManager from '../components/InAppNotificationManager'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { resetMiscErrorNotification, resetNoInternetNotification } from '../reducers/items'
 import EnterPassword from './account/EnterPassword'
-import SetAccountDetails from './onboarding/SetAccountDetails'
 import auth from "@react-native-firebase/auth"
 import { FirestoreBackend } from '../backend/firestoreBackend'
 import userData, { fetchAccountDetails, setAccountDetails } from '../reducers/userData'
+import EditAccountDetails from './account/EditAccountDetails'
 export type RootStackParamList = {
     Home: {itemGoTo:string}
     ItemDetails: { itemID: ItemID }
@@ -29,7 +29,7 @@ export type RootStackParamList = {
     AddItemFlow: undefined
     EditItemFlow: { item: Item }
     AccountSettings: undefined,
-    SetAccountDetails:{firstName:string, lastName:string, secondaryEmail:string}
+    EditAccountDetails: { firstName: string, lastName: string },
 }
 
 export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -37,7 +37,7 @@ export type AddItemFlowProps = NativeStackScreenProps<RootStackParamList, 'AddIt
 export type ItemDetailsProps = NativeStackScreenProps<RootStackParamList, 'ItemDetails'>
 export type EditItemFlowProps = NativeStackScreenProps<RootStackParamList, 'EditItemFlow'>
 export type AccountSettingsProps = NativeStackScreenProps<RootStackParamList, 'AccountSettings'>
-export type EnterAccountDetailsProps = NativeStackScreenProps<RootStackParamList, 'SetAccountDetails'>
+export type EditAccountDetailsProps = NativeStackScreenProps<RootStackParamList, 'EditAccountDetails'>
 export type SignInProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>
 export type EmailSignInProps = NativeStackScreenProps<RootStackParamList, 'EmailSignIn'>
 export type CreateAccountProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>
@@ -78,7 +78,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                                 <RootStack.Screen name='Home' component={Home} />
                                 <RootStack.Screen name='ItemDetails' component={ItemDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                                 <RootStack.Screen name='AccountSettings' component={AccountSettings} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
-                                
+                                <RootStack.Screen name='EditAccountDetails' component={EditAccountDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                             </RootStack.Group>
                             <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
                                 <RootStack.Screen name="AddItemFlow" component={AddItemFlowContainer} />
@@ -94,9 +94,6 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                             <RootStack.Screen name="EmailSignIn" component={EmailSignIn} />
                             <RootStack.Screen name="EnterPassword" component={EnterPassword} />
                             <RootStack.Screen name="CreateAccount" component={CreateAccount} />
-                            <RootStack.Screen name="SetAccountDetails" component={SetAccountDetails} />
-                            
-                            
                         </>
                     )
                 }

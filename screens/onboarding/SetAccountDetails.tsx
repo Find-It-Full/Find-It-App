@@ -12,8 +12,8 @@ import { FirestoreBackend } from '../../backend/firestoreBackend'
 
 export default function SetAccountDetails({ navigation, route }: EnterAccountDetailsProps) {
 
-    const onSubmit = async (firstName: string, lastName: string, secondaryEmail:string) => {
-        await FirestoreBackend.editAccount({firstName:firstName, lastName:lastName, secondaryEmail:secondaryEmail})
+    const onSubmit = async (firstName: string, lastName: string) => {
+        await FirestoreBackend.editAccount({firstName:firstName, lastName:lastName })
     }
 
     return (

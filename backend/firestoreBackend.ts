@@ -123,9 +123,9 @@ export class FirestoreBackend {
         return (await this.users().doc(uid).get()).data() as UserData
     }
 
-    public static async editAccount(accountDetails: {firstName: string, lastName: string,  secondaryEmail: string}) {
+    public static async editAccount(accountDetails: { firstName: string, lastName: string }) {
         const uid = auth().currentUser?.uid
-        return await this.users().doc(uid).set(accountDetails,{merge:true})
+        return await this.users().doc(uid).set(accountDetails, { merge:true })
     }
     
 
