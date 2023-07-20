@@ -272,9 +272,7 @@ export function isContactInformation(obj: any): obj is ContactInformationReportF
         typeof obj == 'object' && 
         'type' in obj &&
         obj.type === ReportFieldType.CONTACT_INFORMATION &&
-        'contactInfo' in obj &&
-        Number.isInteger(obj.contactInfo) &&
-        obj.contactInfo.toString().length === 10
+        'contactInfo' in obj
     )
 }
 
