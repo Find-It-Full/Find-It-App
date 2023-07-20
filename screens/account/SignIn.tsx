@@ -72,7 +72,6 @@ export default function SignIn(props: SignInProps) {
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={TextStyles.h1}>Beacon Tags</Text>
                 </View>
-                {/* <EmailAndPasswordInput error={error} sent={sent} forgotPassword={async (email) => { await forgotPassword(email) }} onSubmit={async (email, password) => { await emailSignIn(email, password) }} /> */}
                 <BigPrimaryActionButton
                     icon = {<Icon name = 'ios-mail-outline' style ={TextStyles.h3}/>}
                     label='Continue with Email'

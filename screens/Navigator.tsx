@@ -55,10 +55,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
     
 
     useEffect(() => {
-
         dispatch(fetchAccountDetails())
-        
-
     }, [])
 
     const resetNoInternetError = () => {
@@ -68,8 +65,6 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
     const resetMiscError = () => {
         dispatch(resetMiscErrorNotification())
     }
-
-    const hasUserData = true
     
     const initialScreen = props.isAuthenticated ? "Home"  : "SignIn"
 

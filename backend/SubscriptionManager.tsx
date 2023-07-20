@@ -115,17 +115,10 @@ const SubscriptionManager = (props: { children?: React.ReactNode }) => {
 
     const subscribeToAccount = () => {
 
+        FirestoreBackend.updateLastLogin()
+
         const onNewAccountData = (data: any) => {
-
-
-
-
-                dispatch(setAccountDetails(data as UserData))
-
-
-
-                
-            
+            dispatch(setAccountDetails(data as UserData))
         }
 
         const onError = (error: Error) => {

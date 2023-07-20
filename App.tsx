@@ -61,16 +61,6 @@ export default function App() {
         return subscribeToAuthStateChanges(setIsAuthenticated)
     }, [isAuthenticated])
 
-    
-
-    
-
-
-
-    
-    FirestoreBackend.updateLastLogin()
-    
-
     return (
         <>
             <StatusBar

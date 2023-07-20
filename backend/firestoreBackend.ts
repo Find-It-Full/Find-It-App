@@ -112,6 +112,7 @@ export class FirestoreBackend {
         const query = await this.items().where("ownerID", "==", uid).get()
         return query.docs.map((snap) => snap.data() as Item)
     }
+    
     public static async updateLastLogin() {
         const uid = auth().currentUser?.uid
         return (await this.users().doc(uid).update({"lastLogin": new Date().getTime()}))
