@@ -8,7 +8,7 @@ import IconButton from '../components/IconButton'
 import { EmojiManagerContext } from '../backend/EmojiManager'
 import { Panel } from '../ui-base/containers'
 import { Radii } from '../ui-base/radii'
-import EmojiPicker from 'rn-emoji-keyboard'
+import EmojiPicker, { EmojiKeyboard } from 'rn-emoji-keyboard'
 import Icon from 'react-native-vector-icons/Ionicons'
 export default function EmojiPickerManager(props: { currentValue: string, onSelect: (emoji: string) => void }) {
 
@@ -34,7 +34,7 @@ export default function EmojiPickerManager(props: { currentValue: string, onSele
         return () => subscription.remove()
     }, [])
 
-    return (
+    return (<>
         <View style={{
             backgroundColor: Colors.ButtonColor,
             paddingVertical: Spacing.ThreeQuartersGap,
@@ -62,10 +62,18 @@ export default function EmojiPickerManager(props: { currentValue: string, onSele
                     <Text style={[TextStyles.h3]}>{ showEmojis ? <Icon style = {[TextStyles.h3]} name='ios-chevron-up'/> : <Icon style = {[TextStyles.h3]} name='ios-chevron-down'/> }</Text>
                 </VerticallyCenteringRow>
             </TouchableOpacity>
-            {showEmojis?<View style = {{marginTop:50}}/>:null}
-            <EmojiPicker defaultHeight = {300} expandable={false} onEmojiSelected={(emojiData)=>{onSelect(emojiData.emoji)}} open={showEmojis} onClose={() => setShowEmojis(false)} />
+            
 
         </View>
+
+        {showEmojis?
+
+            <EmojiKeyboard defaultHeight = {300} expandable={false} onEmojiSelected={(emojiData)=>{
+                
+                onSelect(emojiData.emoji)
+                
+                setShowEmojis(false)}} />:null}
+            </>
     )
 }
 
