@@ -20,16 +20,17 @@ import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
-import EmojiPickerManager from '../../screens/EmojiPicker'
+import EmojiPickerManager from '../EmojiPicker'
 import DropDown from '../DropDown'
+import BooleanField from '../BooleanField'
+import ActionButtonList from '../ActionButtonList'
+import NotificationsSettingsSelector from './NotificationsSettingsSelector'
 
 export default function ItemNotificationsForm(props: { onSubmit: (emailNotifications: boolean, pushNotifications: boolean) => Promise<void>, currentValues?: { emailNotifications: boolean, pushNotifications: boolean }, onCancel?: () => void }) {
 
     const [emailNotifications, setEmailNotifications] = useState(props.currentValues?.emailNotifications ?? true)
     const [pushNotifications, setPushNotifications] = useState(props.currentValues?.pushNotifications ?? true)
     const [isSubmitting, setIsSubmitting] = useState(false)
-
-    
 
     const navigation = useNavigation()
 
@@ -44,23 +45,14 @@ export default function ItemNotificationsForm(props: { onSubmit: (emailNotificat
     return (
         <>
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
-                <>
-                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                    
-                    
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap, paddingRight:Spacing.BigGap }]}>{"Push Notifications "}</Text>
-                    <Switch value = {pushNotifications} onValueChange={setPushNotifications}/>
-                    
-                    
-                    
-                    
-                    <View style ={{paddingBottom:Spacing.BigGap}}/>
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Email Notifications "}
-                    </Text>
-                    <Switch value = {emailNotifications} onValueChange={setEmailNotifications}/>
-
-                </>
-                
+                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{'Notification Settings'}</Text>
+                <Text style={[TextStyles.p, { marginBottom: Spacing.Gap }]}>When this item is spotted, how would you like to be notified?</Text>
+                <NotificationsSettingsSelector 
+                    emailNotificationsChanged={setEmailNotifications}
+                    pushNotificationsChanged={setPushNotifications}
+                    currentValues={{ emailNotifications, pushNotifications }} 
+                    isSubmitting={isSubmitting} 
+                />
             </View>
 
             <VerticallyCenteringRow>

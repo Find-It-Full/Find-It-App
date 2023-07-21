@@ -5,6 +5,7 @@ import { Colors } from "./colors"
 import { Spacer } from "./layouts"
 import { Radii } from "./radii"
 import { Spacing } from "./spacing"
+import { Shadows } from './shadows'
 
 export function ScreenBase(props: { children?: React.ReactNode, style?: ViewStyle }) {
 
@@ -118,6 +119,14 @@ export function ActionButton(props: { children?: React.ReactNode, style?: ViewSt
 export function ItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
     return (
         <View style={{ height: 38, width: 38, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
+            {props.children}
+        </View>
+    )
+}
+
+export function MapItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
+    return (
+        <View style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, flexDirection: 'row', height: 38, paddingHorizontal: Spacing.QuarterGap, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
             {props.children}
         </View>
     )

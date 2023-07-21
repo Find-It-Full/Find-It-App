@@ -13,7 +13,7 @@ export default function ItemProfile({ icon, name }: Item) {
                 <Text style={TextStyles.smallEmoji}>{icon}</Text>
             </ItemIconContainer>
             <Spacer size={Spacing.Gap} />
-            <Text style={TextStyles.h2}>{name}</Text>
+            <Text style={TextStyles.h3}>{name}</Text>
         </VerticallyCenteringGroupedRow>
     )
 }

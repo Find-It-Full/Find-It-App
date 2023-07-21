@@ -15,7 +15,6 @@ import { signOut } from '../../reducers/userData'
 import { TextStyles } from '../../ui-base/text'
 import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from '../../components/PlatformIcon'
-import SetAccountDetails from '../onboarding/SetAccountDetails'
 import EditAccountDetails from './EditAccountDetails'
 import { FirestoreBackend } from '../../backend/firestoreBackend'
 export default function AccountSettings(props: AccountSettingsProps) {

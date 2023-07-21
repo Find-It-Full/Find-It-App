@@ -19,6 +19,7 @@ import auth from "@react-native-firebase/auth"
 import { FirestoreBackend } from '../backend/firestoreBackend'
 import userData, { fetchAccountDetails, setAccountDetails } from '../reducers/userData'
 import EditAccountDetails from './account/EditAccountDetails'
+import EditItemDetails from './editing-items/EditItemDetails'
 export type RootStackParamList = {
     Home: {itemGoTo:string}
     ItemDetails: { itemID: ItemID }
@@ -27,21 +28,21 @@ export type RootStackParamList = {
     EnterPassword: { email: string }
     CreateAccount: { email: string }
     AddItemFlow: undefined
-    EditItemFlow: { item: Item }
     AccountSettings: undefined,
     EditAccountDetails: { firstName: string, lastName: string },
+    EditItem: { item: Item }
 }
 
 export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
 export type AddItemFlowProps = NativeStackScreenProps<RootStackParamList, 'AddItemFlow'>
 export type ItemDetailsProps = NativeStackScreenProps<RootStackParamList, 'ItemDetails'>
-export type EditItemFlowProps = NativeStackScreenProps<RootStackParamList, 'EditItemFlow'>
 export type AccountSettingsProps = NativeStackScreenProps<RootStackParamList, 'AccountSettings'>
 export type EditAccountDetailsProps = NativeStackScreenProps<RootStackParamList, 'EditAccountDetails'>
 export type SignInProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>
 export type EmailSignInProps = NativeStackScreenProps<RootStackParamList, 'EmailSignIn'>
 export type CreateAccountProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>
 export type EnterPasswordProps = NativeStackScreenProps<RootStackParamList, 'EnterPassword'>
+export type EditItemProps = NativeStackScreenProps<RootStackParamList, 'EditItem'>
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -79,6 +80,7 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
                                 <RootStack.Screen name='ItemDetails' component={ItemDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                                 <RootStack.Screen name='AccountSettings' component={AccountSettings} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                                 <RootStack.Screen name='EditAccountDetails' component={EditAccountDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
+                                <RootStack.Screen name="EditItem" component={EditItemDetails} options={{ animation: 'slide_from_right', gestureEnabled: true }} />
                             </RootStack.Group>
                             <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
                                 <RootStack.Screen name="AddItemFlow" component={AddItemFlowContainer} />

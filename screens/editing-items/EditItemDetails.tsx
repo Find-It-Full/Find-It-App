@@ -1,108 +1,87 @@
 import React from 'react'
 import { useState } from "react"
 import {
-    TextInput,
     Text,
     StyleSheet,
-    TouchableOpacity,
     View,
-    Keyboard,
-    Switch
 } from "react-native"
-import { FormScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
+import { ScreenBase } from "../../ui-base/containers"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import { Colors } from "../../ui-base/colors"
-import { Radii } from "../../ui-base/radii"
 import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts"
-import { useNavigation } from "@react-navigation/native"
-
-import { SafeAreaInsetsContext } from "react-native-safe-area-context"
-
-import EmojiPickerManager from '../../screens/EmojiPicker'
 import BigButton from '../../components/BigButton'
 import CancelButton from '../../components/CancelButton'
 import TextField from '../../components/TextField'
-import DropDown from '../../components/DropDown'
+import BooleanField from '../../components/BooleanField'
+import { EditItemProps } from '../Navigator'
+import BackButton from '../../components/BackButton'
+import { useAppDispatch } from '../../store/hooks'
+import { editItemDetails } from '../../reducers/items'
+import ActionButtonList from '../../components/ActionButtonList'
+import EmojiPicker from '../../components/EmojiPicker'
+import NotificationsSettingsSelector from '../../components/items/NotificationsSettingsSelector'
 
-export default function EditItemDetails(props: { onSubmit: (name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean) => Promise<void>, currentValues?: { name: string, icon: string, emailNotifications:boolean, pushNotifications:boolean }, onCancel?: () => void }) {
+export default function EditItemDetails(props: EditItemProps) {
 
-    const [name, setName] = useState(props.currentValues?.name ?? '')
-    const [icon, setIcon] = useState(props.currentValues?.icon ?? '')
-    const [emailNotifications, setEmailNotifications] = useState(props.currentValues?.emailNotifications ?? true)
-    const [pushNotifications, setPushNotifications] = useState(props.currentValues?.pushNotifications ?? true)
+    const dispatch = useAppDispatch()
+
+    const item = props.route.params.item
+    const [name, setName] = useState(item.name)
+    const [icon, setIcon] = useState(item.icon)
+    const [emailNotifications, setEmailNotifications] = useState(item.emailNotifications)
+    const [pushNotifications, setPushNotifications] = useState(item.pushNotifications)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
 
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
 
-    const navigation = useNavigation()
+    const onEditSubmit = async (name: string, icon: string, emailNotifications: boolean, pushNotifications: boolean) => {
+        await dispatch(editItemDetails({ name, icon, itemID: item.itemID, emailNotifications: emailNotifications, pushNotifications: pushNotifications }))
+        props.navigation.goBack()
+    }
 
-    const cancel = () => {
-        if (props.onCancel) {
-            props.onCancel()
-        } else {
-            navigation.goBack()
-        }
+    const onCancel = () => {
+        props.navigation.goBack()
     }
 
     return (
-        <>
-            <View style={{ flex: props.currentValues ? 0 : 1 }}>
-                <>
-                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
-                    <TextField
-                        placeholder='Name'
-                        value={name}
-                        onChangeText={(text) => {
-                            setName(text)
-                        }}
-                    />
-                    <EmojiPickerManager currentValue={icon} onSelect={setIcon} />          
-
-
-
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Push Notifications "}
-                    </Text>
-                    <Switch style ={TextStyles.h3} value = {pushNotifications} onValueChange={setPushNotifications}/>
-                    
-                    
-                    <View style ={{paddingBottom:Spacing.BigGap}}/>
-                    <Text style={[TextStyles.h3, {  marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{"Email Notifications "}
-                    </Text>
-                    <Switch value = {emailNotifications} onValueChange={setEmailNotifications}/>
-
-                    <View style ={{paddingBottom:Spacing.BigGap}}/>    
-                </>
-            </View>
+        <ScreenBase>
+            <BackButton />
+            <View style={{ flex: 1, paddingTop: Spacing.BigGap }}>
+                <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.Gap }]}>Item Info</Text>
+                <TextField
+                    placeholder='Item Name'
+                    value={name}
+                    onChangeText={(text) => {
+                        setName(text)
+                    }}
+                    style={{ marginBottom: Spacing.ThreeQuartersGap }}
+                />
+                <EmojiPicker currentValue={icon} onSelect={setIcon} />          
+                
+                <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.BigGap }]}>Notification Settings</Text>
+                <NotificationsSettingsSelector currentValues={{ emailNotifications, pushNotifications }} emailNotificationsChanged={setEmailNotifications} pushNotificationsChanged={setPushNotifications} isSubmitting={isSubmitting} />
+            </View> 
             <VerticallyCenteringRow>
-
-
-
-                {
-                    props.currentValues ? 
-                        <>
-                            <CancelButton label='Cancel' onPress={cancel} disabled={isSubmitting}/>
-                            <Spacer size={Spacing.BigGap} />
-                        </> :
-                        null
-                }
+                <CancelButton label='Cancel' onPress={onCancel} disabled={isSubmitting}/>
+                <Spacer size={Spacing.BigGap} />
                 <BigButton 
-                    label={props.currentValues ? `Save Changes` : `Next`} 
+                    label={'Save Changes'} 
                     disabled={ 
                         ! nameValid || 
                         ! iconValid || 
-                        (props.currentValues && (props.currentValues.icon === icon && props.currentValues.name === name &&props.currentValues.emailNotifications === emailNotifications && props.currentValues.pushNotifications === pushNotifications))} 
+                        ((item.icon === icon && item.name === name && item.emailNotifications === emailNotifications && item.pushNotifications === pushNotifications))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {
                         setIsSubmitting(true)
-                        await props.onSubmit(name, icon, emailNotifications, pushNotifications)
+                        await onEditSubmit(name, icon, emailNotifications, pushNotifications)
                         setIsSubmitting(false)
                     }}
                 />
             </VerticallyCenteringRow>
-        </>
+        </ScreenBase>
     )
 }
 

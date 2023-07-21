@@ -8,6 +8,9 @@ import ItemDetailsForm from "../../components/items/ItemDetailsForm"
 import { FormScreenBase } from "../../ui-base/containers"
 import analytics from '@react-native-firebase/analytics';
 import ItemNotificationsForm from '../../components/items/ItemNotificationsForm'
+import BackButton from '../../components/BackButton'
+import { Spacer } from '../../ui-base/layouts'
+import { Spacing } from '../../ui-base/spacing'
 export default function EnterItemDetails({ navigation, route }: EnterItemNotificationsProps) {
 
     const dispatch = useAppDispatch()
@@ -38,6 +41,8 @@ export default function EnterItemDetails({ navigation, route }: EnterItemNotific
 
     return (
         <FormScreenBase>
+            <BackButton top={Spacing.Gap} />
+            <Spacer size={Spacing.BigGap * 2} />
             <ItemNotificationsForm onSubmit={onSubmit} />
         </FormScreenBase>
     )

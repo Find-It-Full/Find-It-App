@@ -19,7 +19,7 @@ import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
-import EmojiPickerManager from '../../screens/EmojiPicker'
+import EmojiPicker from '../EmojiPicker'
 
 export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: string) => Promise<void>, currentValues?: { name: string, icon: string }, onCancel?: () => void }) {
 
@@ -44,15 +44,22 @@ export default function ItemDetailsForm(props: { onSubmit: (name: string, icon: 
         <>
             <View style={{ flex: props.currentValues ? 0 : 1 }}>
                 <>
-                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : 'Item Information'}</Text>
+                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Item' : `Create Your Item`}</Text>
+                    {
+                        props.currentValues ?
+                            null
+                            :
+                            <Text style={[TextStyles.p, { marginBottom: Spacing.Gap }]}>What sort of item are you adding?</Text>
+                    }
                     <TextField
-                        placeholder='Name'
+                        placeholder='Item Name'
                         value={name}
                         onChangeText={(text) => {
                             setName(text)
                         }}
+                        style={{ marginBottom: Spacing.ThreeQuartersGap }}
                     />
-                    <EmojiPickerManager currentValue={icon} onSelect={setIcon} />               
+                    <EmojiPicker currentValue={icon} onSelect={setIcon} />               
                 </>
             </View>
             <VerticallyCenteringRow>

@@ -15,7 +15,7 @@ export namespace DarkModeColors {
 }
 
 export namespace Colors {
-    export const Line = '#696666'
+    export const Line = 'rgb(100, 101, 112)'
     export const Blue = '#0000EE'
     export const White = '#151515'
     export const Black = '#FFFFFF'

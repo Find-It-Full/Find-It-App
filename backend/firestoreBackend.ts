@@ -40,6 +40,12 @@ export class FirestoreBackend {
 
     }
 
+    public static async canAddItem(tagID: string): Promise<boolean> {
+        const canAddItem = functions().httpsCallable('canAddItem')
+        const result = await canAddItem({ tagID })
+        return result.data
+    }
+
     public static async editItem(item: { itemID: string, name: string, icon: string,emailNotifications:boolean, pushNotifications:boolean }): Promise<RegisterTagResult> {
         const itemRef = this.items().doc(item.itemID)
         console.log('Starting update...')

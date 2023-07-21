@@ -7,33 +7,30 @@ import { Radii } from '../ui-base/radii'
 import { Spacing } from '../ui-base/spacing'
 import PlatformIcon, { Icons } from './PlatformIcon'
 
-export default function BackButton(props: { top?: number }) {
+export default function ItemSettingsButton(props: { onPress: () => void }) {
 
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
-    const navigation = React.useContext(NavigationContext)
-    const top = (props.top != null) ? props.top : (safeAreaInsets?.top ?? 0)
+    const top = (safeAreaInsets?.top ?? 0)
 
     return (
         <TouchableOpacity
-            style={[styles.backButton, { top }]} 
-            onPress={ () => {
-                navigation?.goBack()
-            }}
+            style={[styles.itemSettingsButton, { top }]} 
+            onPress={props.onPress}
         >
-            <PlatformIcon icon={Icons.BACK} />
+            <PlatformIcon icon={Icons.COG} />
         </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
-    backButton: {
+    itemSettingsButton: {
         backgroundColor: Colors.Black,
         height: 38, 
         width: 38,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
-        left: Spacing.ScreenPadding,
+        right: Spacing.ScreenPadding,
         borderRadius: Radii.ItemRadius,
         zIndex: 10000
     }

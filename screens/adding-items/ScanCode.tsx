@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react"
-import { Text, Button, TouchableOpacity, View, Linking, Alert, Platform } from "react-native"
+import { Text, Button, TouchableOpacity, View, Linking, Alert, Platform, ActivityIndicator } from "react-native"
 import { ScanCodeProps } from "./AddItemFlowContainer"
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions"
 import QRCodeScanner from "react-native-qrcode-scanner"
@@ -18,10 +18,27 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     const scannerRef = React.useRef<QRCodeScanner>(null)
     const [cameraAllowed, setCameraAllowed] = useState(false)
     const [didCheckForCameraPermission, setDidCheckForCameraPermission] = useState(false)
+    const [isCheckingTag, setIsCheckingTag] = useState(false)
+
+    const AsyncAlert = async (title, message) => new Promise((resolve) => {
+        Alert.alert(
+            title,
+            message,
+            [
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        resolve('YES');
+                    },
+                    isPreferred: true
+                },
+            ],
+            { cancelable: false },
+        );
+    });
     
     async function onSuccess(data: any) {
         console.log(`Scanned QR code with data: ${data.data}`)
-        
         try {
             const url = data.data
             const pathSegments = url.split('/')
@@ -31,11 +48,25 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             const tagID = await FirestoreBackend.getTagID(id)
             console.log("analytics --- item scanned valid")
             await analytics().logEvent('item_scanned', {valid_tag:true})
-            navigation.navigate('EnterItemDetails', { tagID: tagID })
-        } catch (e) {
+
+            setIsCheckingTag(true)
+            const canAddItem = await FirestoreBackend.canAddItem(tagID)
+
+            if (!canAddItem) {
+                setIsCheckingTag(false)
+                await AsyncAlert(`Can't Add Item`, 'That code may be invalid, or it may already have an item associated with it.')
+            }
+            else {
+                setIsCheckingTag(false)
+                navigation.navigate('EnterItemDetails', { tagID: tagID })
+                scannerRef.current?.reactivate()
+            }
+        } 
+        catch (e) {
             console.log("analytics --- item scanned error")
             await analytics().logEvent('item_scanned', {valid_tag:false,error:e})
             console.log(`Read invalid URL: ${e}`)
+            await AsyncAlert(`Oops!`, 'Something went wrong, please try again.')
             scannerRef.current?.reactivate()
         }
     }
@@ -114,12 +145,6 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
         checkForCameraPermission().then(() => setDidCheckForCameraPermission(true))
     }, [])
 
-
-    useEffect(() => {
-
-        onSuccess({data:"https://tags.beacontags.com/syyJ28HARsmwDdgs9"} as BarCodeReadEvent)
-    }, [])
-
     useEffect(() => {
         if (didCheckForCameraPermission && ! cameraAllowed) {
             checkForPriorCameraDenial()
@@ -159,7 +184,13 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
                 <View style={{ width: '100%', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)' }}/>
             </View>
             <View style={{ position: 'absolute', top: '66%', width: '100%', alignItems: 'center' }}>
-                <Text style={[TextStyles.h2, { color: 'white', marginTop: Spacing.Gap * 2 }]}>Scan a tag to add</Text>
+                <Text style={[TextStyles.h2, { color: 'white', marginVertical: Spacing.Gap * 2 }]}>Scan a tag to add</Text>
+                {
+                    isCheckingTag ?
+                        <ActivityIndicator size={'large'} />
+                        :
+                        null
+                }
             </View>
         </View>
     )

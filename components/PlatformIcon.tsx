@@ -21,6 +21,9 @@ export namespace Icons {
     export const LOCK = ios ? '􀎡' : 'lock-closed'
     export const ENVELOPE = ios ? '􀍖' : 'mail'
     export const APPLE_LOGO = ios ? '􀣺' : 'logo-apple'
+    export const REMOVE_BIN = ios ? '􀈱' : 'remove-bin'
+    export const UP = ios ? '􀆇' : 'chevron-up'
+    export const DOWN = ios ? '􀆈' : 'chevron-down'
 }
 
 export default function PlatformIcon(props: { icon: string, style?: TextStyle }) {

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Linking, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { isContactInformation, isExactLocation, isMessage, Report, ReportViewStatus } from '../../backend/databaseTypes';
-import LocationCoder from '../../backend/LocationCoder';
 import { Colors } from '../../ui-base/colors';
-import { VerticallyCenteringGroupedRow, VerticallyCenteringRow } from '../../ui-base/layouts';
+import { VerticallyCenteringRow } from '../../ui-base/layouts';
 import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
-import auth from '@react-native-firebase/auth'
 import analytics from '@react-native-firebase/analytics';
 
 export default function ReportSummary(props: { report: Report, isSelected: string | null }) {
@@ -19,7 +17,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
 
     const messageField = props.report.fields.MESSAGE
-    const [message, hasMessage] = isMessage(messageField) ? [messageField.message, true] : ['No message included.', false]
+    const [message, hasMessage] = isMessage(messageField) ? [messageField.message, true] : ['Your spotter did not include a message', false]
     const [locationString, setLocationString] = useState<string>('')
 
     useEffect(() => {
@@ -39,58 +37,28 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
             return
         }
 
-        // LocationCoder.geocodePosition({ lat: location.latitude, lng: location.longitude })
-        //     .then((codedLocation) => { 
-        //         if (codedLocation.length === 0) {
-        //             return console.error('got no coded locations')
-        //         }
-        //         const loc = (` • ${codedLocation[0].streetNumber ? codedLocation[0].streetNumber + ' ' : ''}${codedLocation[0].streetName}`)
-        //         console.log(loc)
-        //         setLocationString(loc)
-        //     })
-        //     .catch((err) => console.log(err))
-
     }, [props.isSelected])
 
     const windowWidth = useWindowDimensions().width
 
     const PhoneNumber = () => {
-        if ( ! contactPhoneNumber) {
-            return <Text style={[TextStyles.p, { opacity: Colors.DisabledOpacity }]}>No contact info provided</Text>
-        } else {
-            if(contactPhoneNumber.toString().indexOf("@") != -1){
-                return (
-                    <>
-                        <Text style={TextStyles.p}>Contact: </Text>
-                        <TouchableOpacity
-                        
-                        onPress={async () => {
-                            console.log("analytics --- open mesages")
-                            await analytics().logEvent('open_messages', {report:props.report})
-                            Linking.openURL(`mailto:${contactPhoneNumber}`)}
-                        }
-                        >
-                            <Text style={[TextStyles.p, { color:Colors.Blue,textDecorationLine: 'underline' }]}> Email Address</Text>
-                        </TouchableOpacity>
-                    </>
-
-                )
-            }
+        if (contactPhoneNumber) {
             return (
-                <>
-                    <Text style={TextStyles.p}>Contact: </Text>
-                    <TouchableOpacity
-                    
+                <TouchableOpacity
+
                     onPress={async () => {
                         console.log("analytics --- open mesages")
-                        await analytics().logEvent('open_messages', {report:props.report})
-                        Linking.openURL(`sms://${contactPhoneNumber}`)}
+                        await analytics().logEvent('open_messages', { report: props.report })
+                        Linking.openURL(`mailto:${contactPhoneNumber}`)
                     }
-                    >
-                        <Text style={[TextStyles.p, { textDecorationLine: 'underline' }]}>+1 {contactPhoneNumber}</Text>
-                    </TouchableOpacity>
-                </>
+                    }
+                >
+                    <Text style={[TextStyles.p, { textDecorationLine: 'underline' }]}>Email your spotter 􀰾</Text>
+                </TouchableOpacity>
             )
+        }
+        else {
+            return null
         }
     }
 
@@ -98,7 +66,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
         <View style={[{ width: windowWidth }, styles.container]}>
             <View style={styles.contentContainer}>
                 <VerticallyCenteringRow style={{ marginBottom: Spacing.QuarterGap, justifyContent: 'flex-start' }}>
-                    <Text style={TextStyles.h4}>{`${dateString} at ${timeString}`}</Text>
+                    <Text style={TextStyles.h4}>{`Spotted on ${dateString} at ${timeString}`}</Text>
                     <Text style={TextStyles.h4}>{`${locationString}`}</Text>
                 </VerticallyCenteringRow>
                 <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginBottom: Spacing.QuarterGap }}>

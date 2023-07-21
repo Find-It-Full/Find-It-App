@@ -1,15 +1,15 @@
 import React from "react"
 import { useState, useRef, useEffect } from "react"
-import { Text } from "react-native"
+import { Text, TouchableOpacity, Platform, Linking } from "react-native"
 import MapView, { LatLng, Region, Marker, Polyline } from "react-native-maps"
-import { Platform, Linking } from "react-native/types"
-import { Report, ExactLocationReportField, isExactLocation } from "../backend/databaseTypes"
-import { ItemIconContainer } from "../ui-base/containers"
+import { ItemIconContainer, MapItemIconContainer } from "../ui-base/containers"
 import { Shadows } from "../ui-base/shadows"
 import { TextStyles } from "../ui-base/text"
 import { Colors } from "../ui-base/colors"
+import PlatformIcon, { Icons } from "./PlatformIcon"
+import analytics from '@react-native-firebase/analytics';
 
-export default function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLng | null, itemIcon: string, selectReportAtIndex: (index: number) => void }) {
+export default function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLng | null, itemIcon: string, itemName: string, selectReportAtIndex: (index: number) => void }) {
 
     const defaultRegion = {
         latitude: 38.648785,
@@ -41,6 +41,24 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
         mapRef.current?.animateToRegion((region != null && region.longitude !== 0) ? region : defaultRegion)
     }, [region])
 
+    const handleRequestDirections = async (loc: LatLng) => {
+        await analytics().logEvent('open_in_maps')
+        openLocationInMaps({ lat: loc.latitude, lng: loc.longitude, label: `${props.itemName} location` })
+    }
+
+    const PrimaryLocationMarker = (lmprops: { primaryLocation: LatLng }) => {
+        return (
+            <Marker coordinate={lmprops.primaryLocation} key={lmprops.primaryLocation.latitude}>
+                <MapItemIconContainer>
+                    <Text style={TextStyles.smallEmoji}>{props.itemIcon} • </Text>
+                    <TouchableOpacity onPress={() => handleRequestDirections(lmprops.primaryLocation)}>
+                        <PlatformIcon icon={Icons.MAP} />
+                    </TouchableOpacity>
+                </MapItemIconContainer>
+            </Marker>
+        )
+    }
+
     const MapContents = () => {
 
         const primaryLocation = props.primaryLocation
@@ -51,11 +69,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
 
         if (props.locations.length === 1) {
             return (
-                <Marker coordinate={primaryLocation} key={primaryLocation.latitude}>
-                    <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
-                        <Text style={TextStyles.h3}>{props.itemIcon}</Text>
-                    </ItemIconContainer>
-                </Marker>
+                <PrimaryLocationMarker primaryLocation={primaryLocation} />
             )
         }
 
@@ -64,7 +78,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                 <Polyline
                     coordinates={props.locations}
                     strokeColor={Colors.Line}
-                    strokeWidth={4}
+                    strokeWidth={2}
                     lineCap={'butt'}
                     lineDashPattern={[5, 5]}
                 />
@@ -85,11 +99,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                         )
                     })
                 }
-                <Marker coordinate={primaryLocation} key={primaryLocation.latitude} zIndex={2}>
-                    <ItemIconContainer style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, width: 42, height: 42 }}>
-                        <Text style={TextStyles.h3}>{props.itemIcon}</Text>
-                    </ItemIconContainer>
-                </Marker>
+                <PrimaryLocationMarker primaryLocation={primaryLocation} />
             </>
         )
     }
@@ -148,4 +158,21 @@ function determineReportRegion(locations: LatLng[]): Region {
         latitudeDelta,
         longitudeDelta
     }
+}
+
+async function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
+    const scheme = Platform.select({ ios: 'http://maps.apple.com/?q=', android: 'geo:0,0?q=' })
+    const latLng = `${lat},${lng}`
+    const url = Platform.select({
+        ios: `${scheme}${label}@${latLng}`,
+        android: `${scheme}${latLng}(${label})`
+    })
+
+    if (!url) {
+        console.error('could not generate url')
+        return
+    }
+    console.log("analytics --- open maps")
+    await analytics().logEvent('open_directions', { lat: lat, lng: lng, label: label })
+    Linking.openURL(url)
 }

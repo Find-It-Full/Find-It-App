@@ -7,6 +7,9 @@ import { addNewItem } from "../../reducers/items"
 import ItemDetailsForm from "../../components/items/ItemDetailsForm"
 import { FormScreenBase } from "../../ui-base/containers"
 import analytics from '@react-native-firebase/analytics';
+import BackButton from '../../components/BackButton'
+import { Spacer } from '../../ui-base/layouts'
+import { Spacing } from '../../ui-base/spacing'
 
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
@@ -16,7 +19,9 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
     }
 
     return (
-        <FormScreenBase>
+        <FormScreenBase style={{ }}>
+            <BackButton top={Spacing.Gap} />
+            <Spacer size={Spacing.BigGap * 2} />
             <ItemDetailsForm onSubmit={onSubmit} />
         </FormScreenBase>
     )
