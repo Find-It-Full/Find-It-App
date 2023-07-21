@@ -202,7 +202,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
                 <View style={{ paddingTop: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                     <ItemProfile {...item} />
-                    <MoreButton handleClearSightings={handleClearSightings} handleRemoveItem={handleRemoveItem} handleItemSettings={handleEditItem} />
+                    <MoreButton hasSightings={reports.length > 0} handleClearSightings={handleClearSightings} handleRemoveItem={handleRemoveItem} handleItemSettings={handleEditItem} />
                 </View>
                 {
                     selectedReport && reports.length > 0 ?
@@ -331,12 +331,12 @@ function getAllLocations(reports: Report[]): LatLng[] {
     return locations
 }
 
-function MoreButton(props: { handleClearSightings: () => void, handleRemoveItem: () => void, handleItemSettings: () => void }) {
+function MoreButton(props: { hasSightings: boolean, handleClearSightings: () => void, handleRemoveItem: () => void, handleItemSettings: () => void }) {
     return (
         <ContextMenu
             actions={[
                 { title: 'Remove Item', systemIcon: 'trash' }, 
-                { title: 'Clear Sightings', systemIcon: 'xmark.bin' },
+                { title: 'Clear Sightings', systemIcon: 'xmark.bin', disabled: !props.hasSightings },
                 { title: 'Item Settings', systemIcon: 'gearshape' },
             ]}
             onPress={({ nativeEvent }) => {
