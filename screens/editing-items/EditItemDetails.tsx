@@ -84,17 +84,3 @@ export default function EditItemDetails(props: EditItemProps) {
         </ScreenBase>
     )
 }
-
-const styles = StyleSheet.create({
-    addItemButton: {
-        paddingVertical: Spacing.Gap - 4,
-        paddingHorizontal: Spacing.Gap + 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Colors.White,
-        borderRadius: 100,
-        flexShrink: 1, 
-        borderColor: Colors.White, 
-        borderWidth: 4
-    }
-})

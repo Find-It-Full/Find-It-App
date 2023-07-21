@@ -37,7 +37,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const itemID = props.route.params.itemID
     const item = useAppSelector((state) => state.items.items[itemID])
-    const reports = item ? Object.values(useAppSelector((state) => state.reports.reports[item.itemID]) || {}) : []
+    const rawReports = useAppSelector((state) => state.reports.reports[item?.itemID]) || {}
+    const reports = item ? Object.values(rawReports) : []
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
@@ -48,24 +49,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
 
     reports.sort((a, b) => a.timeOfCreation - b.timeOfCreation)
-
-    useEffect(() => {
-
-        // Handles independent changes to lost state
-
-        if (isClearingSightings) {
-            return
-        }
-
-        if (item.isMissing && isChangingLostState === 'set-lost') {
-            setIsChangingLostState('none')
-            setIsPresentingMarkAsLostModal(false)
-        }
-
-        if (!item.isMissing && isChangingLostState === 'set-found') {
-            setIsChangingLostState('none')
-        }
-    }, [item.isMissing])
 
     useEffect(() => {
 
@@ -81,19 +64,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     }, [reports.length])
 
     useEffect(() => {
-
-        // Handles the combined set-found and sight clearing
-
-        if (isChangingLostState === 'set-found' && isClearingSightings) {
-            if (!item.isMissing && reports.length === 0) {
-                setIsChangingLostState('none')
-                setIsClearingSightings(false)
-            }
-        }
-
-    }, [item.isMissing, reports.length])
-
-    useEffect(() => {
         if (!selectedReport && reports.length) {
             setSelectedReport(getInitialState(reports))
         }
@@ -101,7 +71,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
             setSelectedReport(null)
         }
     }, [reports])
-
 
     const handleScroll = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
@@ -199,8 +168,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     text: 'Remove',
                     style: 'destructive',
                     onPress: async () => {
-                        dispatch(removeItem(item.itemID));
+                        setIsClearingSightings(true)
+                        await dispatch(removeItem(item.itemID))
                         props.navigation.goBack()
+                        setIsClearingSightings(false)
                     }
                 }
             ]
@@ -294,7 +265,14 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 }
 
                             </Text>
-
+                            {
+                                isClearingSightings && isChangingLostState === 'none' ?
+                                    <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -21 }, { translateY: -21 }], justifyContent: 'center' }}>
+                                        <ActivityIndicator size={'small'} />
+                                    </View>
+                                    :
+                                    null
+                            }
                         </View>
                 }
 
