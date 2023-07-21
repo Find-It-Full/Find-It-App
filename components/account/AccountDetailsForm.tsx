@@ -33,7 +33,6 @@ export default function AccountDetailsForm(props: { onboarding:boolean, onSubmit
     
     return (
         <>
-            <BackButton />
             <View style={{ flex: 1, marginTop: Spacing.BigGap * 2 }}>
                 <>
                     <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Account Info' : 'Account Info'}</Text>

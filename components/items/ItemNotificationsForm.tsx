@@ -1,29 +1,16 @@
 import React from 'react'
 import { useState } from "react"
 import {
-    TextInput,
     Text,
     StyleSheet,
-    TouchableOpacity,
-    View,
-    Keyboard,
-    Switch
-} from "react-native"
-import { FormScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
+    View} from "react-native"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import { Colors } from "../../ui-base/colors"
-import { Radii } from "../../ui-base/radii"
 import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts"
 import { useNavigation } from "@react-navigation/native"
 import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
-import { SafeAreaInsetsContext } from "react-native-safe-area-context"
-import TextField from "../TextField"
-import EmojiPickerManager from '../EmojiPicker'
-import DropDown from '../DropDown'
-import BooleanField from '../BooleanField'
-import ActionButtonList from '../ActionButtonList'
 import NotificationsSettingsSelector from './NotificationsSettingsSelector'
 
 export default function ItemNotificationsForm(props: { onSubmit: (emailNotifications: boolean, pushNotifications: boolean) => Promise<void>, currentValues?: { emailNotifications: boolean, pushNotifications: boolean }, onCancel?: () => void }) {

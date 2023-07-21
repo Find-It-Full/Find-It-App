@@ -15,7 +15,7 @@ export default function NotificationsSettingsSelector(props: { emailNotification
         }
 
         const token = await messaging().getToken()
-        FirestoreBackend.addNotificationToken(token)
+        await FirestoreBackend.addNotificationToken(token)
 
         const authStatus = await messaging().requestPermission()
         const enabled =

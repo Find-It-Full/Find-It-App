@@ -70,8 +70,7 @@ export default function EmailSignIn(props: EmailSignInProps) {
     }
 
     return (
-        <ScreenBase>
-            <BackButton />
+        <FormScreenBase externalChildren={<BackButton />}>
             <View style={{ flex: 1, paddingTop: Spacing.BigGap * 2 }}>
                 <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>What's your email?</Text>
                 <TextField
@@ -98,7 +97,7 @@ export default function EmailSignIn(props: EmailSignInProps) {
                     disabled={!isValidEmail}
                     isInColumn
                 />
-                <View style={{ justifyContent: "center", alignItems: "center", paddingTop: Spacing.ThreeQuartersGap }}>
+                <View style={{ justifyContent: "center", alignItems: "center", paddingTop: Spacing.HalfGap }}>
                     <Text style={TextStyles.p}>Having trouble signing in? <Text onPress={async () => {
                         const canOpen = await Linking.canOpenURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
                         console.warn(canOpen)
@@ -111,6 +110,6 @@ export default function EmailSignIn(props: EmailSignInProps) {
                     }} style={[TextStyles.p, { textDecorationLine: 'underline' }]}>Contact Support</Text></Text>
                 </View>
             </View>
-        </ScreenBase>
+        </FormScreenBase>
     )
 }

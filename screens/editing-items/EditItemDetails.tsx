@@ -5,7 +5,7 @@ import {
     StyleSheet,
     View,
 } from "react-native"
-import { ScreenBase } from "../../ui-base/containers"
+import { FormScreenBase, ScreenBase } from "../../ui-base/containers"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import { Colors } from "../../ui-base/colors"
@@ -47,8 +47,7 @@ export default function EditItemDetails(props: EditItemProps) {
     }
 
     return (
-        <ScreenBase>
-            <BackButton />
+        <FormScreenBase externalChildren={<BackButton />}>
             <View style={{ flex: 1, paddingTop: Spacing.BigGap }}>
                 <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.Gap }]}>Item Info</Text>
                 <TextField
@@ -65,8 +64,6 @@ export default function EditItemDetails(props: EditItemProps) {
                 <NotificationsSettingsSelector currentValues={{ emailNotifications, pushNotifications }} emailNotificationsChanged={setEmailNotifications} pushNotificationsChanged={setPushNotifications} isSubmitting={isSubmitting} />
             </View> 
             <VerticallyCenteringRow>
-                <CancelButton label='Cancel' onPress={onCancel} disabled={isSubmitting}/>
-                <Spacer size={Spacing.BigGap} />
                 <BigButton 
                     label={'Save Changes'} 
                     disabled={ 
@@ -81,6 +78,6 @@ export default function EditItemDetails(props: EditItemProps) {
                     }}
                 />
             </VerticallyCenteringRow>
-        </ScreenBase>
+        </FormScreenBase>
     )
 }

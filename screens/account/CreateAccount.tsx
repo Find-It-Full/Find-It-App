@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-import { Alert, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import BackButton from '../../components/BackButton';
 import BigButton from '../../components/BigButton';
 import TextField from '../../components/TextField';
 import { FormScreenBase, ScreenBase } from '../../ui-base/containers';
-import { Spacer, VerticallyCenteringGroupedRow, VerticallyCenteringRow } from '../../ui-base/layouts';
+import { Spacer, VerticallyCenteringRow } from '../../ui-base/layouts';
 import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
 import { CreateAccountProps } from '../Navigator';
-import auth from "@react-native-firebase/auth"
 import { Colors } from '../../ui-base/colors';
 import { SafeAuth } from '../../backend/safeAuth';
 import { FirestoreBackend } from '../../backend/firestoreBackend';
@@ -34,8 +33,7 @@ export default function CreateAccount(props: CreateAccountProps) {
         <Text style={[TextStyles.p, { marginTop: -Spacing.BigGap + Spacing.HalfGap, color:Colors.Red }]}>Passwords don't match.</Text>
 
     return (
-        <ScreenBase>
-            <BackButton />
+        <FormScreenBase externalChildren={<BackButton />}>
             <View style={{ flex: 1, marginTop: Spacing.BigGap * 2 }}>
                 <Text style={TextStyles.h2}>{"Welcome!"}</Text>
                 <Text style={[TextStyles.p, { marginTop: Spacing.QuarterGap }]}>{"We just need a couple bits of information to get started."}</Text>
@@ -94,6 +92,6 @@ export default function CreateAccount(props: CreateAccountProps) {
                 }
             </View>
             <BigButton label='Finish' onPress={createUser} disabled={ ! isValidPassword} isInColumn />
-        </ScreenBase>
+        </FormScreenBase>
     )
 }

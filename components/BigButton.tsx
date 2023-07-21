@@ -17,7 +17,7 @@ export default function BigButton(props: { label: string, onPress: () => void, d
             {
                 props.isLoading ?
                     <ActivityIndicator size={'small'} color={Colors.Black} /> :
-                    <Text style={[TextStyles.h3, { color: Colors.Black }]}>{props.label}</Text>
+                    <Text style={[TextStyles.h4, { color: Colors.Black }]}>{props.label}</Text>
             }
         </TouchableOpacity>
     )

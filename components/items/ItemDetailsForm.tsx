@@ -8,16 +8,13 @@ import {
     View,
     Keyboard
 } from "react-native"
-import { FormScreenBase, ScreenBaseNoInsets } from "../../ui-base/containers"
 import { Spacing } from "../../ui-base/spacing"
 import { TextStyles } from "../../ui-base/text"
 import { Colors } from "../../ui-base/colors"
-import { Radii } from "../../ui-base/radii"
 import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts"
 import { useNavigation } from "@react-navigation/native"
 import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
-import { SafeAreaInsetsContext } from "react-native-safe-area-context"
 import TextField from "../TextField"
 import EmojiPicker from '../EmojiPicker'
 

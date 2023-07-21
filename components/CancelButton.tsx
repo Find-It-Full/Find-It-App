@@ -11,7 +11,7 @@ export default function CancelButton(props: { label: string, onPress: () => void
             onPress={props.onPress}
 
         >
-            <Text style={TextStyles.h3}>{props.label}</Text>
+            <Text style={TextStyles.h4}>{props.label}</Text>
         </TouchableOpacity>
     )
 }

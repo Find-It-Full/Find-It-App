@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Linking, Modal } from 'react-native'
+import { Linking, Modal } from 'react-native'
 import ActionButtonList from '../../components/ActionButtonList'
 import ActionButtonListItem from '../../components/ActionButtonListItem'
 import BackButton from '../../components/BackButton'
@@ -9,14 +9,9 @@ import { Spacer } from '../../ui-base/layouts'
 import { Spacing } from '../../ui-base/spacing'
 import { AccountSettingsProps } from '../Navigator'
 import DeleteAccountForm from './DeleteAccountForm'
-import auth from '@react-native-firebase/auth'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { signOut } from '../../reducers/userData'
-import { TextStyles } from '../../ui-base/text'
-import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from '../../components/PlatformIcon'
-import EditAccountDetails from './EditAccountDetails'
-import { FirestoreBackend } from '../../backend/firestoreBackend'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)

@@ -33,22 +33,26 @@ export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: 
     )
 }
 
-export function FormScreenBase(props: { children?: React.ReactNode, style?: ViewStyle }) {
+export function FormScreenBase(props: { children?: React.ReactNode, externalChildren?: React.ReactNode, style?: ViewStyle }) {
 
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
 
     return (
-        <KeyboardAvoidingView behavior='padding' style={{ 
-            padding: Spacing.ScreenPadding,
-            marginBottom: !!(safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
-            backgroundColor: Colors.Background, 
-            flex: 1, 
-            justifyContent: 'center',
-            alignItems: 'stretch',
-            ...props.style 
-        }}>
-            {props.children}
-        </KeyboardAvoidingView>
+        <View style={{ flex: 1, backgroundColor: Colors.Background }}>
+            {props.externalChildren}
+            <KeyboardAvoidingView behavior='padding' style={{ 
+                padding: Spacing.ScreenPadding,
+                marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
+                marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
+                flex: 1, 
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                ...props.style 
+            }}>
+                {props.children}
+                <Spacer size={Spacing.HalfGap} />
+            </KeyboardAvoidingView>
+        </View>
     )
 }
 
