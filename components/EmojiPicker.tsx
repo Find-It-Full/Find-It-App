@@ -82,7 +82,7 @@ export default function EmojiPicker(props: { currentValue: string, onSelect: (em
                         currentEmoji ?
                             <Text style={[TextStyles.smallEmoji]}>{currentEmoji}</Text>
                             :
-                            <Text style={[TextStyles.p, { color: 'rgba(0.24, 0.24, 0.26, 0.3)' }]}>Icon</Text>
+                            <Text style={[TextStyles.p, { color: 'rgba(0.24, 0.24, 0.26, 0.3)', paddingVertical: 2 }]}>Icon</Text>
                     }
                     <Text style={[TextStyles.h3]}>{ showEmojis ? <PlatformIcon icon={Icons.UP} /> : <PlatformIcon icon={Icons.DOWN} /> }</Text>
                 </VerticallyCenteringRow>
