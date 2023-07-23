@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Keyboard, KeyboardAvoidingView, TouchableOpacity, View, ViewStyle } from "react-native" 
+import React, { useContext, useRef } from 'react'
+import { Keyboard, KeyboardAvoidingView, ScrollView, TouchableOpacity, View, ViewStyle } from "react-native" 
 import { SafeAreaInsetsContext, SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"
 import { Spacer } from "./layouts"
@@ -12,14 +12,16 @@ export function ScreenBase(props: { children?: React.ReactNode, style?: ViewStyl
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
 
     return (
-        <SafeAreaView style={{ 
-            paddingHorizontal: Spacing.ScreenPadding, 
-            paddingTop: Spacing.ScreenPadding,
-            paddingBottom: safeAreaInsets?.bottom ? 0 : Spacing.ScreenPadding,
-            backgroundColor: Colors.Background, 
-            flex: 1, 
-            ...props.style 
-        }}>
+        <SafeAreaView 
+            style={{ 
+                paddingHorizontal: Spacing.ScreenPadding, 
+                paddingTop: Spacing.ScreenPadding,
+                paddingBottom: safeAreaInsets?.bottom ? 0 : Spacing.ScreenPadding,
+                backgroundColor: Colors.Background, 
+                flex: 1,
+                ...props.style 
+            }}
+        >
             {props.children}
         </SafeAreaView>
     )
@@ -36,20 +38,31 @@ export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: 
 export function FormScreenBase(props: { children?: React.ReactNode, externalChildren?: React.ReactNode, style?: ViewStyle }) {
 
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
+    const viewRef = useRef<KeyboardAvoidingView>(null)
 
     return (
-        <View style={{ flex: 1, backgroundColor: Colors.Background }}>
+        <View 
+            style={{ flex: 1, backgroundColor: Colors.Background }}
+        >
             {props.externalChildren}
-            <KeyboardAvoidingView behavior='padding' style={{ 
-                padding: Spacing.ScreenPadding,
-                marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
-                marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
-                flex: 1, 
-                justifyContent: 'center',
-                alignItems: 'stretch',
-                ...props.style 
-            }}>
-                {props.children}
+            <KeyboardAvoidingView 
+                behavior='padding' 
+                style={{ 
+                    padding: Spacing.ScreenPadding,
+                    marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
+                    marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
+                    flex: 1, 
+                    justifyContent: 'center',
+                    alignItems: 'stretch',
+                    ...props.style 
+                }}
+                key={"123"}
+                
+                ref={viewRef}
+            >
+                <ScrollView keyboardDismissMode='interactive' contentContainerStyle={{ flex: 1 }}>
+                    {props.children}
+                </ScrollView>
                 <Spacer size={Spacing.HalfGap} />
             </KeyboardAvoidingView>
         </View>
@@ -83,7 +96,8 @@ export function ModalFormScreenBase(props: { children?: React.ReactNode, style?:
                 borderTopRightRadius: Radii.ModalRadius,
                 borderTopLeftRadius: Radii.ModalRadius,
                 ...props.style 
-            }}>
+            }}
+            >
                 <View style={{ marginBottom: !!(safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding }}>
                     {props.children}
                 </View>

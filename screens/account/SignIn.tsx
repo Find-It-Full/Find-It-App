@@ -2,14 +2,13 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth"
 import React, { useState } from "react"
 import {
+    Image,
     Platform,
     Text,
     View,
 } from "react-native"
 import { ScreenBase } from "../../ui-base/containers"
 import { TextStyles } from "../../ui-base/text"
-import BigButton from "../../components/BigButton"
-import EmailAndPasswordInput from "../../components/emailAndPasswordInput"
 import { SignInProps } from "../Navigator"
 import { Spacer } from "../../ui-base/layouts"
 import { Spacing } from "../../ui-base/spacing"
@@ -71,7 +70,7 @@ export default function SignIn(props: SignInProps) {
         <>
             <ScreenBase>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={TextStyles.h1}>Beacon Tags</Text>
+                    <Image source={{uri: 'bwicon'}} style={{width: 128, height: 128}} />
                 </View>
                 
                 {Platform.OS === "ios" ? <BigPrimaryActionButton

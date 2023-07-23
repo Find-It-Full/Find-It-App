@@ -52,7 +52,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                 <MapItemIconContainer>
                     <Text style={TextStyles.smallEmoji}>{props.itemIcon} • </Text>
                     <TouchableOpacity onPress={() => handleRequestDirections(lmprops.primaryLocation)}>
-                        <PlatformIcon icon={Icons.MAP} />
+                        <PlatformIcon icon={Icons.NAVIGATE} />
                     </TouchableOpacity>
                 </MapItemIconContainer>
             </Marker>

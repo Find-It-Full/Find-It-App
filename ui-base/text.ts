@@ -19,21 +19,21 @@ export namespace TextStyles {
 
     export const h3: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
         color: Colors.TextColor
     }
 
     export const h4: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         color: Colors.TextColor
     }
 
     export const h5: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         color: Colors.TextColor,
         fontVariant: ['small-caps']
@@ -41,7 +41,7 @@ export namespace TextStyles {
 
     export const p: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
-        fontSize: 14,
+        fontSize: 16,
         color: Colors.TextColor
     }
 
@@ -55,7 +55,7 @@ export namespace TextStyles {
 
     export const p2: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
-        fontSize: 14,
+        fontSize: 16,
         color: Colors.TextColor,
         opacity: Colors.DisabledOpacity
     }

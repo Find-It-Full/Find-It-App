@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useMemo, useState } from 'react'
+import React, { memo, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, Keyboard, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Colors } from '../ui-base/colors'
 import { TextStyles } from '../ui-base/text'
@@ -100,11 +100,14 @@ export default function EmojiPicker(props: { currentValue: string, onSelect: (em
 function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
     const { emojis, getEmojiAtScaledLocation, getCategorySize } = useContext(EmojiManagerContext)
 
+    const scrollViewRef = useRef<ScrollView>(null)
+    
+
     const lineHeight = 32
     const letterSpacing = 8
 
     const handleEmojiSelection = (category: number, localX: number, localY: number) => {
-        const width = (getCategorySize(category)) * ((TextStyles.emoji as any).fontSize + letterSpacing + 3)
+        const width = getCategoryWidth(category)
         const height = lineHeight * 5
 
         const emoji = getEmojiAtScaledLocation(category, (localY / height), localX / width)
@@ -114,13 +117,29 @@ function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
         }
     }
 
+    const getCategoryWidth = (category: number) => {
+        return (getCategorySize(category)) * ((TextStyles.emoji as any).fontSize + letterSpacing + 3)
+    }
+
+    const handleCategorySelection = (category: number) => {
+        let totalOffset = 0
+
+        for (let i = 0; i < category; i++) {
+            totalOffset += getCategoryWidth(i)
+            totalOffset += Spacing.HalfGap
+        }
+
+        scrollViewRef.current?.scrollTo({ x: totalOffset, animated: true })
+    }    
+
     return (
         <>
-            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, marginVertical: Spacing.HalfGap, borderTopWidth: 1, borderTopColor: Colors.ItemBorder }} />
+            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, marginTop: Spacing.Gap, marginBottom: Spacing.HalfGap, borderTopWidth: 1, borderTopColor: Colors.ItemBorder }} />
             <ScrollView
                 horizontal={true}
                 contentContainerStyle={{ paddingLeft: Spacing.ThreeQuartersGap }}
                 style={{ marginBottom: Spacing.HalfGap }}
+                ref={scrollViewRef}
             >
                 {
                     emojis.map(([categoryName, emojis], index) => 
@@ -144,6 +163,18 @@ function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
                     )
                 }
             </ScrollView>
+            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, borderTopWidth: 1, borderTopColor: Colors.ItemBorder }} />
+            <VerticallyCenteringRow>
+                {
+                    ['􀎸', '􀥲', '􀻐', '􀝐', '􀙘', '􀛭', '􀂔', '􀋉'].map((symbol, index) => (
+                        <TouchableOpacity onPress={() => handleCategorySelection(index)} style={{ paddingVertical: Spacing.HalfGap, paddingHorizontal: Spacing.ThreeQuartersGap }}>
+                            <Text style={[TextStyles.h5, { opacity: Colors.DisabledOpacity / 2 }]}>
+                                {symbol}
+                            </Text>
+                        </TouchableOpacity>
+                    ))
+                }
+            </VerticallyCenteringRow>
         </>
     )
 }

@@ -20,8 +20,8 @@ export default function BigPrimaryActionButton(props: { label: string, icon?: Ic
                 props.isLoading ?
                     <ActivityIndicator size={'small'} color={Colors.Black} /> :
                     <VerticallyCenteringRow style={{ gap: Spacing.HalfGap, width: '100%', justifyContent: 'center' }}>
-                        <Text style={[TextStyles.h3, { position: 'absolute', left: Spacing.Gap }]}>{props.icon}</Text>
-                        <Text style={TextStyles.h3}>{props.label}</Text>
+                        <Text style={TextStyles.h3}>{props.icon}</Text>
+                        <Text style={TextStyles.h4}>{props.label}</Text>
                     </VerticallyCenteringRow>
             }
         </ActionButton>
