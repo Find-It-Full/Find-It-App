@@ -1,5 +1,5 @@
-import React, { useContext, useRef } from 'react'
-import { Keyboard, KeyboardAvoidingView, ScrollView, TouchableOpacity, View, ViewStyle } from "react-native" 
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native" 
 import { SafeAreaInsetsContext, SafeAreaView } from "react-native-safe-area-context"
 import { Colors } from "./colors"
 import { Spacer } from "./layouts"
@@ -35,7 +35,7 @@ export function ScreenBaseNoInsets(props: { children?: React.ReactNode, style?: 
     )
 }
 
-export function FormScreenBase(props: { children?: React.ReactNode, externalChildren?: React.ReactNode, style?: ViewStyle }) {
+export function FormScreenBase(props: { children?: React.ReactNode, externalChildren?: React.ReactNode, buttons?: React.ReactNode, style?: ViewStyle }) {
 
     const safeAreaInsets = useContext(SafeAreaInsetsContext)
     const viewRef = useRef<KeyboardAvoidingView>(null)
@@ -63,7 +63,75 @@ export function FormScreenBase(props: { children?: React.ReactNode, externalChil
                 <ScrollView keyboardDismissMode='interactive' contentContainerStyle={{ flex: 1 }}>
                     {props.children}
                 </ScrollView>
+                {props.buttons}
                 <Spacer size={Spacing.HalfGap} />
+            </KeyboardAvoidingView>
+        </View>
+    )
+}
+
+export function PopoverFormScreenbase(props: { children?: React.ReactNode, externalChildren?: React.ReactNode, buttons?: React.ReactNode, style?: ViewStyle }) {
+
+    const safeAreaInsets = useContext(SafeAreaInsetsContext)
+    const viewRef = useRef<KeyboardAvoidingView>(null)
+    const [isShowingKeyboard, setIsShowingKeyboard] = useState(false)
+
+    const onKeyboardShow = () => {
+        setIsShowingKeyboard(true)
+    }
+
+    const onKeyboardHide = () => {
+        setIsShowingKeyboard(false)
+    }
+
+    useEffect(() => {
+        if (Platform.OS === 'ios') {
+            const keyboardWillShow = Keyboard.addListener('keyboardWillShow', onKeyboardShow)
+            const keyboardWillHide = Keyboard.addListener('keyboardWillHide', onKeyboardHide)
+            return () => {
+                keyboardWillShow.remove()
+                keyboardWillHide.remove()
+            }
+        } else {
+            const keyboardDidShow = Keyboard.addListener('keyboardDidShow', onKeyboardShow)
+            const keyboardDidHide = Keyboard.addListener('keyboardDidHide', onKeyboardHide)
+            return () => {
+                keyboardDidShow.remove()
+                keyboardDidHide.remove()
+            }
+        }
+    })
+
+    return (
+        <View 
+            style={{ flex: 1, backgroundColor: Colors.Background }}
+        >
+            {props.externalChildren}
+            <KeyboardAvoidingView 
+                behavior='height' 
+                style={{ 
+                    padding: Spacing.ScreenPadding,
+                    marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
+                    marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding, 
+                    flex: 1, 
+                    justifyContent: 'center',
+                    alignItems: 'stretch',
+                    ...props.style 
+                }}
+                ref={viewRef}
+            >
+                <ScrollView contentContainerStyle={{ flex: 1 }}>
+                    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                        {props.children}
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+                {props.buttons}
+                {
+                    isShowingKeyboard ?
+                        <Spacer size={Spacing.BigGap * 2 + Spacing.QuarterGap / 2 + Spacing.HalfGap} />
+                        :
+                        null
+                }
             </KeyboardAvoidingView>
         </View>
     )
@@ -156,4 +224,4 @@ export function SmallItemIconContainer(props: { children?: React.ReactNode, styl
             {props.children}
         </View>
     )
-}
+}   

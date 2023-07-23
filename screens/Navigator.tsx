@@ -4,22 +4,20 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import SignIn from './account/SignIn'
 import AddItemFlowContainer from './adding-items/AddItemFlowContainer'
 import Home from './tabs/Home'
-import { Item, ItemID, TagID, UserData } from '../backend/databaseTypes'
+import { Item, ItemID } from '../backend/databaseTypes'
 import ItemDetails from './item-details/ItemDetails'
 import EditItemFlowContainer from './editing-items/EditItemDetails'
 import AccountSettings from './account/AccountSettings'
-import MarkAsLost from './MarkAsLost'
 import EmailSignIn from './account/EmailSignIn'
 import CreateAccount from './account/CreateAccount'
 import InAppNotificationManager from '../components/InAppNotificationManager'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { resetMiscErrorNotification, resetNoInternetNotification } from '../reducers/items'
 import EnterPassword from './account/EnterPassword'
-import auth from "@react-native-firebase/auth"
-import { FirestoreBackend } from '../backend/firestoreBackend'
-import userData, { fetchAccountDetails, setAccountDetails } from '../reducers/userData'
+import { fetchAccountDetails } from '../reducers/userData'
 import EditAccountDetails from './account/EditAccountDetails'
 import EditItemDetails from './editing-items/EditItemDetails'
+
 export type RootStackParamList = {
     Home: {itemGoTo:string}
     ItemDetails: { itemID: ItemID }

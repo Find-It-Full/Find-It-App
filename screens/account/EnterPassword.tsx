@@ -15,9 +15,18 @@ import { SafeAuth } from '../../backend/safeAuth';
 export default function EnterPassword(props: EnterPasswordProps) {
 
     const [password, setPassword] = useState('')
+    const [isLoggingIn, setIsLoggingIn] = useState(false)
+
+    const buttons = (
+        <BigButton label='Sign In' isLoading={isLoggingIn} disabled={password.length === 0} onPress={ async () => {
+            setIsLoggingIn(true)
+            await SafeAuth.signInWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))       
+            setIsLoggingIn(false)
+        }} isInColumn />
+    )
 
     return (
-        <FormScreenBase externalChildren={<BackButton />}>
+        <FormScreenBase externalChildren={<BackButton />} buttons={buttons}>
             <View style={{ flex: 1, marginTop: Spacing.BigGap * 2 }}>
                 <Text style={TextStyles.h2}>{"Enter Password"}</Text>
                 <Spacer size={Spacing.BigGap} />
@@ -45,9 +54,6 @@ export default function EnterPassword(props: EnterPasswordProps) {
                     Forgot your password?
                 </Text> 
             </View>
-            <BigButton label='Next' onPress={ async () => {
-                await SafeAuth.signInWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))       
-            }} isInColumn />
         </FormScreenBase>
     )
 }

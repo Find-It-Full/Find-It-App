@@ -18,13 +18,16 @@ export default function CreateAccount(props: CreateAccountProps) {
     const [passwordRe, setPasswordRe] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
+    const [isCreatingUser, setIsCreatingUser] = useState(false)
 
     const samePassword = password === passwordRe
     const isValidPassword = (password.length >= 5) && samePassword && firstName.length > 0 && lastName.length > 0
 
     const createUser = async () => {
+        setIsCreatingUser(true)
         await SafeAuth.createUserWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))
         await FirestoreBackend.editAccount({ firstName, lastName })
+        setIsCreatingUser(false)
     }
 
     const passwordErrorComponent = samePassword || passwordRe.length === 0 || password.length === 0 ? 
@@ -32,8 +35,12 @@ export default function CreateAccount(props: CreateAccountProps) {
         :
         <Text style={[TextStyles.p, { marginTop: -Spacing.BigGap + Spacing.HalfGap, color:Colors.Red }]}>Passwords don't match.</Text>
 
+    const buttons = (
+        <BigButton label='Finish' onPress={createUser} disabled={ ! isValidPassword} isLoading={isCreatingUser} isInColumn />
+    )
+
     return (
-        <FormScreenBase externalChildren={<BackButton />}>
+        <FormScreenBase externalChildren={<BackButton />} buttons={buttons}>
             <View style={{ flex: 1, marginTop: Spacing.BigGap * 2 }}>
                 <Text style={TextStyles.h2}>{"Welcome!"}</Text>
                 <Text style={[TextStyles.p, { marginTop: Spacing.QuarterGap }]}>{"We just need a couple bits of information to get started."}</Text>
@@ -91,7 +98,6 @@ export default function CreateAccount(props: CreateAccountProps) {
                     passwordErrorComponent
                 }
             </View>
-            <BigButton label='Finish' onPress={createUser} disabled={ ! isValidPassword} isInColumn />
         </FormScreenBase>
     )
 }

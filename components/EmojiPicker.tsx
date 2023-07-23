@@ -60,15 +60,23 @@ export default function EmojiPicker(props: { currentValue: string, onSelect: (em
     }, [])
 
     return (
-        <View style={{
-            backgroundColor: Colors.ButtonColor,
-            paddingVertical: Spacing.Gap,
-            paddingBottom: 0,
-            borderRadius: Radii.ItemRadius,
-            borderWidth: 1,
-            borderColor: Colors.ItemBorder,
-            marginBottom: Spacing.Gap
-        }}>
+        <View 
+            style={{
+                backgroundColor: Colors.ButtonColor,
+                paddingVertical: Spacing.Gap,
+                paddingBottom: 0,
+                borderRadius: Radii.ItemRadius,
+                borderWidth: 1,
+                borderColor: Colors.ItemBorder,
+                marginBottom: Spacing.Gap,
+                zIndex: 1000,
+            }}
+            onTouchEnd={() => {
+                if (!showEmojis) {
+                    setShowEmojis(true)
+                }
+            }}
+        >
             <TouchableOpacity 
                 activeOpacity={1} 
                 onPress={() => setShowEmojis( ! showEmojis)}
@@ -167,7 +175,7 @@ function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
             <VerticallyCenteringRow>
                 {
                     ['􀎸', '􀥲', '􀻐', '􀝐', '􀙘', '􀛭', '􀂔', '􀋉'].map((symbol, index) => (
-                        <TouchableOpacity onPress={() => handleCategorySelection(index)} style={{ paddingVertical: Spacing.HalfGap, paddingHorizontal: Spacing.ThreeQuartersGap }}>
+                        <TouchableOpacity onPress={() => handleCategorySelection(index)} style={{ paddingVertical: Spacing.HalfGap, paddingHorizontal: Spacing.ThreeQuartersGap }} key={index}>
                             <Text style={[TextStyles.h5, { opacity: Colors.DisabledOpacity / 2 }]}>
                                 {symbol}
                             </Text>

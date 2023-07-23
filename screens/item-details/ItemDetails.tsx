@@ -1,34 +1,26 @@
 import React from 'react'
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Linking, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Alert, Modal, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { Spacer, VerticallyCenteringRow } from "../../ui-base/layouts";
 import { Spacing } from "../../ui-base/spacing";
 import { TextStyles } from "../../ui-base/text";
 import { ItemDetailsProps } from "../Navigator";
 import ReportSummary from "../../components/items/ReportSummary";
-import { ModalFormScreenBase } from "../../ui-base/containers";
 import { Colors } from "../../ui-base/colors";
 import ItemProfile from "../../components/items/ItemProfile";
-import { ContextMenuButton } from "react-native-ios-context-menu";
 import BackButton from "../../components/BackButton";
-import { clearReports, editItemDetails, removeItem, setItemIsFound } from "../../reducers/items";
-import PrimaryActionButton from "../../components/PrimaryActionButton";
-import ItemDetailsForm from "../../components/items/ItemDetailsForm";
+import { clearReports, removeItem } from "../../reducers/items";
 import MarkAsLost from "../MarkAsLost";
 import { viewReport } from '../../reducers/reports';
 import SightingMap from '../../components/SightingMap';
-import IconButton from '../../components/IconButton';
 import { Radii } from '../../ui-base/radii';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import ContextMenu from "react-native-context-menu-view";
-import PlatformIcon, { Icons } from '../../components/PlatformIcon';
-import EditItemDetails from '../editing-items/EditItemDetails';
-import ItemSettingsButton from '../../components/ItemSettingsButton';
+import { Icons } from '../../components/PlatformIcon';
 import SmallActionButton from '../../components/SmallActionButton';
 
 export default function ItemDetails(props: ItemDetailsProps) {

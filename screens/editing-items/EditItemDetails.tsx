@@ -46,8 +46,28 @@ export default function EditItemDetails(props: EditItemProps) {
         props.navigation.goBack()
     }
 
+    const buttons = (
+        <VerticallyCenteringRow>
+            <CancelButton label='Cancel' onPress={onCancel} disabled={isSubmitting}/>
+            <Spacer size={Spacing.BigGap} />
+            <BigButton 
+                label={'Save Changes'} 
+                disabled={ 
+                    ! nameValid || 
+                    ! iconValid || 
+                    ((item.icon === icon && item.name === name && item.emailNotifications === emailNotifications && item.pushNotifications === pushNotifications))} 
+                isLoading={isSubmitting}
+                onPress={ async () => {
+                    setIsSubmitting(true)
+                    await onEditSubmit(name, icon, emailNotifications, pushNotifications)
+                    setIsSubmitting(false)
+                }}
+            />
+        </VerticallyCenteringRow>
+    )
+
     return (
-        <FormScreenBase externalChildren={<BackButton />}>
+        <FormScreenBase externalChildren={<BackButton />} buttons={buttons}>
             <View style={{ flex: 1, paddingTop: Spacing.BigGap }}>
                 <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.Gap }]}>Item Info</Text>
                 <TextField
@@ -63,21 +83,6 @@ export default function EditItemDetails(props: EditItemProps) {
                 <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.BigGap }]}>Notification Settings</Text>
                 <NotificationsSettingsSelector currentValues={{ emailNotifications, pushNotifications }} emailNotificationsChanged={setEmailNotifications} pushNotificationsChanged={setPushNotifications} isSubmitting={isSubmitting} />
             </View> 
-            <VerticallyCenteringRow>
-                <BigButton 
-                    label={'Save Changes'} 
-                    disabled={ 
-                        ! nameValid || 
-                        ! iconValid || 
-                        ((item.icon === icon && item.name === name && item.emailNotifications === emailNotifications && item.pushNotifications === pushNotifications))} 
-                    isLoading={isSubmitting}
-                    onPress={ async () => {
-                        setIsSubmitting(true)
-                        await onEditSubmit(name, icon, emailNotifications, pushNotifications)
-                        setIsSubmitting(false)
-                    }}
-                />
-            </VerticallyCenteringRow>
         </FormScreenBase>
     )
 }
