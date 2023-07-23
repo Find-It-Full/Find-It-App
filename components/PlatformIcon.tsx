@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const ios = Platform.OS === 'ios'
 
 export namespace Icons {
+    export const FORWARD_ARROW = ios ? '􀰑' : 'arrow-forward'
+    export const BACK_ARROW = ios ? '􀰌' : 'arrow-back'
     export const BACK = ios ? '􀯶' : 'chevron-back'
     export const PENCIL = ios ? '􀈊' : 'pencil'
     export const FORWARD = ios ? '􀯻' : 'chevron-forward'

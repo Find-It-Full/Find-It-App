@@ -20,8 +20,9 @@ import { Radii } from '../../ui-base/radii';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import ContextMenu from "react-native-context-menu-view";
-import { Icons } from '../../components/PlatformIcon';
+import PlatformIcon, { Icons } from '../../components/PlatformIcon';
 import SmallActionButton from '../../components/SmallActionButton';
+import { VerticallyCenteringRow } from '../../ui-base/layouts';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -203,7 +204,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                 <ScrollView
                                     horizontal={true}
                                     pagingEnabled
-                                    style={{ zIndex: 2, paddingTop: Spacing.ThreeQuartersGap, paddingBottom: reports.length > 1 ? Spacing.ThreeQuartersGap : 0 }}
+                                    style={{ zIndex: 2, paddingTop: Spacing.ThreeQuartersGap }}
                                     showsHorizontalScrollIndicator={false}
                                     onScroll={handleScroll}
                                     scrollEventThrottle={36}
@@ -229,20 +230,19 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                         null
                                 }
                             </View>
-                            {
-                                reports.length > 1 ?
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
-                                        <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={!canScrollToPrev} style={{ position: 'absolute', left: Spacing.ScreenPadding }}>
-                                            <Text style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]}> <Icon style={[TextStyles.h4, { opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity }]} name="ios-chevron-back" /> Previous</Text>
-                                        </TouchableOpacity>
-                                        <Text style={[TextStyles.p2, { alignSelf: 'center' }]}>{`${selectedReport.reportIndex + 1} / ${reports.length}`}</Text>
-                                        <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={!canScrollToNext} style={{ position: 'absolute', right: Spacing.ScreenPadding }}>
-                                            <Text style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]}>Next {<Icon style={[TextStyles.h4, { opacity: canScrollToNext ? 1 : Colors.DisabledOpacity }]} name='ios-chevron-forward' />}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    :
-                                    null
-                            }
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative', marginTop: Spacing.HalfGap }}>
+                                <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={!canScrollToPrev} style={{ position: 'absolute', left: Spacing.ScreenPadding, padding: Spacing.QuarterGap, paddingRight: Spacing.BigGap, borderRadius: Radii.ItemRadius }}>
+                                    <VerticallyCenteringRow>
+                                        <PlatformIcon icon={Icons.BACK_ARROW} style={{ opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity  }}/>
+                                    </VerticallyCenteringRow>
+                                </TouchableOpacity>
+                                <Text style={[TextStyles.p, { alignSelf: 'center' }]}>{`${selectedReport.reportIndex + 1} / ${reports.length}`}</Text>
+                                <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={!canScrollToNext} style={{ position: 'absolute', right: Spacing.ScreenPadding, padding: Spacing.QuarterGap, paddingLeft: Spacing.BigGap, borderRadius: Radii.ItemRadius }}>
+                                    <VerticallyCenteringRow>
+                                        <PlatformIcon icon={Icons.FORWARD_ARROW} style={{ opacity: canScrollToNext ? 1 : Colors.DisabledOpacity  }}/>
+                                    </VerticallyCenteringRow>
+                                </TouchableOpacity>
+                            </View>
                         </>
                         :
                         <View style={{ backgroundColor: Colors.PanelColor, marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.Gap, borderRadius: Radii.ItemRadius, padding: Spacing.Gap }}>
