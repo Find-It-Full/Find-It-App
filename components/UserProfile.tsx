@@ -6,12 +6,16 @@ import auth from '@react-native-firebase/auth'
 import items from '../reducers/items'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { ReactElement } from "react";
+import { useAppSelector } from '../store/hooks'
 export default function UserProfile() {
-    const user = auth().currentUser ?? { displayName: '_ _' }
-    const name = user.displayName ?? '_ _'
-    let initials: ReactElement | string = name.split(' ').map((str) => str[0]).reduce((prev, cur) => `${prev}${cur}`)
-    if (initials == "__"){
+    const userData = useAppSelector(state => state.userData)
+    const name = userData ? userData.firstName.substring(0,1) + userData.lastName.substring(0,1) : "__"
+    let initials: string | null | React.ReactElement = null
+    if (name === "__"){
         initials = <Icon style={TextStyles.h1}name="ios-person"/>
+    }
+    else {
+        initials = name
     }
     return (
         <View style={{ justifyContent: 'center', alignItems: 'stretch', flexDirection: 'row' }}>

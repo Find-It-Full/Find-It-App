@@ -84,7 +84,7 @@ export default function CreateAccount(props: CreateAccountProps) {
                 />
                 <Spacer size={Spacing.HalfGap} />
                 <TextField
-                    placeholder='Re- Enter Password'
+                    placeholder='Re-Enter Password'
                     onChangeText={setPasswordRe}
                     value={passwordRe}
                     inputProps={{
