@@ -18,11 +18,23 @@ import InAppNotificationManager from "../../components/InAppNotificationManager"
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from "../../components/PlatformIcon"
+import { FirestoreBackend } from "../../backend/firestoreBackend"
+import { SafeAuth } from "../../backend/safeAuth"
 
 
 export default function SignIn(props: SignInProps) {
     const [showMiscError, setShowMiscError] = useState(false)
     const [showNoInternetError, setShowNoInternetError] = useState(false)
+
+    const handleCredentialedUserSignOn = async (result: FirebaseAuthTypes.UserCredential) => {
+        if (result.additionalUserInfo?.isNewUser) {
+            const name = result.user.displayName ?? ''
+            const split = name.split(' ')
+            const firstName = split.shift() ?? ''
+            const lastName = split.join(' ') ?? ''
+            await FirestoreBackend.editAccount({ firstName, lastName })
+        }
+    }
 
     async function onAppleButtonPress() {
         // Start the sign-in request
@@ -42,7 +54,8 @@ export default function SignIn(props: SignInProps) {
         const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
 
         // Sign the user in with the credential
-        return auth().signInWithCredential(appleCredential);
+        const result = await auth().signInWithCredential(appleCredential)
+        return await handleCredentialedUserSignOn(result)
     }
 
     async function onGoogleSignIn() {
@@ -57,8 +70,8 @@ export default function SignIn(props: SignInProps) {
         const googleCredential = auth.GoogleAuthProvider.credential(idToken)
 
         // Sign-in the user with the credential
-        
-        return auth().signInWithCredential(googleCredential)
+        const result = await auth().signInWithCredential(googleCredential)
+        return await handleCredentialedUserSignOn(result)
     }
 
     GoogleSignin.configure({
