@@ -107,7 +107,7 @@ export default function Home(props: HomeProps) {
                 renderItem={(item) => (
                     <ItemSummary {...item.item} />
                 )}
-                ListEmptyComponent={() => <Text style={TextStyles.p}>You don't have any items yet.</Text>}
+                ListEmptyComponent={() => <Text style={TextStyles.p2}>You don't have any items yet.</Text>}
             />
 
             <BigButton label='Add Item' isInColumn onPress={async () => {

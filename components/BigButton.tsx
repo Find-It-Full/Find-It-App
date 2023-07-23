@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-nat
 import { Colors } from '../ui-base/colors'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
+import { Radii } from '../ui-base/radii'
 
 export default function BigButton(props: { label: string, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
 
@@ -53,8 +54,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: Spacing.Gap + 2,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.White,
-        borderRadius: 100,
+        backgroundColor: Colors.ButtonColor,
+        borderRadius: Radii.ModalRadius,
         flex: 0,
         alignSelf: 'stretch'
     },
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: Spacing.Gap + 2,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.White,
+        backgroundColor: Colors.ButtonColor,
         borderRadius: 100,
     }
 })

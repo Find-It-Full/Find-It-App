@@ -5,6 +5,7 @@ import { ItemIconContainer } from '../../ui-base/containers';
 import { Spacer, VerticallyCenteringGroupedRow } from '../../ui-base/layouts';
 import { Spacing } from '../../ui-base/spacing';
 import { TextStyles } from '../../ui-base/text';
+import { Shadows } from '../../ui-base/shadows';
 
 export default function ItemProfile({ icon, name }: Item) {
     return (

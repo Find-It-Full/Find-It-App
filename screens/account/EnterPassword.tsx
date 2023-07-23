@@ -43,7 +43,7 @@ export default function EnterPassword(props: EnterPasswordProps) {
                     }}
                 />
                 <Text
-                    style={[TextStyles.p, { textDecorationLine: 'underline' }]}
+                    style={[TextStyles.p2, { textDecorationLine: 'underline' }]}
                     onPress={async () => {
                         const succeeded = await SafeAuth.sendPasswordResetEmail(props.route.params.email, () => props.navigation.navigate('EmailSignIn'))
                         if (succeeded) {

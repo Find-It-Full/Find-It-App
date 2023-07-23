@@ -9,7 +9,7 @@ export default function TextField(props: { onChangeText: (text: string) => void,
     return (
         <TextInput
             placeholder={props.placeholder}
-            style={[TextStyles.p, styles.input, { marginBottom: Spacing.BigGap }, props.style]}
+            style={[TextStyles.p, styles.input, { marginBottom: Spacing.ThreeQuartersGap }, props.style]}
             value={props.value}
             onChangeText={props.onChangeText}
             {...props.inputProps}
@@ -35,7 +35,7 @@ export  function SignInField(props: { onChangeText: (text: string) => void, valu
 
 const styles = StyleSheet.create({
     input: {
-        backgroundColor: Colors.ButtonColor,
+        backgroundColor: Colors.PanelColor,
         padding: Spacing.ThreeQuartersGap,
         paddingVertical: Spacing.Gap,
         borderRadius: Radii.ItemRadius,

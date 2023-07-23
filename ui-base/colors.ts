@@ -19,13 +19,15 @@ export namespace Colors {
     export const Blue = '#0000EE'
     export const White = '#151515'
     export const Black = '#FFFFFF'
-    export const Background = Black
+    export const Background = 'rgb(246, 246, 246)'
     export const TextColor = White
-    export const PanelColor = '#f9f9f9'
-    export const ButtonColor = '#f1f1f1'
-    export const ItemBorder = 'rgba(0, 0, 0, 0.1)'
+    export const PanelColor = '#FFFFFF'
+    export const ItemBorder = '#FFFFFF'
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
     export const Red = '#FF0000'//PlatformColor('systemRed')
     export const Green = '#208041'//PlatformColor('systemGreen')
     export const DisabledOpacity = 0.75
+    export const DarkAccentColor = '#151530'
+    export const LightAccentColor = '#696bf0'
+    export const ButtonColor = DarkAccentColor
 }

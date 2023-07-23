@@ -10,8 +10,8 @@ import PlatformIcon, { Icons } from './PlatformIcon'
 export default function ActionButtonListItem(props: { icon: Icon, label: string, onPress: () => void }) {
     return (
         <TouchableOpacity onPress={props.onPress} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: Spacing.ThreeQuartersGap }}>
-            <VerticallyCenteringGroupedRow style={{ padding: Spacing.ThreeQuartersGap, justifyContent: 'flex-start' }}>
-                <View style={{ width: 32, height: 32, backgroundColor: Colors.ButtonColor, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}>
+            <VerticallyCenteringGroupedRow style={{ padding: Spacing.Gap, justifyContent: 'flex-start' }}>
+                <View style={{ width: 32, height: 32, backgroundColor: Colors.PanelColor, borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={TextStyles.b1}>{props.icon}</Text>
                 </View>
                 <Spacer size={Spacing.ThreeQuartersGap} />

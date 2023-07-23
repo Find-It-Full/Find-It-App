@@ -11,6 +11,7 @@ import CancelButton from "../CancelButton"
 import BigButton from "../BigButton"
 import TextField from "../TextField"
 import BackButton from '../BackButton'
+import { Icons } from '../PlatformIcon'
 
 export default function AccountDetailsForm(props: { onboarding:boolean, onSubmit: (firstName: string, lastName: string) => Promise<void>, currentValues?: { firstName: string, lastName: string }, onCancel?: () => void }) {
 
@@ -63,7 +64,7 @@ export default function AccountDetailsForm(props: { onboarding:boolean, onSubmit
                         null
                 }
                 <BigButton 
-                    label={props.currentValues ? `Save Changes` : `Next`} 
+                    label={props.currentValues ? `Save Changes` : Icons.NEXT} 
                     disabled={ ! firstNameValid || ! lastNameValid || (props.currentValues && (props.currentValues.firstName === firstName && props.currentValues.lastName === lastName))} 
                     isLoading={isSubmitting}
                     onPress={ async () => {

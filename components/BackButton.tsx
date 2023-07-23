@@ -27,7 +27,7 @@ export default function BackButton(props: { top?: number }) {
 
 const styles = StyleSheet.create({
     backButton: {
-        backgroundColor: Colors.Black,
+        backgroundColor: Colors.Background,
         height: 38, 
         width: 38,
         justifyContent: 'center',

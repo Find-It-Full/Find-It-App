@@ -192,8 +192,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 selectReportAtIndex={scrollToIndex}
             />
             <BackButton />
-            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
-                <View style={{ paddingTop: Spacing.BigGap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
+            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8, marginBottom: Spacing.Gap }}>
+                <View style={{ paddingTop: Spacing.Gap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                     <ItemProfile {...item} />
                     <MoreButton hasSightings={reports.length > 0} handleClearSightings={handleClearSightings} handleRemoveItem={handleRemoveItem} handleItemSettings={handleEditItem} />
                 </View>
@@ -248,7 +248,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                         <View style={{ backgroundColor: Colors.PanelColor, marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.Gap, borderRadius: Radii.ItemRadius, padding: Spacing.Gap }}>
 
                             <Text
-                                style={[TextStyles.p, { textAlign: 'center' }]}
+                                style={[TextStyles.p2, { textAlign: 'center' }]}
                             >
                                 {
                                     item.emailNotifications || item.pushNotifications ?

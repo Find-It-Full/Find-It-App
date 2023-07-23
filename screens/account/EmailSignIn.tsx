@@ -11,6 +11,8 @@ import { Colors } from '../../ui-base/colors'
 import { Spacing } from '../../ui-base/spacing'
 import analytics from '@react-native-firebase/analytics';
 import { SafeAuth } from '../../backend/safeAuth'
+import { VerticallyCenteringRow } from '../../ui-base/layouts'
+import { Icons } from '../../components/PlatformIcon'
 
 export default function EmailSignIn(props: EmailSignInProps) {
 
@@ -62,14 +64,15 @@ export default function EmailSignIn(props: EmailSignInProps) {
     const buttons = (
         <View style={{ marginBottom: 0 }}>
             <BigButton
-                label='Next'
+                label={Icons.NEXT}
                 onPress={createAccountOrSignIn}
                 disabled={!isValidEmail}
                 isLoading={isCheckingEmail}
                 isInColumn
             />
-            <View style={{ justifyContent: "center", alignItems: "center", paddingTop: Spacing.HalfGap }}>
-                <Text style={TextStyles.p}>Having trouble signing in? <Text onPress={async () => {
+            <VerticallyCenteringRow style={{ justifyContent: "center", alignItems: "center", paddingTop: Spacing.HalfGap }}>
+                <Text style={TextStyles.p2}>Having trouble signing in? </Text>
+                <Text onPress={async () => {
                     const canOpen = await Linking.canOpenURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
                     console.warn(canOpen)
                     if (canOpen) {
@@ -78,8 +81,8 @@ export default function EmailSignIn(props: EmailSignInProps) {
                     else {
                         Linking.openURL("https://beacontags.com/support")
                     }
-                }} style={[TextStyles.p, { textDecorationLine: 'underline' }]}>Contact Support</Text></Text>
-            </View>
+                }} style={[TextStyles.p2, { textDecorationLine: 'underline' }]}>Contact Support</Text>
+            </VerticallyCenteringRow>
         </View>
     )
 

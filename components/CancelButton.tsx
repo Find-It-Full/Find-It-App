@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { Colors } from '../ui-base/colors'
 import { Spacing } from '../ui-base/spacing'
 import { TextStyles } from '../ui-base/text'
+import { Radii } from '../ui-base/radii'
 
 export default function CancelButton(props: { label: string, onPress: () => void, disabled?: boolean }) {
     return (
@@ -18,14 +19,14 @@ export default function CancelButton(props: { label: string, onPress: () => void
 
 const styles = StyleSheet.create({
     buttonStyle: {
-        paddingVertical: Spacing.Gap - 4,
+        paddingVertical: Spacing.Gap,
         paddingHorizontal: Spacing.Gap + 2,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
-        borderRadius: 100,
+        backgroundColor: Colors.PanelColor,
+        borderRadius: Radii.ModalRadius,
         flexShrink: 1, 
-        borderColor: Colors.White, 
-        borderWidth: 4
+        borderColor: Colors.PanelColor,
+        // backgroundColor: Colors.ButtonColor, 
     }
 })

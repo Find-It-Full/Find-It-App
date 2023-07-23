@@ -15,7 +15,7 @@ export default function UserProfile() {
     }
     return (
         <View style={{ justifyContent: 'center', alignItems: 'stretch', flexDirection: 'row' }}>
-            <View style={{ width: 86, height: 86, backgroundColor: Colors.ButtonColor, borderRadius: 60, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ width: 86, height: 86, backgroundColor: Colors.PanelColor, borderRadius: 60, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={TextStyles.h1}>{initials}</Text>
             </View>
         </View>

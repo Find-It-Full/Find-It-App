@@ -19,7 +19,7 @@ import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from "../../components/PlatformIcon"
 import { FirestoreBackend } from "../../backend/firestoreBackend"
-import { SafeAuth } from "../../backend/safeAuth"
+import { Colors } from "../../ui-base/colors"
 
 
 export default function SignIn(props: SignInProps) {
@@ -132,6 +132,12 @@ export default function SignIn(props: SignInProps) {
                     isInColumn
                 />
                 <Spacer size={Spacing.Gap} />
+                <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                    <HLine />
+                    <Text style={[TextStyles.p2, { fontStyle: 'italic' }]}>or</Text>
+                    <HLine />
+                </View>
+                <Spacer size={Spacing.Gap} />
                 <BigPrimaryActionButton
                     icon = {<PlatformIcon icon={Icons.ENVELOPE} />}
                     label='Continue with Email'
@@ -141,6 +147,7 @@ export default function SignIn(props: SignInProps) {
                         props.navigation.navigate('EmailSignIn')
                     }}
                     isInColumn
+                    hideShadow
                 />
             </ScreenBase>
             <InAppNotificationManager 
@@ -150,5 +157,11 @@ export default function SignIn(props: SignInProps) {
                 resetNoInternetError={() => setShowNoInternetError(false)}
             />
         </>
+    )
+}
+
+function HLine() {
+    return (
+        <View style={{ height: 1, flex: 1, marginTop: 2, backgroundColor: Colors.TextColor, opacity: 0.1, marginHorizontal: Spacing.ThreeQuartersGap }}/>
     )
 }

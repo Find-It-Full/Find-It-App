@@ -8,6 +8,7 @@ import BigButton from '../../components/BigButton'
 import TextField from '../../components/TextField'
 import { TextStyles } from '../../ui-base/text'
 import EmojiPicker from '../../components/EmojiPicker'
+import { Icons } from '../../components/PlatformIcon'
 
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
 
@@ -26,7 +27,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
 
     const buttons = (
         <BigButton 
-            label={'Next'} 
+            label={Icons.NEXT} 
             disabled={ ! nameValid || ! iconValid} 
             isLoading={isSubmitting}
             onPress={ async () => {

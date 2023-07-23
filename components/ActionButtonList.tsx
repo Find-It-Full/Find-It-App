@@ -33,6 +33,6 @@ export default function ActionButtonList(props: { children?: React.ReactNode[] |
 
 function ActionButtonListInterstitial() {
     return (
-        <View style={{ height: 1, backgroundColor: Colors.ItemBorder }}/>
+        <View style={{ height: 1, backgroundColor: Colors.DarkAccentColor, opacity: 0.1, marginHorizontal: Spacing.ThreeQuartersGap }}/>
     )
 }

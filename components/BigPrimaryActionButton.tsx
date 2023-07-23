@@ -6,7 +6,8 @@ import { TextStyles } from '../ui-base/text'
 import { VerticallyCenteringRow } from '../ui-base/layouts'
 import { ActionButton } from '../ui-base/containers'
 import Icon from 'react-native-vector-icons/Ionicons'
-export default function BigPrimaryActionButton(props: { label: string, icon?: Icon, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean }) {
+import { Shadows } from '../ui-base/shadows'
+export default function BigPrimaryActionButton(props: { label: string, icon?: Icon, onPress: () => void, disabled?: boolean, isInColumn?: boolean, isLoading?: boolean, hideShadow?: boolean }) {
 
     const disabled = props.disabled || props.isLoading
 
@@ -14,7 +15,8 @@ export default function BigPrimaryActionButton(props: { label: string, icon?: Ic
         <ActionButton disabled={disabled} onPress={props.onPress} style={{
             alignSelf: 'stretch',
             flex: 0,
-            paddingVertical: Spacing.Gap
+            paddingVertical: Spacing.Gap,
+            ...(props.hideShadow ? { } : Shadows.BigActionShadow)
         }}>
             {
                 props.isLoading ?

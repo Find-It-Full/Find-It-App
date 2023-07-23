@@ -6,6 +6,7 @@ import { Spacer } from "./layouts"
 import { Radii } from "./radii"
 import { Spacing } from "./spacing"
 import { Shadows } from './shadows'
+import { TextStyles } from './text'
 
 export function ScreenBase(props: { children?: React.ReactNode, style?: ViewStyle }) {
 
@@ -176,7 +177,7 @@ export function ModalFormScreenBase(props: { children?: React.ReactNode, style?:
 
 export function ActionCard(props: { children?: React.ReactNode[] | React.ReactNode, style?: ViewStyle }) {
     return (
-        <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...props.style }}>
+        <View style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, ...Shadows.ActionShadow, ...props.style }}>
             {props.children}
         </View>
     )
@@ -193,7 +194,7 @@ export function Panel(props: { children?: React.ReactNode, style?: ViewStyle }) 
 export function ActionButton(props: { children?: React.ReactNode, style?: ViewStyle, onPress?: () => void, disabled?: boolean }) {
     return (
         <TouchableOpacity 
-            style={{ backgroundColor: Colors.ButtonColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', opacity: props.disabled ? Colors.DisabledOpacity : 1, ...props.style }}
+            style={{ backgroundColor: Colors.PanelColor, borderWidth: 1, borderColor: Colors.ItemBorder, borderRadius: Radii.ItemRadius, justifyContent: 'center', alignItems: 'center', opacity: props.disabled ? Colors.DisabledOpacity : 1, ...props.style }}
             onPress={props.onPress}
             disabled={!!props.disabled}
         >
@@ -204,7 +205,7 @@ export function ActionButton(props: { children?: React.ReactNode, style?: ViewSt
 
 export function ItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
     return (
-        <View style={{ height: 38, width: 38, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
+        <View style={{ height: 38, width: 22, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
             {props.children}
         </View>
     )
@@ -212,7 +213,7 @@ export function ItemIconContainer(props: { children?: React.ReactNode, style?: V
 
 export function MapItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
     return (
-        <View style={{ ...Shadows.SmallShadow, borderWidth: 3, borderColor: Colors.Background, flexDirection: 'row', height: 38, paddingHorizontal: Spacing.QuarterGap, backgroundColor: Colors.ButtonColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
+        <View style={{ ...Shadows.SmallShadow, flexDirection: 'row', padding: Spacing.HalfGap, backgroundColor: Colors.PanelColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
             {props.children}
         </View>
     )

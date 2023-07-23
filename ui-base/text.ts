@@ -27,7 +27,7 @@ export namespace TextStyles {
     export const h4: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: '600',
         color: Colors.TextColor
     }
 
@@ -55,7 +55,7 @@ export namespace TextStyles {
 
     export const p2: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
-        fontSize: 16,
+        fontSize: 14,
         color: Colors.TextColor,
         opacity: Colors.DisabledOpacity
     }
@@ -70,7 +70,7 @@ export namespace TextStyles {
     export const b1: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Bold',
         fontSize: 16,
-        fontWeight: '800',
+        fontWeight: '700',
         color: Colors.TextColor,
     }
 

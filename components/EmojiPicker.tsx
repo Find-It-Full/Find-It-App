@@ -62,7 +62,7 @@ export default function EmojiPicker(props: { currentValue: string, onSelect: (em
     return (
         <View 
             style={{
-                backgroundColor: Colors.ButtonColor,
+                backgroundColor: Colors.PanelColor,
                 paddingVertical: Spacing.Gap,
                 paddingBottom: 0,
                 borderRadius: Radii.ItemRadius,
@@ -142,7 +142,7 @@ function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
 
     return (
         <>
-            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, marginTop: Spacing.Gap, marginBottom: Spacing.HalfGap, borderTopWidth: 1, borderTopColor: Colors.ItemBorder }} />
+            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, borderTopWidth: 1, marginTop: Spacing.Gap, marginBottom: Spacing.HalfGap, borderTopColor: Colors.TextColor, opacity: Colors.DisabledOpacity / 4 }} />
             <ScrollView
                 horizontal={true}
                 contentContainerStyle={{ paddingLeft: Spacing.ThreeQuartersGap }}
@@ -171,7 +171,7 @@ function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
                     )
                 }
             </ScrollView>
-            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, borderTopWidth: 1, borderTopColor: Colors.ItemBorder }} />
+            <View style={{ marginLeft: Spacing.ThreeQuartersGap, marginRight: Spacing.ThreeQuartersGap, borderTopWidth: 1, borderTopColor: Colors.TextColor, opacity: Colors.DisabledOpacity / 4 }} />
             <VerticallyCenteringRow>
                 {
                     ['􀎸', '􀥲', '􀻐', '􀝐', '􀙘', '􀛭', '􀂔', '􀋉'].map((symbol, index) => (
