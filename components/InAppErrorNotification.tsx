@@ -27,7 +27,7 @@ export default function InAppErrorNotification(props: { type: InAppErrorNotifica
         <InAppNotification shouldHide={shouldHide} onHide={onHide}>
             <TouchableOpacity activeOpacity={1} onPress={() => setShouldHide(true)}>
                 <Panel style={{ 
-                    backgroundColor: Colors.ButtonColor,
+                    backgroundColor: Colors.PanelColor,
                     padding: Spacing.ThreeQuartersGap, 
                     shadowColor: Colors.White, 
                     shadowOpacity: 0.7, 

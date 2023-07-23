@@ -9,9 +9,9 @@ import { ReactElement } from "react";
 import { useAppSelector } from '../store/hooks'
 export default function UserProfile() {
     const userData = useAppSelector(state => state.userData)
-    const name = userData ? userData.firstName.substring(0,1) + userData.lastName.substring(0,1) : "__"
+    const name = userData ? userData.firstName.substring(0,1) + userData.lastName.substring(0,1) : null
     let initials: string | null | React.ReactElement = null
-    if (name === "__"){
+    if (!name){
         initials = <Icon style={TextStyles.h1}name="ios-person"/>
     }
     else {

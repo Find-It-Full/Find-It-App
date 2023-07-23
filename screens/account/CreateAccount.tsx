@@ -16,9 +16,12 @@ export default function CreateAccount(props: CreateAccountProps) {
 
     const [password, setPassword] = useState('')
     const [passwordRe, setPasswordRe] = useState('')
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
+    const [untrimmedFirstName, setFirstName] = useState('')
+    const [untrimmedLastName, setLastName] = useState('')
     const [isCreatingUser, setIsCreatingUser] = useState(false)
+
+    const firstName = untrimmedFirstName.trim()
+    const lastName = untrimmedLastName.trim()
 
     const samePassword = password === passwordRe
     const isValidPassword = (password.length >= 5) && samePassword && firstName.length > 0 && lastName.length > 0
@@ -49,7 +52,7 @@ export default function CreateAccount(props: CreateAccountProps) {
                     <TextField
                         placeholder='First Name'
                         onChangeText={setFirstName}
-                        value={firstName}
+                        value={untrimmedFirstName}
                         inputProps={{
                             autoCapitalize: 'words',
                             autoCorrect: true,
@@ -61,7 +64,7 @@ export default function CreateAccount(props: CreateAccountProps) {
                     <TextField
                         placeholder='Last Name'
                         onChangeText={setLastName}
-                        value={lastName}
+                        value={untrimmedLastName}
                         inputProps={{
                             autoCapitalize: 'words',
                             autoCorrect: false,

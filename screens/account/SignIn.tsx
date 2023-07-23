@@ -34,13 +34,17 @@ export default function SignIn(props: SignInProps) {
             const lastName = split.join(' ') ?? ''
             await FirestoreBackend.editAccount({ firstName, lastName })
         }
+        else {
+            console.log(JSON.stringify(result))
+            console.log(auth().currentUser)
+        }
     }
 
     async function onAppleButtonPress() {
         // Start the sign-in request
         const appleAuthRequestResponse = await appleAuth.performRequest({
             requestedOperation: appleAuth.Operation.LOGIN,
-            requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+            requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
         });
 
         // Ensure Apple returned a user identityToken

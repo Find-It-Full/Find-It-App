@@ -28,6 +28,7 @@ export default function EmailSignIn(props: EmailSignInProps) {
         setIsCheckingEmail(true)
 
         const methods = await SafeAuth.fetchSignInMethodsForEmail(email)
+        setIsCheckingEmail(false)
 
         if (methods == null) {
             return
@@ -58,7 +59,6 @@ export default function EmailSignIn(props: EmailSignInProps) {
             await analytics().logEvent('create_email_account', {})
             props.navigation.navigate('CreateAccount', { email: email })
         }
-        setIsCheckingEmail(false)
     }
 
     const buttons = (
