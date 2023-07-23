@@ -107,7 +107,7 @@ function EmojiGrid(props: { onSelect: (emoji: string) => void }) {
     const letterSpacing = 8
 
     const handleEmojiSelection = (category: number, localX: number, localY: number) => {
-        const width = getCategoryWidth(category)
+        const width = (getCategorySize(category)) * ((TextStyles.emoji as any).fontSize + letterSpacing + 3)
         const height = lineHeight * 5
 
         const emoji = getEmojiAtScaledLocation(category, (localY / height), localX / width)
