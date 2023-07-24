@@ -10,10 +10,7 @@ import analytics from '@react-native-firebase/analytics';
 export default function ReportSummary(props: { report: Report, isSelected: string | null }) {
 
     const reportDate = new Date(props.report.timeOfCreation)
-    const dateString = `${reportDate.getMonth() + 1}/${reportDate.getDate()}`
-    const AM_PM = `${reportDate.getHours() > 12 ? "PM" : 'AM'}`
-    const hour =`${reportDate.getHours() ==0? 12: reportDate.getHours() > 12? reportDate.getHours() -12: reportDate.getHours()}`
-    const timeString = `${hour}:${reportDate.getMinutes() } ${AM_PM}`
+    const time = reportDate.toLocaleTimeString([], {timeZone: "America/New_York", month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit'})?.replace(',', ' at') ?? 'unknown'
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
 
     const messageField = props.report.fields.MESSAGE
@@ -66,7 +63,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
         <View style={[{ width: windowWidth }, styles.container]}>
             <View style={styles.contentContainer}>
                 <VerticallyCenteringRow style={{ marginBottom: Spacing.QuarterGap, justifyContent: 'flex-start' }}>
-                    <Text style={TextStyles.h4}>{`Spotted on ${dateString} at ${timeString}`}</Text>
+                    <Text style={TextStyles.h4}>{`Spotted on ${time}`}</Text>
                     <Text style={TextStyles.h4}>{`${locationString}`}</Text>
                 </VerticallyCenteringRow>
                 <VerticallyCenteringRow style={{ justifyContent: 'flex-start', marginBottom: Spacing.QuarterGap }}>
