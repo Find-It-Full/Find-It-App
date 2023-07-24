@@ -112,6 +112,7 @@ export function PopoverFormScreenbase(props: { children?: React.ReactNode, exter
                 behavior='height' 
                 style={{ 
                     padding: Spacing.ScreenPadding,
+                    paddingBottom: 0,
                     marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
                     marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding, 
                     flex: 1, 
@@ -129,7 +130,7 @@ export function PopoverFormScreenbase(props: { children?: React.ReactNode, exter
                 {props.buttons}
                 {
                     isShowingKeyboard ?
-                        <Spacer size={Spacing.BigGap * 2 + Spacing.QuarterGap / 2 + Spacing.HalfGap} />
+                        <Spacer size={Spacing.BigGap * 2 + Spacing.Gap + Spacing.HalfGap} />
                         :
                         null
                 }

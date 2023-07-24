@@ -4,7 +4,7 @@ import {
 import { EnterItemNotificationsProps } from "./AddItemFlowContainer"
 import { useAppDispatch } from "../../store/hooks"
 import { addNewItem } from "../../reducers/items"
-import { FormScreenBase } from "../../ui-base/containers"
+import { FormScreenBase, PopoverFormScreenbase } from "../../ui-base/containers"
 import analytics from '@react-native-firebase/analytics';
 import BackButton from '../../components/BackButton'
 import { VerticallyCenteringRow } from '../../ui-base/layouts'
@@ -45,21 +45,20 @@ export default function EnterItemDetails({ navigation, route }: EnterItemNotific
     }
 
     const buttons = (
-        <VerticallyCenteringRow>
-            <BigButton 
-                label={`Add Item`} 
-                isLoading={isSubmitting}
-                onPress={ async () => {
-                    setIsSubmitting(true)
-                    await onSubmit(emailNotifications, pushNotifications)
-                    setIsSubmitting(false)
-                }}
-            />
-        </VerticallyCenteringRow>
+        <BigButton 
+            label={`Add Item`} 
+            isLoading={isSubmitting}
+            onPress={ async () => {
+                setIsSubmitting(true)
+                await onSubmit(emailNotifications, pushNotifications)
+                setIsSubmitting(false)
+            }}
+            isInColumn
+        />
     )
 
     return (
-        <FormScreenBase externalChildren={<BackButton top={Spacing.Gap} />} buttons={buttons}>
+        <PopoverFormScreenbase externalChildren={<BackButton top={Spacing.Gap} />} buttons={buttons}>
             <View style={{ flex: 1 }}>
                 <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap }]}>Notification Settings</Text>
                 <Text style={[TextStyles.p, { marginBottom: Spacing.Gap }]}>When this item is spotted, how would you like to be notified?</Text>
@@ -70,6 +69,6 @@ export default function EnterItemDetails({ navigation, route }: EnterItemNotific
                     isSubmitting={isSubmitting} 
                 />
             </View>
-        </FormScreenBase>
+        </PopoverFormScreenbase>
     )
 }
