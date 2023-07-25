@@ -113,7 +113,7 @@ export function PopoverFormScreenbase(props: { children?: React.ReactNode, exter
                 style={{ 
                     padding: Spacing.ScreenPadding,
                     paddingBottom: 0,
-                    marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
+                    marginTop: Spacing.BigGap * 2,
                     marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding, 
                     flex: 1, 
                     justifyContent: 'center',
