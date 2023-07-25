@@ -24,19 +24,21 @@ export default function CreateAccount(props: CreateAccountProps) {
     const lastName = untrimmedLastName.trim()
 
     const samePassword = password === passwordRe
-    const isValidPassword = (password.length >= 5) && samePassword && firstName.length > 0 && lastName.length > 0
+    const isValidPassword = (password.length > 0) && samePassword && firstName.length > 0 && lastName.length > 0
 
     const createUser = async () => {
         setIsCreatingUser(true)
-        await SafeAuth.createUserWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))
-        await FirestoreBackend.editAccount({ firstName, lastName })
+        const succeeded = await SafeAuth.createUserWithEmailAndPassword(props.route.params.email, password, () => props.navigation.navigate('EmailSignIn'))
+        if (succeeded) {
+            await FirestoreBackend.editAccount({ firstName, lastName })
+        }
         setIsCreatingUser(false)
     }
 
     const passwordErrorComponent = samePassword || passwordRe.length === 0 || password.length === 0 ? 
         null
         :
-        <Text style={[TextStyles.p, { marginTop: -Spacing.BigGap + Spacing.HalfGap, color:Colors.Red }]}>Passwords don't match.</Text>
+        <Text style={[TextStyles.p, { marginTop: -Spacing.Gap + Spacing.HalfGap, color:Colors.Red }]}>Passwords don't match.</Text>
 
     const buttons = (
         <BigButton label='Finish' onPress={createUser} disabled={ ! isValidPassword} isLoading={isCreatingUser} isInColumn />

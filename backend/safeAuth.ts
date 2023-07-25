@@ -12,7 +12,7 @@ const INVALID_EMAIL_MESSAGE = 'Looks like there was an error in email you entere
 
 const WEAK_PASSWORD = 'auth/weak-password'
 const WEAK_PASSWORD_HEADER = `Oops!`
-const WEAK_PASSWORD_MESSAGE = `That password isn't strong enough. Use at least six characters and a special character.`
+const WEAK_PASSWORD_MESSAGE = `That password isn't strong enough. Use at least six characters.`
 
 const NETWORK_REQUEST_FAILED = 'auth/network-request-failed'
 const NETWORK_REQUEST_FAILED_HEADER = 'Connection Failed'
@@ -33,9 +33,11 @@ export namespace SafeAuth {
     export async function createUserWithEmailAndPassword(email: string, password: string, onEmailError: () => void) {
         try {
             await auth().createUserWithEmailAndPassword(email, password)
+            return true
         }
         catch (e) {
             handleError(e, onEmailError)
+            return false
         }
     }
 
