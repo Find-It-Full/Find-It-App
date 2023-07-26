@@ -15,8 +15,8 @@ import { TextStyles } from '../../ui-base/text'
 
 export default function EditAccountDetails( props: EditAccountDetailsProps) {
     const currentValues = props.route.params
-    const [untrimmedFirstName, setFirstName] = useState(currentValues.firstName)
-    const [untrimmedLastName, setLastName] = useState(currentValues.lastName)
+    const [untrimmedFirstName, setFirstName] = useState(currentValues.firstName ?? '')
+    const [untrimmedLastName, setLastName] = useState(currentValues.lastName ?? '')
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const firstName = untrimmedFirstName.trim()
