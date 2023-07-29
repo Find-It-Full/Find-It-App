@@ -1,5 +1,5 @@
 import React, { memo, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { FlatList, Keyboard, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Keyboard, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { Colors } from '../ui-base/colors'
 import { TextStyles } from '../ui-base/text'
 import { Spacing } from '../ui-base/spacing'
@@ -10,6 +10,7 @@ import { Panel } from '../ui-base/containers'
 import { Radii } from '../ui-base/radii'
 import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from './PlatformIcon'
+import EmojiPicker from 'rn-emoji-keyboard';
 interface IEmojiData {
     categories: { id: string, emojis: string[] }[]
     emojis: {
@@ -35,7 +36,7 @@ interface IEmojiData {
     }
 }
 
-export default function EmojiPicker(props: { currentValue: string, onSelect: (emoji: string) => void }) {
+export default function EmojiPickerComponent(props: { currentValue: string, onSelect: (emoji: string) => void }) {
 
     const [showEmojis, setShowEmojis] = useState(false)
     const [currentEmoji, setCurrentEmoji] = useState(props.currentValue)
@@ -97,7 +98,7 @@ export default function EmojiPicker(props: { currentValue: string, onSelect: (em
             </TouchableOpacity>
             {
                 showEmojis ? 
-                    <MemoizedEmojiGrid onSelect={onSelect} />
+                    Platform.OS==='ios'?<MemoizedEmojiGrid onSelect={onSelect} />:<EmojiPicker expandable={false} expandedHeight={300} onEmojiSelected={(emojiData) => { onSelect(emojiData.emoji) } } open={showEmojis} onClose={()=>{setShowEmojis(false)}} />
                     :
                     null
             }

@@ -7,7 +7,7 @@ import { View, Text } from 'react-native'
 import BigButton from '../../components/BigButton'
 import TextField from '../../components/TextField'
 import { TextStyles } from '../../ui-base/text'
-import EmojiPicker from '../../components/EmojiPicker'
+import EmojiPickerComponent from '../../components/EmojiPicker'
 import { Icons } from '../../components/PlatformIcon'
 
 export default function EnterItemDetails({ navigation, route }: EnterItemDetailsProps) {
@@ -52,7 +52,7 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                     }}
                     style={{ marginBottom: Spacing.ThreeQuartersGap }}
                 />
-                <EmojiPicker currentValue={icon} onSelect={setIcon} />               
+                <EmojiPickerComponent currentValue={icon} onSelect={setIcon} />               
             </View>
         </PopoverFormScreenbase>
     )

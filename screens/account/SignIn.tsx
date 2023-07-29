@@ -87,7 +87,7 @@ export default function SignIn(props: SignInProps) {
         <>
             <ScreenBase>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Image source={{uri: 'bwicon'}} style={{width: 128, height: 128}} />
+                    <Image source={require("./bwicon.png")} style={{width: 128, height: 128}} />
                 </View>
                 
                 {Platform.OS === "ios" ? <BigPrimaryActionButton

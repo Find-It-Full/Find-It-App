@@ -19,7 +19,7 @@ import BackButton from '../../components/BackButton'
 import { useAppDispatch } from '../../store/hooks'
 import { editItemDetails } from '../../reducers/items'
 import ActionButtonList from '../../components/ActionButtonList'
-import EmojiPicker from '../../components/EmojiPicker'
+import EmojiPickerComponent from '../../components/EmojiPicker'
 import NotificationsSettingsSelector from '../../components/items/NotificationsSettingsSelector'
 
 export default function EditItemDetails(props: EditItemProps) {
@@ -78,7 +78,7 @@ export default function EditItemDetails(props: EditItemProps) {
                     }}
                     style={{ marginBottom: Spacing.ThreeQuartersGap }}
                 />
-                <EmojiPicker currentValue={icon} onSelect={setIcon} />          
+                <EmojiPickerComponent currentValue={icon} onSelect={setIcon} />          
                 
                 <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.BigGap }]}>Notification Settings</Text>
                 <NotificationsSettingsSelector currentValues={{ emailNotifications, pushNotifications }} emailNotificationsChanged={setEmailNotifications} pushNotificationsChanged={setPushNotifications} isSubmitting={isSubmitting} />

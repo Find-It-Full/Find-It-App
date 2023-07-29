@@ -46,9 +46,12 @@ export function FormScreenBase(props: { children?: React.ReactNode, externalChil
             style={{ flex: 1, backgroundColor: Colors.Background }}
         >
             {props.externalChildren}
+             
             <KeyboardAvoidingView 
-                behavior='padding' 
-                style={{ 
+                behavior= { Platform.OS ==="ios"?'padding':undefined}
+                style=
+               { 
+                { 
                     padding: Spacing.ScreenPadding,
                     marginTop: (safeAreaInsets?.top) ? safeAreaInsets.top : Spacing.ScreenPadding,
                     marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding,
@@ -61,12 +64,15 @@ export function FormScreenBase(props: { children?: React.ReactNode, externalChil
                 
                 ref={viewRef}
             >
+            
+            
                 <ScrollView keyboardDismissMode='interactive' contentContainerStyle={{ flex: 1 }}>
                     {props.children}
                 </ScrollView>
                 {props.buttons}
                 <Spacer size={Spacing.HalfGap} />
             </KeyboardAvoidingView>
+            
         </View>
     )
 }
