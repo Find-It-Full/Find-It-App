@@ -17,6 +17,7 @@ import EnterPassword from './account/EnterPassword'
 import { fetchAccountDetails } from '../reducers/userData'
 import EditAccountDetails from './account/EditAccountDetails'
 import EditItemDetails from './editing-items/EditItemDetails'
+import auth from '@react-native-firebase/auth'
 
 export type RootStackParamList = {
     Home: {itemGoTo:string}
@@ -50,8 +51,6 @@ export default function Navigator(props: { isAuthenticated: boolean }) {
     const dispatch = useAppDispatch()
     const shouldShowMiscError = useAppSelector(state => state.items.notifyOfMiscError)
     const shouldShowNoInternetError = useAppSelector(state => state.items.notifyOfNoInternet)
-    
-    
 
     useEffect(() => {
         dispatch(fetchAccountDetails())
