@@ -14,6 +14,7 @@ import InAppNotificationManager from './components/InAppNotificationManager'
 import type {PropsWithChildren} from 'react';
 import EmojiManager from './backend/EmojiManager'
 import { FirestoreBackend } from './backend/firestoreBackend'
+import messaging from '@react-native-firebase/messaging'
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -45,6 +46,10 @@ function subscribeToAuthStateChanges(onChange: (isAuthenticated: boolean) => voi
     
     const unsubscribe = auth().onAuthStateChanged(async () => { 
         console.log('Got an auth state change'); 
+        if(auth().currentUser !== null){
+            const token = await messaging().getToken()
+            FirestoreBackend.addNotificationToken(token)
+        }
         onChange(auth().currentUser !== null)
     })
 

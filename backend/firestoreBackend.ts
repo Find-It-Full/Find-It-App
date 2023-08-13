@@ -5,6 +5,7 @@ import auth from "@react-native-firebase/auth"
 import { Collections, isUserData, Item, ItemID, Link, RegisterTagResult, Report, ReportID, ReportViewStatus, TagID, UserData } from "./databaseTypes"
 import { DocChanges } from "./appOnlyDatabaseTypes"
 import functions from "@react-native-firebase/functions"
+import messaging from '@react-native-firebase/messaging'
 
 export class FirestoreBackend {
     
@@ -98,7 +99,12 @@ export class FirestoreBackend {
 
 
 
-
+    public static async logout(){
+        const uid = auth().currentUser?.uid
+        const token = await messaging().getToken()
+        return (await this.users().doc(uid).update({"notificationTokens": firestore.FieldValue.arrayRemove(token)}))
+    
+    }
     public static async removeItem(itemID: ItemID) {
 
         const removeItem = functions().httpsCallable('removeItem')

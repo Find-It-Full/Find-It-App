@@ -15,6 +15,7 @@ import PlatformIcon, { Icons } from '../../components/PlatformIcon'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
+    const [logoutLoading, setLogoutLoading] = React.useState(false)
     const dispatch = useAppDispatch()
     const userData = useAppSelector((state) => state.userData)
 
@@ -30,7 +31,10 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
             <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Info' onPress={editAccountDetails} />
-                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={() => dispatch(signOut())} />
+                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={() => {
+                    setLogoutLoading(true)
+                    dispatch(signOut())
+                    }} isLoading={logoutLoading} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.TRASH} />} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />

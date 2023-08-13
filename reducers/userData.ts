@@ -35,10 +35,11 @@ export const fetchAccountDetails = createAsyncThunk('userData/fetchAccountDetail
     return userData
 })
 
-export const signOut = createAsyncThunk('userData/signOut', (_props: undefined, thunkAPI) => {
+export const signOut = createAsyncThunk('userData/signOut', async (_props: undefined, thunkAPI) => {
     thunkAPI.dispatch(removeAllReports())
     thunkAPI.dispatch(clearItems())
     thunkAPI.dispatch(removeUserData())
+    await FirestoreBackend.logout()
     auth().signOut()
 })
 
