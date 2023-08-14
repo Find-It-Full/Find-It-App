@@ -27,12 +27,13 @@ export default function EditItemDetails(props: EditItemProps) {
     const dispatch = useAppDispatch()
 
     const item = props.route.params.item
-    const [name, setName] = useState(item.name)
+    const [untrimmedName, setUntrimmedName] = useState(item.name)
     const [icon, setIcon] = useState(item.icon)
     const [emailNotifications, setEmailNotifications] = useState(item.emailNotifications)
     const [pushNotifications, setPushNotifications] = useState(item.pushNotifications)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    const name = untrimmedName.trim()
 
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
@@ -72,9 +73,9 @@ export default function EditItemDetails(props: EditItemProps) {
                 <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.Gap }]}>Item Info</Text>
                 <TextField
                     placeholder='Item Name'
-                    value={name}
+                    value={untrimmedName}
                     onChangeText={(text) => {
-                        setName(text)
+                        setUntrimmedName(text)
                     }}
                     style={{ marginBottom: Spacing.ThreeQuartersGap }}
                 />

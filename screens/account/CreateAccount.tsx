@@ -76,7 +76,7 @@ export default function CreateAccount(props: CreateAccountProps) {
                 </VerticallyCenteringRow>
                 <Spacer size={Spacing.HalfGap} />
                 <TextField
-                    placeholder='Password'
+                    placeholder='Password (≥ 6 characters)'
                     onChangeText={setPassword}
                     value={password}
                     inputProps={{

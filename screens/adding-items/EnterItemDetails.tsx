@@ -14,9 +14,11 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
 
     const tagID = route.params.tagID
 
-    const [name, setName] = useState('')
+    const [untrimmedName, setUntrimmedName] = useState('')
     const [icon, setIcon] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const name = untrimmedName.trim()
 
     const nameValid = name.length > 0
     const iconValid = icon.length > 0
@@ -46,9 +48,9 @@ export default function EnterItemDetails({ navigation, route }: EnterItemDetails
                 <Text style={[TextStyles.p, { marginBottom: Spacing.Gap }]}>What sort of item are you adding?</Text>
                 <TextField
                     placeholder='Item Name'
-                    value={name}
+                    value={untrimmedName}
                     onChangeText={(text) => {
-                        setName(text)
+                        setUntrimmedName(text)
                     }}
                     style={{ marginBottom: Spacing.ThreeQuartersGap }}
                 />

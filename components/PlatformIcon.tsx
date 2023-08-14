@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, Text, TextStyle } from "react-native";
+import { Platform, StyleProp, Text, TextStyle } from "react-native";
 import { TextStyles } from "../ui-base/text";
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -30,7 +30,7 @@ export namespace Icons {
     export const NEXT = ios ? 'Next  􀰑' : 'Next'
 }
 
-export default function PlatformIcon(props: { icon: string, style?: TextStyle }) {
+export default function PlatformIcon(props: { icon: string, style?: StyleProp<TextStyle> }) {
     if (ios) {
         return (
             <Text style={[TextStyles.b1, props.style]}>{props.icon}</Text>
