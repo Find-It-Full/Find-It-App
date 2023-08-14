@@ -28,7 +28,7 @@ export namespace Colors {
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
     export const Red = '#FF0000'//PlatformColor('systemRed')
     export const Green = '#208041'//PlatformColor('systemGreen')
-    export const DisabledOpacity = 0.75
+    export const DisabledOpacity = 0.6
     export const DarkAccentColor = '#151530'
     export const LightAccentColor = '#696bf0'
     export const ButtonColor = DarkAccentColor
