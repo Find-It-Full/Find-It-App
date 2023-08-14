@@ -14,7 +14,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
 
     const messageField = props.report.fields.MESSAGE
-    const [message, hasMessage] = isMessage(messageField) ? [messageField.message, true] : ['Your spotter did not include a message', false]
+    const [message, hasMessage] = isMessage(messageField) ? [`"${messageField.message}"`, true] : ['Your spotter did not include a message', false]
     const [locationString, setLocationString] = useState<string>('')
 
     useEffect(() => {

@@ -31,9 +31,10 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
             <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Info' onPress={editAccountDetails} />
-                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={() => {
+                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={async () => {
                     setLogoutLoading(true)
-                    dispatch(signOut())
+                    await dispatch(signOut())
+                    setLogoutLoading(false)
                     }} isLoading={logoutLoading} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.TRASH} />} label='Delete Account' onPress={() => setIsPresentingModal(true)} />
             </ActionButtonList>

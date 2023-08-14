@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Modal, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Alert, Animated, FlatList, Modal, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
@@ -23,6 +23,7 @@ import ContextMenu from "react-native-context-menu-view";
 import PlatformIcon, { Icons } from '../../components/PlatformIcon';
 import SmallActionButton from '../../components/SmallActionButton';
 import { VerticallyCenteringRow } from '../../ui-base/layouts';
+import PaginationDots from '../../components/PaginationDots';
 
 export default function ItemDetails(props: ItemDetailsProps) {
 
@@ -35,13 +36,14 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
-    const scrollRef = useRef<ScrollView>(null)
+    const scrollRef = useRef<FlatList>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
     const [isChangingLostState, setIsChangingLostState] = useState<'none' | 'set-lost' | 'set-found'>('none')
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
+    const scrollX = React.useRef(new Animated.Value(0)).current
 
-    reports.sort((a, b) => a.timeOfCreation - b.timeOfCreation)
+    reports.sort((a, b) => b.timeOfCreation - a.timeOfCreation)
 
     useEffect(() => {
 
@@ -65,7 +67,19 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
     }, [reports])
 
-    const handleScroll = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const onScrollEvent = Animated.event(
+        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+        {
+            useNativeDriver: false,
+        }
+    )
+
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        updateSelectedReport(event)
+        onScrollEvent(event)
+    }
+
+    const updateSelectedReport = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
             setSelectedReport(null)
@@ -96,15 +110,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
         setSelectedReport(newSelectedReport)
     }
 
-    const scrollToOffset = (offset: number) => {
-
-        if (!selectedReport) {
-            return
-        }
-
-        scrollToIndex(selectedReport.reportIndex + offset)
-    }
-
     const scrollToIndex = (index: number) => {
 
         if (!selectedReport) {
@@ -112,8 +117,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
 
         const newIndex = Math.max(Math.min(index, reports.length - 1), 0)
-        const position = newIndex * windowWidth
-        scrollRef.current?.scrollTo({ x: position, animated: true })
+        scrollRef.current?.scrollToIndex({ index: newIndex, animated: true })
     }
 
     useEffect(() => {
@@ -140,7 +144,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     text: 'Clear',
                     style: 'destructive',
                     onPress: async () => {
-                        console.log('clearing')
                         setIsClearingSightings(true)
                         await dispatch(clearReports({ itemID: item.itemID }))
                     }
@@ -175,9 +178,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
         props.navigation.navigate('EditItem', { item })
     }
 
-    const canScrollToNext = (selectedReport != null) && selectedReport.reportIndex < reports.length - 1
-    const canScrollToPrev = (selectedReport != null) && selectedReport.reportIndex > 0
-
     if (!item) {
         return <EmptyItemDetails />
     }
@@ -192,7 +192,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 selectReportAtIndex={scrollToIndex}
             />
             <BackButton />
-            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8, marginBottom: Spacing.Gap }}>
+            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
                 <View style={{ paddingTop: Spacing.Gap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                     <ItemProfile {...item} />
                     <MoreButton hasSightings={reports.length > 0} handleClearSightings={handleClearSightings} handleRemoveItem={handleRemoveItem} handleItemSettings={handleEditItem} />
@@ -201,28 +201,25 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     selectedReport && reports.length > 0 ?
                         <>
                             <View style={{ position: 'relative' }}>
-                                <ScrollView
-                                    horizontal={true}
+                                <FlatList
+                                    data={reports}
+                                    renderItem={({ item }) => (
+                                        <ReportSummary
+                                            report={item}
+                                            isSelected={selectedReport?.reportID}
+                                            key={item.reportID}
+                                        />
+                                    )}
+                                    horizontal
                                     pagingEnabled
                                     style={{ zIndex: 2, paddingTop: Spacing.ThreeQuartersGap }}
                                     showsHorizontalScrollIndicator={false}
                                     onScroll={handleScroll}
-                                    scrollEventThrottle={36}
+                                    scrollEventThrottle={16}
                                     ref={scrollRef}
-                                    onLayout={() => scrollRef.current?.scrollToEnd()}
-                                >
-                                    {
-                                        reports.map((report) =>
-                                            <ReportSummary
-                                                report={report}
-                                                isSelected={selectedReport?.reportID}
-                                                key={report.reportID}
-                                            />
-                                        )
-                                    }
-                                </ScrollView>
+                                />
                                 {
-                                    isClearingSightings && isChangingLostState === 'none' ?
+                                    isClearingSightings ?
                                         <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -21 }, { translateY: -21 }], justifyContent: 'center' }}>
                                             <ActivityIndicator size={'small'} />
                                         </View>
@@ -230,23 +227,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                         null
                                 }
                             </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative', marginTop: Spacing.HalfGap }}>
-                                <TouchableOpacity onPress={() => scrollToOffset(-1)} disabled={!canScrollToPrev} style={{ position: 'absolute', left: Spacing.ScreenPadding, padding: Spacing.QuarterGap, paddingRight: Spacing.BigGap, borderRadius: Radii.ItemRadius }}>
-                                    <VerticallyCenteringRow>
-                                        <PlatformIcon icon={Icons.BACK_ARROW} style={{ opacity: canScrollToPrev ? 1 : Colors.DisabledOpacity  }}/>
-                                    </VerticallyCenteringRow>
-                                </TouchableOpacity>
-                                <Text style={[TextStyles.p, { alignSelf: 'center' }]}>{`${selectedReport.reportIndex + 1} / ${reports.length}`}</Text>
-                                <TouchableOpacity onPress={() => scrollToOffset(1)} disabled={!canScrollToNext} style={{ position: 'absolute', right: Spacing.ScreenPadding, padding: Spacing.QuarterGap, paddingLeft: Spacing.BigGap, borderRadius: Radii.ItemRadius }}>
-                                    <VerticallyCenteringRow>
-                                        <PlatformIcon icon={Icons.FORWARD_ARROW} style={{ opacity: canScrollToNext ? 1 : Colors.DisabledOpacity  }}/>
-                                    </VerticallyCenteringRow>
-                                </TouchableOpacity>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative', marginTop: Spacing.Gap, paddingHorizontal: Spacing.BigGap }}>
+                                <PaginationDots data={reports} dotStyle={{}} containerStyle={{}} scrollX={scrollX} />
                             </View>
                         </>
                         :
                         <View style={{ backgroundColor: Colors.PanelColor, marginHorizontal: Spacing.ScreenPadding, marginTop: Spacing.Gap, borderRadius: Radii.ItemRadius, padding: Spacing.Gap }}>
-
                             <Text
                                 style={[TextStyles.p2, { textAlign: 'center' }]}
                             >

@@ -6895,10 +6895,10 @@ react-native-codegen@^0.71.5:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-context-menu-view@^1.10.0:
-  version "1.10.0"
-  resolved "https://registry.npmjs.org/react-native-context-menu-view/-/react-native-context-menu-view-1.10.0.tgz"
-  integrity sha512-L93jSvW+ytFOpWEDnFPj+uEeYRW2Rx/vc1oP8rgGqnoBl26GDj5xHXJJiya2RujaSjG7CoPIkJMCraPxBfZR+w==
+react-native-context-menu-view@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.npmjs.org/react-native-context-menu-view/-/react-native-context-menu-view-1.11.0.tgz"
+  integrity sha512-2ztIsQtb/sYStjq5Zn4cKvqAfTp44w+0gdI4nSQ0+PVXUTvn7Q9QCeTijj2GH8elYAtjvuJvr0ORc91whDhyCg==
 
 react-native-dropdown-select-list@^2.0.4:
   version "2.0.4"
