@@ -14,15 +14,17 @@ export namespace DarkModeColors {
     export const DisabledOpacity = 0.6
 }
 
+const lightGray = 'rgb(242, 242, 242)'
+
 export namespace Colors {
     export const Line = 'rgb(100, 101, 112)'
     export const Blue = '#0000EE'
     export const White = '#151515'
     export const Black = '#FFFFFF'
-    export const Background = 'rgb(246, 246, 246)'
+    export const Background = '#FFFFFF'
     export const TextColor = White
-    export const PanelColor = '#FFFFFF'
-    export const ItemBorder = '#FFFFFF'
+    export const PanelColor = lightGray
+    export const ItemBorder = lightGray
     export const ModalBackground = 'rgba(0, 0, 0, 0.4)'
     export const Red = '#FF0000'//PlatformColor('systemRed')
     export const Green = '#208041'//PlatformColor('systemGreen')

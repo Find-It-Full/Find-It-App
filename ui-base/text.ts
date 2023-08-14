@@ -39,6 +39,13 @@ export namespace TextStyles {
         fontVariant: ['small-caps']
     }
 
+    export const h6: StyleProp<TextStyle> = {
+        fontFamily: 'SFPro-Bold',
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: Colors.TextColor,
+    }
+
     export const p: StyleProp<TextStyle> = {
         fontFamily: 'SFPro-Regular',
         fontSize: 16,

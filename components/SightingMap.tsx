@@ -41,19 +41,11 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
         mapRef.current?.animateToRegion((region != null && region.longitude !== 0) ? region : defaultRegion)
     }, [region])
 
-    const handleRequestDirections = async (loc: LatLng) => {
-        await analytics().logEvent('open_in_maps')
-        openLocationInMaps({ lat: loc.latitude, lng: loc.longitude, label: `${props.itemName} location` })
-    }
-
     const PrimaryLocationMarker = (lmprops: { primaryLocation: LatLng }) => {
         return (
             <Marker coordinate={lmprops.primaryLocation} key={lmprops.primaryLocation.latitude}>
                 <MapItemIconContainer>
-                    <Text style={TextStyles.smallEmoji}>{props.itemIcon} • </Text>
-                    <TouchableOpacity onPress={() => handleRequestDirections(lmprops.primaryLocation)}>
-                        <PlatformIcon icon={Icons.NAVIGATE} />
-                    </TouchableOpacity>
+                    <Text style={TextStyles.smallEmoji}>{props.itemIcon}</Text>
                 </MapItemIconContainer>
             </Marker>
         )
@@ -80,7 +72,7 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                     strokeColor={Colors.Line}
                     strokeWidth={2}
                     lineCap={'butt'}
-                    lineDashPattern={[5, 5]}
+                    lineDashPattern={[5, 4]}
                 />
                 {
                     props.locations.map((loc, index) => {
@@ -158,21 +150,4 @@ function determineReportRegion(locations: LatLng[]): Region {
         latitudeDelta,
         longitudeDelta
     }
-}
-
-async function openLocationInMaps({ lat, lng, label }: { lat: number, lng: number, label: string }) {
-    const scheme = Platform.select({ ios: 'http://maps.apple.com/?q=', android: 'geo:0,0?q=' })
-    const latLng = `${lat},${lng}`
-    const url = Platform.select({
-        ios: `${scheme}${label}@${latLng}`,
-        android: `${scheme}${latLng}(${label})`
-    })
-
-    if (!url) {
-        console.error('could not generate url')
-        return
-    }
-    console.log("analytics --- open maps")
-    await analytics().logEvent('open_directions', { lat: lat, lng: lng, label: label })
-    Linking.openURL(url)
 }

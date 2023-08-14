@@ -33,6 +33,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const item = useAppSelector((state) => state.items.items[itemID])
     const rawReports = useAppSelector((state) => state.reports.reports[item?.itemID]) || {}
     const reports = item ? Object.values(rawReports) : []
+    reports.sort((a, b) => b.timeOfCreation - a.timeOfCreation)
     const locations = getAllLocations(reports)
     const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
@@ -42,8 +43,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
     const scrollX = React.useRef(new Animated.Value(0)).current
-
-    reports.sort((a, b) => b.timeOfCreation - a.timeOfCreation)
 
     useEffect(() => {
 
@@ -112,12 +111,14 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const scrollToIndex = (index: number) => {
 
+        console.log('scrolling to: ' + index)
+
         if (!selectedReport) {
             return
         }
 
         const newIndex = Math.max(Math.min(index, reports.length - 1), 0)
-        scrollRef.current?.scrollToIndex({ index: newIndex, animated: true })
+        scrollRef.current?.scrollToIndex({ index: newIndex, animated: false })
     }
 
     useEffect(() => {
@@ -203,11 +204,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
                             <View style={{ position: 'relative' }}>
                                 <FlatList
                                     data={reports}
-                                    renderItem={({ item }) => (
+                                    renderItem={(report) => (
                                         <ReportSummary
-                                            report={item}
+                                            report={report.item}
                                             isSelected={selectedReport?.reportID}
-                                            key={item.reportID}
+                                            itemName={item.name}
+                                            key={report.item.reportID}
                                         />
                                     )}
                                     horizontal
@@ -279,11 +281,10 @@ function getInitialState(reports: Report[]): { reportID: string, reportIndex: nu
     }
 
     // (B) ≥ 1 report
-    const reversed = [...reports].reverse()
     let field: ExactLocationReportField | null = null
-    let firstReport: Report = reversed[0]
+    let firstReport: Report = reports[0]
     let firstIndex: number = 0
-    reversed.every((report, index) => {
+    reports.every((report, index) => {
         if (isExactLocation(report.fields.EXACT_LOCATION)) {
             field = report.fields.EXACT_LOCATION
             firstReport = report
@@ -293,7 +294,7 @@ function getInitialState(reports: Report[]): { reportID: string, reportIndex: nu
         return true
     })
 
-    return { reportID: firstReport.reportID, reportIndex: reversed.length - firstIndex - 1, location: field }
+    return { reportID: firstReport.reportID, reportIndex: firstIndex, location: field }
 }
 
 function getAllLocations(reports: Report[]): LatLng[] {
