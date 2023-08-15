@@ -47,16 +47,10 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [summaryHeights, setSummaryHeights] = useState(reports.map(() => 125))
 
     useEffect(() => {
-
-        // Handles independent sight clearings
-
-        if (isChangingLostState === 'set-found') {
-            return
-        }
-
         if (reports.length === 0 && isClearingSightings) {
             setIsClearingSightings(false)
         }
+        setSummaryHeights(reports.map(() => 125))
     }, [reports.length])
 
     useEffect(() => {
@@ -80,7 +74,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
         onScrollEvent(event)
     }
 
-    const updateSelectedReport = async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const updateSelectedReport = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
             setSelectedReport(null)
@@ -110,9 +104,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
         console.log("analytics --- new selected report")
         analytics().logEvent('new_selected_report', { newSelectedReport })
-        setSelectedReport(newSelectedReport)
         updateScrollHeight(summaryHeights[index])
+        setSelectedReport(newSelectedReport)
     }
+
+    console.log(scrollHeight)
 
     const scrollToIndex = (index: number) => {
 
@@ -224,15 +220,17 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     return (
         <View style={{ padding: 0, paddingBottom: Math.max(safeAreaInsets?.bottom ?? 0, Spacing.ScreenPadding), backgroundColor: Colors.Background, flex: 1 }}>
+            <View style={{ flex: 1 }}/>
             <SightingMap
                 locations={locations}
                 primaryLocation={selectedReport ? selectedReport.location : null}
                 itemIcon={item.icon}
                 itemName={item.name}
                 selectReportAtIndex={scrollToIndex}
+                summaryHeight={scrollHeight}
             />
             <BackButton />
-            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>
+            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, flexShrink: 1 }}>
                 <View style={{ paddingTop: Spacing.Gap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                     <ItemProfile {...item} />
                     <MoreButton hasSightings={reports.length > 0} handleClearSightings={handleClearSightings} handleRemoveItem={handleRemoveItem} handleItemSettings={handleEditItem} />
@@ -337,14 +335,17 @@ function getInitialState(reports: Report[]): { reportID: string, reportIndex: nu
     return { reportID: firstReport.reportID, reportIndex: firstIndex, location: field }
 }
 
-function getAllLocations(reports: Report[]): LatLng[] {
-    const locations: LatLng[] = []
+function getAllLocations(reports: Report[]): (LatLng | null)[] {
+    const locations: (LatLng | null)[] = []
     for (const report of reports) {
         if (isExactLocation(report.fields.EXACT_LOCATION)) {
             locations.push({
                 latitude: report.fields.EXACT_LOCATION.latitude,
                 longitude: report.fields.EXACT_LOCATION.longitude
             })
+        }
+        else {
+            locations.push(null)
         }
     }
     return locations
@@ -389,6 +390,7 @@ function EmptyItemDetails() {
                 itemIcon={' '}
                 itemName=' '
                 selectReportAtIndex={() => { }}
+                summaryHeight={10}
             />
             <BackButton />
             <View style={{ backgroundColor: Colors.Background, borderRadius: 8, marginTop: -8 }}>

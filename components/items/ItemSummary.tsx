@@ -24,9 +24,9 @@ export default function ItemSummary(props: Item) {
                     navigation.navigate('ItemDetails', { itemID: props.itemID })
                 }}
             >
-                <VerticallyCenteringRow>   
+                <VerticallyCenteringRow style={{ flex: 1 }}>   
                     <ItemProfile {...props} />
-                    <VerticallyCenteringRow style={{ flexGrow: 1 }}>
+                    <VerticallyCenteringRow>
                         {
                             Object.keys(newReports).length > 0 ?
                                 <View style={{ backgroundColor: Colors.Red, borderRadius: 10, width: 8, height: 8 }} />

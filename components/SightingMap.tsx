@@ -9,7 +9,7 @@ import { Colors } from "../ui-base/colors"
 import PlatformIcon, { Icons } from "./PlatformIcon"
 import analytics from '@react-native-firebase/analytics';
 
-export default function SightingMap(props: { locations: LatLng[] | null, primaryLocation: LatLng | null, itemIcon: string, itemName: string, selectReportAtIndex: (index: number) => void }) {
+export default function SightingMap(props: { locations: (LatLng | null)[] | null, primaryLocation: LatLng | null, itemIcon: string, itemName: string, selectReportAtIndex: (index: number) => void, summaryHeight: number }) {
 
     const defaultRegion = {
         latitude: 38.648785,
@@ -38,7 +38,18 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
     }, [props.locations])
 
     useEffect(() => {
-        mapRef.current?.animateToRegion((region != null && region.longitude !== 0) ? region : defaultRegion)
+        const newRegion = (region != null && region.longitude !== 0) ? region : defaultRegion
+        async function animateToRegion() {
+
+            if (!mapRef.current) {
+                return
+            }
+
+            const p = await mapRef.current.pointForCoordinate(newRegion)
+            const pPrime = await mapRef.current.coordinateForPoint({ x: p.x, y: p.y + props.summaryHeight - 60 })
+            mapRef.current.animateToRegion({ ...newRegion, latitude: pPrime.latitude, longitude: pPrime.longitude })
+        }
+        animateToRegion()
     }, [region])
 
     const PrimaryLocationMarker = (lmprops: { primaryLocation: LatLng }) => {
@@ -55,20 +66,20 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
 
         const primaryLocation = props.primaryLocation
 
-        if ( ! props.locations || ! primaryLocation) {
+        if ( ! props.locations) {
             return null
         }
 
-        if (props.locations.length === 1) {
+        if (props.locations.length === 1 && props.locations[0]) {
             return (
-                <PrimaryLocationMarker primaryLocation={primaryLocation} />
+                <PrimaryLocationMarker primaryLocation={props.locations[0]} />
             )
         }
 
         return (
             <>
                 <Polyline
-                    coordinates={props.locations}
+                    coordinates={props.locations.filter((val) => val != null) as LatLng[]}
                     strokeColor={Colors.Line}
                     strokeWidth={2}
                     lineCap={'butt'}
@@ -76,13 +87,18 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                 />
                 {
                     props.locations.map((loc, index) => {
-                        if (loc.latitude === primaryLocation.latitude && loc.longitude === primaryLocation.longitude) {
+                        if (!loc) {
+                            return null
+                        }
+
+                        if (loc.latitude === primaryLocation?.latitude && loc.longitude === primaryLocation.longitude) {
                             return null
                         }
                         return (
                             <Marker 
                                 coordinate={loc} 
-                                key={loc.latitude + index} 
+                                key={`${loc.latitude} ${index} ${props.summaryHeight}`} 
+                                identifier={`${loc.latitude} ${index} ${props.summaryHeight}`} 
                                 zIndex={1} 
                                 tappable={true}
                                 onPress={() => props.selectReportAtIndex(index)}>
@@ -91,13 +107,18 @@ export default function SightingMap(props: { locations: LatLng[] | null, primary
                         )
                     })
                 }
-                <PrimaryLocationMarker primaryLocation={primaryLocation} />
+                {
+                    primaryLocation ? 
+                        <PrimaryLocationMarker primaryLocation={primaryLocation} />
+                        :
+                        null
+                }
             </>
         )
     }
 
     return (
-        <MapView style={{ flexGrow: 1 }} ref={mapRef} >
+        <MapView style={{ position: 'absolute', bottom: 0, top: 0, height: '100%', width: '100%' }} ref={mapRef} >
             <MapContents />
         </MapView>
     )
