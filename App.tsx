@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore'
 import functions from '@react-native-firebase/functions'
 import { useEffect, useState } from "react"
 import DynamicLinkDelegate from "./components/DynamicLinkDelegate"
-import { StatusBar, Text } from "react-native"
+import { Platform, StatusBar, Text, UIManager } from "react-native"
 import Navigator from "./screens/Navigator"
 import store from "./store"
 import { Provider } from "react-redux"
@@ -65,6 +65,12 @@ export default function App() {
     useEffect(() => {
         return subscribeToAuthStateChanges(setIsAuthenticated)
     }, [isAuthenticated])
+
+    if (Platform.OS === 'android') {
+        if (UIManager.setLayoutAnimationEnabledExperimental) {
+            UIManager.setLayoutAnimationEnabledExperimental(true);
+        }
+    }
 
     return (
         <>

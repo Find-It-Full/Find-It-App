@@ -9,34 +9,23 @@ import analytics from '@react-native-firebase/analytics';
 import PillButton from '../PillButton';
 import { Icons } from '../PlatformIcon';
 
-export default function ReportSummary(props: { report: Report, isSelected: string | null, itemName: string }) {
+export default function ReportSummary(props: { report: Report, isSelected: string | null, itemName: string, onNewHeight: (height: number) => void }) {
 
     const reportDate = new Date(props.report.timeOfCreation)
     const time = reportDate.toLocaleTimeString([], {timeZone: "America/New_York", month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit'})?.replace(',', ' at') ?? 'unknown'
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
     const messageField = props.report.fields.MESSAGE
     const [message, hasMessage] = isMessage(messageField) ? [`"${messageField.message}"`, true] : ['Your spotter did not include a message', false]
-    const [locationString, setLocationString] = useState<string>('')
+    const locationString = isExactLocation(props.report.fields.EXACT_LOCATION) ? '' : 'No location provided'
     const location = isExactLocation(props.report.fields.EXACT_LOCATION) ? props.report.fields.EXACT_LOCATION : null
+    const [height, setHeight] = useState(0)
 
-    useEffect(() => {
-
-        const location = props.report.fields.EXACT_LOCATION
-
-        if ( ! isExactLocation(location)) {
-            setLocationString(' • No location provided')
-            return
+    const updateHeight = (newHeight: number) => {
+        if (newHeight > height) {
+            props.onNewHeight(newHeight)
+            setHeight(newHeight)
         }
-
-        if (props.isSelected !== props.report.reportID) {
-            return
-        }
-
-        if (locationString.length > 0) {
-            return
-        }
-
-    }, [props.isSelected])
+    }
 
     const windowWidth = useWindowDimensions().width
 
@@ -54,13 +43,20 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     }
 
     return (
-        <View style={[{ width: windowWidth }, styles.container]}>
-            <View style={styles.contentContainer}>
-                <VerticallyCenteringRow style={{ marginBottom: Spacing.HalfGap, justifyContent: 'flex-start' }}>
+        <View 
+            style={[{ width: windowWidth }, styles.container]}
+        >
+            <View style={styles.contentContainer} onLayout={(event) => updateHeight(event.nativeEvent.layout.height)}>
+                <VerticallyCenteringRow style={{ justifyContent: 'flex-start' }}>
                     <Text style={TextStyles.h4}>{`Spotted on ${time}`}</Text>
-                    <Text style={TextStyles.h4}>{`${locationString}`}</Text>
                 </VerticallyCenteringRow>
-                <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic' }]}>{message}</Text>
+                {
+                    locationString.length > 0 ? 
+                        <Text style={TextStyles.p}>{`${locationString}`}</Text>
+                        : 
+                        null
+                }
+                <Text style={[TextStyles.p, { marginTop: Spacing.HalfGap }]}>{message}</Text>
                 <View style={styles.buttonContainer}>
                     <PillButton icon={Icons.NAVIGATE} label='Directions' onPress={handleRequestDirections} />
                     <PillButton 

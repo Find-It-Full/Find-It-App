@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Animated, FlatList, Modal, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Alert, Animated, FlatList, LayoutAnimation, Modal, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
@@ -43,6 +43,8 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const [isClearingSightings, setIsClearingSightings] = useState(false)
     const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
     const scrollX = React.useRef(new Animated.Value(0)).current
+    const [scrollHeight, setScrollHeight] = useState(125)
+    const [summaryHeights, setSummaryHeights] = useState(reports.map(() => 125))
 
     useEffect(() => {
 
@@ -82,6 +84,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
         if (reports.length === 0) {
             setSelectedReport(null)
+            return
         }
 
         let index = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / windowWidth), reports.length - 1))
@@ -95,6 +98,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 index = 0
             } else {
                 setSelectedReport(null)
+                return
             }
         }
 
@@ -105,8 +109,9 @@ export default function ItemDetails(props: ItemDetailsProps) {
             location: isExactLocation(locationField) ? locationField : null
         }
         console.log("analytics --- new selected report")
-        await analytics().logEvent('new_selected_report', { newSelectedReport })
+        analytics().logEvent('new_selected_report', { newSelectedReport })
         setSelectedReport(newSelectedReport)
+        updateScrollHeight(summaryHeights[index])
     }
 
     const scrollToIndex = (index: number) => {
@@ -119,6 +124,40 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
         const newIndex = Math.max(Math.min(index, reports.length - 1), 0)
         scrollRef.current?.scrollToIndex({ index: newIndex, animated: false })
+    }
+
+    const handleNewSummaryHeight = (height: number, index: number) => {
+        console.log(height, index)
+        const newSummaryHeights = [...summaryHeights]
+        newSummaryHeights[index] = height
+        setSummaryHeights(newSummaryHeights)
+        if (index === selectedReport?.reportIndex) {
+            updateScrollHeight(height)
+        }
+    }
+
+    const updateScrollHeight = (newHeight: number) => {
+        if (Math.abs(newHeight - scrollHeight) > 1) {
+            LayoutAnimation.configureNext({ 
+                duration: 0,
+                create: {
+                    type: LayoutAnimation.Types.linear,
+                    duration: 0,
+                    property: LayoutAnimation.Properties.opacity
+                },
+                update: {
+                    type: LayoutAnimation.Types.easeInEaseOut,
+                    duration: 350,
+                    property: LayoutAnimation.Properties.opacity
+                },
+                delete: {
+                    type: LayoutAnimation.Types.linear,
+                    duration: 0,
+                    property: LayoutAnimation.Properties.opacity
+                }
+            })
+            setScrollHeight(newHeight)
+        }
     }
 
     useEffect(() => {
@@ -201,7 +240,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 {
                     selectedReport && reports.length > 0 ?
                         <>
-                            <View style={{ position: 'relative' }}>
+                            <View style={{ position: 'relative', paddingTop: Spacing.ThreeQuartersGap }}>
                                 <FlatList
                                     data={reports}
                                     renderItem={(report) => (
@@ -210,11 +249,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                             isSelected={selectedReport?.reportID}
                                             itemName={item.name}
                                             key={report.item.reportID}
+                                            onNewHeight={(height) => handleNewSummaryHeight(height, report.index)}
                                         />
                                     )}
                                     horizontal
                                     pagingEnabled
-                                    style={{ zIndex: 2, paddingTop: Spacing.ThreeQuartersGap }}
+                                    style={{ zIndex: 2, height: scrollHeight }}
                                     showsHorizontalScrollIndicator={false}
                                     onScroll={handleScroll}
                                     scrollEventThrottle={16}
