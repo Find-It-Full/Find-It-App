@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Linking, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { isContactInformation, isExactLocation, isMessage, Report, ReportViewStatus } from '../../backend/databaseTypes';
 import { Colors } from '../../ui-base/colors';
 import { VerticallyCenteringRow } from '../../ui-base/layouts';
@@ -18,7 +18,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const [message, hasMessage] = isMessage(messageField) ? [`"${messageField.message}"`, true] : ['Your spotter did not include a message', false]
     const [locationString, setLocationString] = useState<string>('')
     const location = isExactLocation(props.report.fields.EXACT_LOCATION) ? props.report.fields.EXACT_LOCATION : null
-
+    const [contentSize, setContentSize] = useState(0)
     useEffect(() => {
 
         const location = props.report.fields.EXACT_LOCATION
@@ -60,7 +60,9 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                     <Text style={TextStyles.h4}>{`Spotted on ${time}`}</Text>
                     <Text style={TextStyles.h4}>{`${locationString}`}</Text>
                 </VerticallyCenteringRow>
+                <ScrollView style={{maxHeight:200}} scrollEnabled={contentSize>200} onContentSizeChange={(w,h)=>setContentSize(h)}>
                 <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic' }]}>{message}</Text>
+                </ScrollView>
                 <View style={styles.buttonContainer}>
                     <PillButton icon={Icons.NAVIGATE} label='Directions' onPress={handleRequestDirections} />
                     <PillButton 
