@@ -61,7 +61,13 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                     <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic', marginTop: Spacing.HalfGap }]}>{message}</Text>
                 </ScrollView>
                 <View style={styles.buttonContainer}>
-                    <PillButton icon={Icons.NAVIGATE} label='Directions' onPress={handleRequestDirections} />
+                    <PillButton 
+                        icon={Icons.NAVIGATE} 
+                        label='Directions' 
+                        onPress={handleRequestDirections} 
+                        disabled={locationString.length > 0} 
+                        onDisabledPress={() => Alert.alert('No Location Provided', 'Your spotter did not provide a map location.')}
+                    />
                     <PillButton 
                         icon={Icons.ENVELOPE} 
                         label='Email Spotter' 

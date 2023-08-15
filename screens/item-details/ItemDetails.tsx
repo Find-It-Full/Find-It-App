@@ -108,11 +108,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
         setSelectedReport(newSelectedReport)
     }
 
-    console.log(scrollHeight)
-
     const scrollToIndex = (index: number) => {
-
-        console.log('scrolling to: ' + index)
 
         if (!selectedReport) {
             return
@@ -123,7 +119,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     }
 
     const handleNewSummaryHeight = (height: number, index: number) => {
-        console.log(height, index)
         const newSummaryHeights = [...summaryHeights]
         newSummaryHeights[index] = height
         setSummaryHeights(newSummaryHeights)
