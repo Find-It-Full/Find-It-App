@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Linking, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { isContactInformation, isExactLocation, isMessage, Report, ReportViewStatus } from '../../backend/databaseTypes';
 import { Colors } from '../../ui-base/colors';
 import { VerticallyCenteringRow } from '../../ui-base/layouts';
@@ -19,6 +19,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const locationString = isExactLocation(props.report.fields.EXACT_LOCATION) ? '' : 'No location provided'
     const location = isExactLocation(props.report.fields.EXACT_LOCATION) ? props.report.fields.EXACT_LOCATION : null
     const [height, setHeight] = useState(0)
+    const [contentSize, setContentSize] = useState(0)
 
     const updateHeight = (newHeight: number) => {
         if (newHeight > height) {
@@ -56,7 +57,9 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
                         : 
                         null
                 }
-                <Text style={[TextStyles.p, { marginTop: Spacing.HalfGap }]}>{message}</Text>
+                <ScrollView style={{maxHeight:200}} scrollEnabled={contentSize>200} onContentSizeChange={(w,h)=>setContentSize(h)}>
+                    <Text style={[TextStyles.p, { fontStyle: hasMessage ? 'normal' : 'italic', marginTop: Spacing.HalfGap }]}>{message}</Text>
+                </ScrollView>
                 <View style={styles.buttonContainer}>
                     <PillButton icon={Icons.NAVIGATE} label='Directions' onPress={handleRequestDirections} />
                     <PillButton 
