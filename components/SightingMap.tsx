@@ -44,10 +44,8 @@ export default function SightingMap(props: { locations: (LatLng | null)[] | null
             if (!mapRef.current) {
                 return
             }
+            mapRef.current.animateToRegion(newRegion)
 
-            const p = await mapRef.current.pointForCoordinate(newRegion)
-            const pPrime = await mapRef.current.coordinateForPoint({ x: p.x, y: p.y + props.summaryHeight - 60 })
-            mapRef.current.animateToRegion({ ...newRegion, latitude: pPrime.latitude, longitude: pPrime.longitude })
         }
         animateToRegion()
     }, [region])
@@ -118,7 +116,7 @@ export default function SightingMap(props: { locations: (LatLng | null)[] | null
     }
 
     return (
-        <MapView style={{ position: 'absolute', bottom: 0, top: 0, height: '100%', width: '100%' }} ref={mapRef} >
+        <MapView style={{ position: 'absolute', bottom: 0, top: 0, height: '100%', width: '100%' }} ref={mapRef} mapPadding={{top:0, right:0, left:0, bottom:props.summaryHeight}}>
             <MapContents />
         </MapView>
     )
@@ -164,7 +162,10 @@ function determineReportRegion(locations: LatLng[]): Region {
 
     const latitudeDelta = Math.max(Math.abs(maxLat - minLat) * 1.3, 0.01)
     const longitudeDelta = Math.max(Math.abs(maxLng - minLng) * 1.3, 0.01)
-
+    console.log({latitude: (minLat + maxLat) / 2.0,
+    longitude: (minLng + maxLng) / 2.0,
+    latitudeDelta,
+    longitudeDelta})
     return {
         latitude: (minLat + maxLat) / 2.0,
         longitude: (minLng + maxLng) / 2.0,
