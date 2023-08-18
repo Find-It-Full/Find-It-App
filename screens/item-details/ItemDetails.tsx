@@ -45,19 +45,23 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const scrollX = React.useRef(new Animated.Value(0)).current
     const [scrollHeight, setScrollHeight] = useState(125)
     const [summaryHeights, setSummaryHeights] = useState(reports.map(() => 125))
+    const [footerHeight, setFooterHeight] = useState(160)
 
     useEffect(() => {
         if (reports.length === 0 && isClearingSightings) {
             setIsClearingSightings(false)
         }
         setSummaryHeights(reports.map(() => 125))
+        scrollToIndex(0)
     }, [reports.length])
 
     useEffect(() => {
         if (!selectedReport && reports.length) {
+            // handles the first report coming in
             setSelectedReport(getInitialState(reports))
         }
         else if (selectedReport && !reports.length) {
+            // handles reports being removed
             setSelectedReport(null)
         }
     }, [reports])
@@ -228,10 +232,13 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 itemIcon={item.icon}
                 itemName={item.name}
                 selectReportAtIndex={scrollToIndex}
-                summaryHeight={scrollHeight}
+                summaryHeight={footerHeight}
             />
             <BackButton />
-            <View style={{ backgroundColor: Colors.Background, borderRadius: 8, flexShrink: 1 }}>
+            <View 
+                style={{ backgroundColor: Colors.Background, borderRadius: 8, flexShrink: 1 }}
+                onLayout={(event) => setFooterHeight(event.nativeEvent.layout.height)}
+            >
                 <View style={{ paddingTop: Spacing.Gap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                     <ItemProfile {...item} />
                     <MoreButton hasSightings={reports.length > 0} handleClearSightings={handleClearSightings} handleRemoveItem={handleRemoveItem} handleItemSettings={handleEditItem} />

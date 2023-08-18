@@ -220,7 +220,7 @@ export function ItemIconContainer(props: { children?: React.ReactNode, style?: V
 
 export function MapItemIconContainer(props: { children?: React.ReactNode, style?: ViewStyle }) {
     return (
-        <View style={{ ...Shadows.SmallShadow, flexDirection: 'row', padding: Spacing.HalfGap, backgroundColor: Colors.PanelColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style }}>
+        <View style={{ ...Shadows.SmallShadow, flexDirection: 'row', padding: Spacing.HalfGap, backgroundColor: Colors.PanelColor, borderRadius: 40, justifyContent: 'center', alignItems: 'center', ...props.style, aspectRatio: 1 }}>
             {props.children}
         </View>
     )
