@@ -232,6 +232,8 @@ export class FirestoreBackend {
 
         if ( ! userID) { return }
 
+        console.log('setting as viewed in database')
+
         await this.reports().doc(reportID).set(
             { viewStatus: { [userID]: ReportViewStatus.SEEN } }, 
             { merge: true }

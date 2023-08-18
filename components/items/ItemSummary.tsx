@@ -17,6 +17,8 @@ export default function ItemSummary(props: Item) {
     const navigation = useNavigation<ItemDetailsProps['navigation']>()
     const newReports = useAppSelector(state => state.items.newReports[props.itemID]) ?? { }
 
+    console.log(`got new reports: ${JSON.stringify(newReports)}`)
+
     return (
         <ActionCard style={{ flexGrow: 1, padding: Spacing.Gap, marginBottom: Spacing.Gap }}>
             <TouchableOpacity

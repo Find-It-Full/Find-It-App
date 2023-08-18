@@ -33,22 +33,24 @@ export default function Home(props: HomeProps) {
     const dispatch = useAppDispatch()
     const subscriptions = useContext(SubscriptionManagerContext)
     const items = useAppSelector(state => state.items.items)
+    const itemIDs = Object.keys(items)
+    itemIDs.sort()
     const [incomingNotificationPayload, setIncomingNotificationPayload] = useState<RemoteNotificationPayload | null>(null)
     
     console.log(`Got item count ${Object.keys(items)}`)
     
     useEffect(() => {
 
-        console.log(`Attempting to fetch reports`)
+        console.log(`Attempting to fetch reports: ${itemIDs}`)
 
         const unsubscribeCallbacks: (() => void)[] = []
         
-        for (const [itemID, _] of Object.entries(items)) {
+        for (const itemID of itemIDs) {
             unsubscribeCallbacks.push(subscriptions.subscribeToItemReports(itemID))
         }
 
         return () => { unsubscribeCallbacks.map((cb) => cb()) }
-    }, [items])
+    }, [JSON.stringify(itemIDs)])
 
     useEffect(() => {
         const unsubscribe = subscriptions.subscribeToItems()

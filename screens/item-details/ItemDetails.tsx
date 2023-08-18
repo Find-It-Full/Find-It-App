@@ -35,36 +35,42 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const reports = item ? Object.values(rawReports) : []
     reports.sort((a, b) => b.timeOfCreation - a.timeOfCreation)
     const locations = getAllLocations(reports)
-    const [selectedReport, setSelectedReport] = useState(getInitialState(reports))
+    const [selectedReport, setSelectedReport] = useState<{
+            reportID: string;
+            reportIndex: number;
+            location: LatLng | null;
+        } | null>(getInitialState(reports))
     const windowWidth = useWindowDimensions().width
     const scrollRef = useRef<FlatList>(null)
     const safeAreaInsets = React.useContext(SafeAreaInsetsContext)
-    const [isChangingLostState, setIsChangingLostState] = useState<'none' | 'set-lost' | 'set-found'>('none')
     const [isClearingSightings, setIsClearingSightings] = useState(false)
-    const [isPresentingMarkAsLostModal, setIsPresentingMarkAsLostModal] = useState(false)
     const scrollX = React.useRef(new Animated.Value(0)).current
     const [scrollHeight, setScrollHeight] = useState(125)
-    const [summaryHeights, setSummaryHeights] = useState(reports.map(() => 125))
     const [footerHeight, setFooterHeight] = useState(160)
 
     useEffect(() => {
         if (reports.length === 0 && isClearingSightings) {
             setIsClearingSightings(false)
         }
-        setSummaryHeights(reports.map(() => 125))
-        scrollToIndex(0)
-    }, [reports.length])
 
-    useEffect(() => {
+        if (reports.length > 0) {
+            displayNewestReport()
+        }
+
         if (!selectedReport && reports.length) {
             // handles the first report coming in
-            setSelectedReport(getInitialState(reports))
+            const newReport = getInitialState(reports)
+            setSelectedReport(newReport)
+            if (newReport) {
+                setReportAsViewed(newReport?.report)
+            }
         }
         else if (selectedReport && !reports.length) {
             // handles reports being removed
             setSelectedReport(null)
         }
-    }, [reports])
+
+    }, [reports.length])
 
     const onScrollEvent = Animated.event(
         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -74,11 +80,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
     )
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        updateSelectedReport(event)
+        updateSelectedReportOnScroll(event)
         onScrollEvent(event)
     }
 
-    const updateSelectedReport = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const updateSelectedReportOnScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
             setSelectedReport(null)
@@ -100,16 +106,28 @@ export default function ItemDetails(props: ItemDetailsProps) {
             }
         }
 
-        const locationField = reports[index].fields.EXACT_LOCATION
+        changeSelectedReportTo(reports[index], index)
+        console.log("analytics --- new selected report")
+        analytics().logEvent('new_selected_report')
+    }
+
+    const changeSelectedReportTo = (report: Report, index: number) => {
+        const locationField = report.fields.EXACT_LOCATION
         const newSelectedReport = {
-            reportID: reports[index].reportID,
+            reportID: report.reportID,
             reportIndex: index,
             location: isExactLocation(locationField) ? locationField : null
         }
-        console.log("analytics --- new selected report")
-        analytics().logEvent('new_selected_report', { newSelectedReport })
-        updateScrollHeight(summaryHeights[index])
         setSelectedReport(newSelectedReport)
+        setReportAsViewed(report)
+    }
+
+    const displayNewestReport = () => {
+        if (!reports.length) {
+            return
+        }
+
+        changeSelectedReportTo(reports[0], 0)
     }
 
     const scrollToIndex = (index: number) => {
@@ -123,9 +141,6 @@ export default function ItemDetails(props: ItemDetailsProps) {
     }
 
     const handleNewSummaryHeight = (height: number, index: number) => {
-        const newSummaryHeights = [...summaryHeights]
-        newSummaryHeights[index] = height
-        setSummaryHeights(newSummaryHeights)
         if (index === selectedReport?.reportIndex) {
             updateScrollHeight(height)
         }
@@ -155,17 +170,15 @@ export default function ItemDetails(props: ItemDetailsProps) {
         }
     }
 
-    useEffect(() => {
-        if (!selectedReport) {
-            return
+    const handleFooterHeightUpdate = (newHeight: number) => {
+        if (Math.abs(footerHeight - newHeight) > 1) {
+            setFooterHeight(newHeight)
         }
+    }
 
-        if (!selectedReport.reportID) {
-            return
-        }
-
-        dispatch(viewReport({ reportID: selectedReport.reportID, itemID: itemID, userID: item.ownerID }))
-    }, [selectedReport])
+    const setReportAsViewed = (report: Report) => {
+        dispatch(viewReport({ reportID: report.reportID, itemID: itemID, userID: item.ownerID }))
+    }
 
     const handleClearSightings = () => {
         Alert.alert(
@@ -237,7 +250,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             <BackButton />
             <View 
                 style={{ backgroundColor: Colors.Background, borderRadius: 8, flexShrink: 1 }}
-                onLayout={(event) => setFooterHeight(event.nativeEvent.layout.height)}
+                onLayout={(event) => handleFooterHeightUpdate(event.nativeEvent.layout.height)}
             >
                 <View style={{ paddingTop: Spacing.Gap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                     <ItemProfile {...item} />
@@ -292,7 +305,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
                             </Text>
                             {
-                                isClearingSightings && isChangingLostState === 'none' ?
+                                isClearingSightings ?
                                     <View style={{ width: 42, height: 42, borderRadius: Radii.ItemRadius, backgroundColor: Colors.Background, position: 'absolute', zIndex: 3, left: '50%', top: '50%', transform: [{ translateX: -21 }, { translateY: -21 }], justifyContent: 'center' }}>
                                         <ActivityIndicator size={'small'} />
                                     </View>
@@ -303,24 +316,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
                 }
 
             </View>
-            <Modal
-                animationType='fade'
-                presentationStyle='overFullScreen'
-                transparent={true}
-                visible={isPresentingMarkAsLostModal}
-                onRequestClose={() => {
-                    setIsPresentingMarkAsLostModal(false)
-                }}>
-                <MarkAsLost itemID={item.itemID} forceClose={() => {
-                    setIsPresentingMarkAsLostModal(false)
-                    setIsChangingLostState('none')
-                }} />
-            </Modal>
         </View>
     )
 }
 
-function getInitialState(reports: Report[]): { reportID: string, reportIndex: number, location: LatLng | null, } | null {
+function getInitialState(reports: Report[]): { reportID: string, reportIndex: number, location: LatLng | null, report: Report } | null {
     // (A) No reports - return nulls
     if (reports.length === 0) {
         return null
@@ -340,7 +340,7 @@ function getInitialState(reports: Report[]): { reportID: string, reportIndex: nu
         return true
     })
 
-    return { reportID: firstReport.reportID, reportIndex: firstIndex, location: field }
+    return { reportID: firstReport.reportID, reportIndex: firstIndex, location: field, report: firstReport }
 }
 
 function getAllLocations(reports: Report[]): (LatLng | null)[] {

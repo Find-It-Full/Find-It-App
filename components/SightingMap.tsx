@@ -9,7 +9,7 @@ import { Colors } from "../ui-base/colors"
 import PlatformIcon, { Icons } from "./PlatformIcon"
 import analytics from '@react-native-firebase/analytics';
 
-export default function SightingMap(props: { locations: (LatLng | null)[] | null, primaryLocation: LatLng | null, itemIcon: string, itemName: string, selectReportAtIndex: (index: number) => void, summaryHeight: number }) {
+export function SightingMap(props: { locations: (LatLng | null)[] | null, primaryLocation: LatLng | null, itemIcon: string, itemName: string, selectReportAtIndex: (index: number) => void, summaryHeight: number }) {
 
     const defaultRegion = {
         latitude: 38.648785,
@@ -122,6 +122,8 @@ export default function SightingMap(props: { locations: (LatLng | null)[] | null
     )
 }
 
+export default React.memo(SightingMap)
+
 async function fetchIPRegion(): Promise<Region | null> {
     const res = await fetch('https://geolocation-db.com/json/')
     const data = await res.json()
@@ -162,10 +164,7 @@ function determineReportRegion(locations: LatLng[]): Region {
 
     const latitudeDelta = Math.max(Math.abs(maxLat - minLat) * 1.3, 0.01)
     const longitudeDelta = Math.max(Math.abs(maxLng - minLng) * 1.3, 0.01)
-    console.log({latitude: (minLat + maxLat) / 2.0,
-    longitude: (minLng + maxLng) / 2.0,
-    latitudeDelta,
-    longitudeDelta})
+
     return {
         latitude: (minLat + maxLat) / 2.0,
         longitude: (minLng + maxLng) / 2.0,

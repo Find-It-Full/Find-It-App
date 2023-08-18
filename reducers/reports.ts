@@ -24,9 +24,14 @@ const initialState: ReportsData = {
 
 export const viewReport = createAsyncThunk('reports/viewReport', async (props: { itemID: ItemID, reportID: ReportID, userID: UserID }, thunkAPI) => {
 
+    console.log(`got req to view report ${props.reportID}`)
+
     if ((thunkAPI.getState() as RootState).reports.reports[props.itemID][props.reportID].viewStatus[props.userID] === ReportViewStatus.SEEN) {
+        console.log(`report had already been seen`)
         return
     }
+
+    console.log(`report had not been seen`)
 
     thunkAPI.dispatch(removeNewReport(props))
 
