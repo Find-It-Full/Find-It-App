@@ -255,6 +255,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
                                             itemName={item.name}
                                             key={report.item.reportID}
                                             onNewHeight={(height) => handleNewSummaryHeight(height, report.index)}
+                                            ownerID={item.ownerID}
                                         />
                                     )}
                                     horizontal

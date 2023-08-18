@@ -8,9 +8,12 @@ import { TextStyles } from '../../ui-base/text';
 import analytics from '@react-native-firebase/analytics';
 import PillButton from '../PillButton';
 import { Icons } from '../PlatformIcon';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { viewReport } from '../../reducers/reports';
 
-export default function ReportSummary(props: { report: Report, isSelected: string | null, itemName: string, onNewHeight: (height: number) => void }) {
+export default function ReportSummary(props: { report: Report, isSelected: string | null, itemName: string, ownerID: string, onNewHeight: (height: number) => void }) {
 
+    const dispatch = useAppDispatch()
     const reportDate = new Date(props.report.timeOfCreation)
     const time = reportDate.toLocaleTimeString([], {timeZone: "America/New_York", month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit'})?.replace(',', ' at') ?? 'unknown'
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
@@ -20,6 +23,14 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const location = isExactLocation(props.report.fields.EXACT_LOCATION) ? props.report.fields.EXACT_LOCATION : null
     const [height, setHeight] = useState(0)
     const [contentSize, setContentSize] = useState(0)
+    const newReports = useAppSelector(state => state.items.newReports[props.report.itemID])
+
+    useEffect(() => {
+        // if this summary is currently being shown, and its reportID is a new report, try to view it
+        if (props.report.reportID in newReports) {
+            dispatch(viewReport({ reportID: props.report.reportID, itemID: props.report.itemID, userID: props.ownerID }))
+        }
+    }, [newReports, props.isSelected])
 
     useEffect(() => {
         if (props.isSelected === props.report.reportID) {

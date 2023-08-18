@@ -20,33 +20,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     const [didCheckForCameraPermission, setDidCheckForCameraPermission] = useState(false)
     const [isCheckingTag, setIsCheckingTag] = useState(false)
 
-    const AsyncAlert = async (title, message, link?) => new Promise((resolve) => {
-        if(message == `This Beacon Tag belongs to someone else. If it's lost, do them a favor and report it!` ){
-
-            Alert.alert(
-                title,
-                message,
-                [
-                    {
-                        text: 'Report',
-                        onPress: () => {
-                            Linking.openURL(link)
-                        },
-                        isPreferred: true
-                    },
-                    {
-                        text: 'Close',
-                        onPress: () => {
-                            resolve('YES');
-                        },
-                        isPreferred: false
-                    },
-                    
-                ],
-                { cancelable: false },
-            );
-        }
-        else{
+    const AsyncAlert = async (title: string, message: string) => new Promise((resolve) => {
         Alert.alert(
             title,
             message,
@@ -61,8 +35,32 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             ],
             { cancelable: false },
         );
-        }
     });
+
+    const AsyncAlertWithReportOption = async (title: string, message: string, link: string) => new Promise((resolve) => {
+        Alert.alert(
+            title,
+            message,
+            [
+                {
+                    text: 'Close',
+                    onPress: () => {
+                        resolve('YES');
+                    },
+                    isPreferred: false
+                },
+                {
+                    text: 'Report',
+                    onPress: () => {
+                        Linking.openURL(link)
+                        resolve('YES')
+                    },
+                    isPreferred: true
+                },
+            ],
+            { cancelable: false },
+        );
+    })
 
     const IS_KNOWN_ERROR = 'is-known-error'
     
@@ -98,13 +96,17 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
         } 
         catch (e: any) {
 
-            console.log(e.message, e.name)
-
             console.log("analytics --- item scanned error")
             await analytics().logEvent('item_scanned', {valid_tag:false,error:e})
 
             const message = (e.name === IS_KNOWN_ERROR && e.message) ? e.message : `Something went wrong, please try again`
-            await AsyncAlert(`Oops!`, message, data.data)
+
+            if (e.showReportButton) {
+                await AsyncAlertWithReportOption(`Oops!`, message, data.data)
+            }
+            else {
+                await AsyncAlert(`Oops!`, message)
+            }
 
             setIsCheckingTag(false)
             scannerRef.current?.reactivate()
@@ -116,7 +118,15 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             await FirestoreBackend.canAddItem(tagID)
         }
         catch (e) {
-            const err = new Error()
+            const err: {
+                message: string
+                name: string
+                showReportButton: boolean
+            } = { 
+                message: `Something went wrong, please try again or contact support. (${e.message})`,
+                name: IS_KNOWN_ERROR,
+                showReportButton: false
+            }
             switch (e.code) {
                 case 'not-found':
                     err.message = `It looks like that's not a valid Beacon Tag. Please try again or contact support.`
@@ -126,12 +136,9 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
                     break
                 case 'already-exists':
                     err.message = `This Beacon Tag belongs to someone else. If it's lost, do them a favor and report it!`
-                    break
-                default:
-                    err.message = `Something went wrong, please try again or contact support. (${e.message})`
+                    err.showReportButton = true
                     break
             }
-            err.name = IS_KNOWN_ERROR
             throw err
         }
     }

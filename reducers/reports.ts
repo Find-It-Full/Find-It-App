@@ -52,6 +52,8 @@ export const notifyUserOfReport = createAsyncThunk('reports/notifyUserOfReport',
 
     const report = reports[props.reportID]
 
+    console.log(report)
+
     if (props.reportID in state.reports.reportsPendingNotification) {
         console.log('Report is already pending notification, aborting')
         return
