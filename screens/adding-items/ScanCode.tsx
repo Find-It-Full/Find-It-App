@@ -20,7 +20,33 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
     const [didCheckForCameraPermission, setDidCheckForCameraPermission] = useState(false)
     const [isCheckingTag, setIsCheckingTag] = useState(false)
 
-    const AsyncAlert = async (title, message) => new Promise((resolve) => {
+    const AsyncAlert = async (title, message, link?) => new Promise((resolve) => {
+        if(message == `This Beacon Tag belongs to someone else. If it's lost, do them a favor and report it!` ){
+
+            Alert.alert(
+                title,
+                message,
+                [
+                    {
+                        text: 'Report',
+                        onPress: () => {
+                            Linking.openURL(link)
+                        },
+                        isPreferred: true
+                    },
+                    {
+                        text: 'Close',
+                        onPress: () => {
+                            resolve('YES');
+                        },
+                        isPreferred: false
+                    },
+                    
+                ],
+                { cancelable: false },
+            );
+        }
+        else{
         Alert.alert(
             title,
             message,
@@ -35,6 +61,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             ],
             { cancelable: false },
         );
+        }
     });
 
     const IS_KNOWN_ERROR = 'is-known-error'
@@ -77,7 +104,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             await analytics().logEvent('item_scanned', {valid_tag:false,error:e})
 
             const message = (e.name === IS_KNOWN_ERROR && e.message) ? e.message : `Something went wrong, please try again`
-            await AsyncAlert(`Oops!`, message)
+            await AsyncAlert(`Oops!`, message, data.data)
 
             setIsCheckingTag(false)
             scannerRef.current?.reactivate()
