@@ -175,8 +175,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     text: 'Clear',
                     style: 'destructive',
                     onPress: async () => {
-                        setIsClearingSightings(true)
-                        await dispatch(clearReports({ itemID: item.itemID }))
+                        setIsClearingSightings(true);
+                        const status = (await dispatch(clearReports({ itemID: item.itemID }))).meta.requestStatus
+                        if (status === 'rejected') {
+                            setIsClearingSightings(false)
+                        }
                     }
                 }
             ]
@@ -196,9 +199,12 @@ export default function ItemDetails(props: ItemDetailsProps) {
                     style: 'destructive',
                     onPress: async () => {
                         setIsClearingSightings(true)
-                        await dispatch(removeItem(item.itemID))
-                        props.navigation.goBack()
+                        const status = (await dispatch(removeItem(item.itemID))).meta.requestStatus
                         setIsClearingSightings(false)
+
+                        if (status === 'fulfilled') {
+                            props.navigation.goBack()
+                        }
                     }
                 }
             ]

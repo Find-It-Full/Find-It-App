@@ -148,8 +148,8 @@ export class FirestoreBackend {
         return (await this.users().doc(uid).update({"notificationTokens": firestore.FieldValue.arrayUnion(token)}))
     }
 
-    public static async getTagID(linkID: string) {
-        return (((await this.links().doc(linkID).get()).data()) as Link).tagID
+    public static async getTagID(linkID: string): Promise<string | undefined> {
+        return (((await this.links().doc(linkID).get()).data()) as Link)?.tagID
     }
 
     public static async deleteUser() {

@@ -36,85 +36,140 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
             { cancelable: false },
         );
     });
+
+    const IS_KNOWN_ERROR = 'is-known-error'
     
     async function onSuccess(data: any) {
-        console.log(`Scanned QR code with data: ${data.data}`)
         try {
-            const url = data.data
-            const pathSegments = url.split('/')
+            const linkID = linkIDForURL(data.data)
 
-            const id = pathSegments[(pathSegments.length)-1]
-            console.log(id)
-            const tagID = await FirestoreBackend.getTagID(id)
+            if (!linkID) {
+                const err = new Error(`Looks like that's not a Beacon Tag. Only Beacon Tags can be added.`)
+                err.name = IS_KNOWN_ERROR
+                throw err
+            }
+
+            console.log(`LinkID: ${linkID}`)
+
+            const tagID = await FirestoreBackend.getTagID(linkID)
+
+            if (!tagID) {
+                const err = new Error(`We can't find a Beacon Tag with that code.`)
+                err.name = IS_KNOWN_ERROR
+                throw err
+            }
+
             console.log("analytics --- item scanned valid")
-            await analytics().logEvent('item_scanned', {valid_tag:true})
+            await analytics().logEvent('item_scanned', { valid_tag: true })
 
             setIsCheckingTag(true)
-            const canAddItem = await FirestoreBackend.canAddItem(tagID)
+            await checkCanAddItem(tagID)
+            setIsCheckingTag(false)
 
-            if (!canAddItem) {
-                setIsCheckingTag(false)
-                await AsyncAlert(`Can't Add Item`, 'That code may be invalid, or it may already have an item associated with it.')
-            }
-            else {
-                setIsCheckingTag(false)
-                navigation.navigate('EnterItemDetails', { tagID: tagID })
-                scannerRef.current?.reactivate()
-            }
+            navigation.navigate('EnterItemDetails', { tagID: tagID })
+            scannerRef.current?.reactivate()
         } 
-        catch (e) {
+        catch (e: any) {
+
+            console.log(e.message, e.name)
+
             console.log("analytics --- item scanned error")
             await analytics().logEvent('item_scanned', {valid_tag:false,error:e})
-            console.log(`Read invalid URL: ${e}`)
-            await AsyncAlert(`Oops!`, 'Something went wrong, please try again.')
+
+            const message = (e.name === IS_KNOWN_ERROR && e.message) ? e.message : `Something went wrong, please try again`
+            await AsyncAlert(`Oops!`, message)
+
+            setIsCheckingTag(false)
             scannerRef.current?.reactivate()
         }
     }
 
+    async function checkCanAddItem(tagID: string) {
+        try {
+            await FirestoreBackend.canAddItem(tagID)
+        }
+        catch (e) {
+            const err = new Error()
+            switch (e.code) {
+                case 'not-found':
+                    err.message = `It looks like that's not a valid Beacon Tag. Please try again or contact support.`
+                    break
+                case 'cancelled':
+                    err.message = `You've already created an item using this tag. To create a new item, delete the old one first.`
+                    break
+                case 'already-exists':
+                    err.message = `This Beacon Tag belongs to someone else. If it's lost, do them a favor and report it!`
+                    break
+                default:
+                    err.message = `Something went wrong, please try again or contact support. (${e.message})`
+                    break
+            }
+            err.name = IS_KNOWN_ERROR
+            throw err
+        }
+    }
+
+    function linkIDForURL(url: string): string | null {
+        const pathSegments = url.split('/')
+        const domain = 'tags.beacontags.com'
+
+        if (!pathSegments || !pathSegments.includes(domain)) {
+            return null
+        }
+
+        const domainIndex = pathSegments.indexOf(domain)
+
+        if (domainIndex + 1 >= pathSegments.length) {
+            return null
+        }
+
+        const id = pathSegments[domainIndex + 1]
+
+        return id
+    }
+
     async function checkForCameraPermission() {
-        console.log("Checking camera permissions...")
-        if(Platform.OS === 'ios'){
-        const checkResult = await check(PERMISSIONS.IOS.CAMERA)
-        console.log(`Got result: ${checkResult}`)
+        if (Platform.OS === 'ios') {
+            const checkResult = await check(PERMISSIONS.IOS.CAMERA)
 
-        switch (checkResult) {
-            case RESULTS.BLOCKED:
-                // The user has denied usage; handled elsewhere
-                return
-            case RESULTS.DENIED:
-                // Camera is available, need to request permissions
-                break
-            case RESULTS.GRANTED:
-            case RESULTS.LIMITED:
+            switch (checkResult) {
+                case RESULTS.BLOCKED:
+                    // The user has denied usage; handled elsewhere
+                    return
+                case RESULTS.DENIED:
+                    // Camera is available, need to request permissions
+                    break
+                case RESULTS.GRANTED:
+                case RESULTS.LIMITED:
+                    setCameraAllowed(true)
+                    return
+                case RESULTS.UNAVAILABLE:
+                    Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
+                    return
+            }
+
+            console.log('Requesting camera permissions...')
+            const requestResult = await request(PERMISSIONS.IOS.CAMERA)
+            console.log(`Got result ${requestResult}`)
+            if (requestResult === RESULTS.GRANTED) {
                 setCameraAllowed(true)
-                return
-            case RESULTS.UNAVAILABLE:
+            }
+        }
+        else {
+            // TODO: handle Android permissions
+            const checkResultAndroid = await check(PERMISSIONS.ANDROID.CAMERA)
+            if (checkResultAndroid === RESULTS.UNAVAILABLE) {
                 Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
+                setDidCheckForCameraPermission(true)
                 return
-        }
+            }
 
-        console.log('Requesting camera permissions...')
-        const requestResult = await request(PERMISSIONS.IOS.CAMERA)
-        console.log(`Got result ${requestResult}`)
-        if (requestResult === RESULTS.GRANTED) {
-            setCameraAllowed(true)
-        }
-    }
-    else{
-        // TODO: handle Android permissions
-        const checkResultAndroid = await check(PERMISSIONS.ANDROID.CAMERA)
-        if (checkResultAndroid === RESULTS.UNAVAILABLE) {
-            Alert.alert('Camera Unavailable', `Currently, a camera is required to add an item. Please contact support for assistance.`)
-            setDidCheckForCameraPermission(true)
-            return
-        }
+            const requestResultAndroid = await request(PERMISSIONS.ANDROID.CAMERA)
 
-        const requestResultAndroid = await request(PERMISSIONS.ANDROID.CAMERA)
-
-        if (requestResultAndroid === RESULTS.GRANTED) {
-            setCameraAllowed(true)
+            if (requestResultAndroid === RESULTS.GRANTED) {
+                setCameraAllowed(true)
+            }
         }
-    }
     }
 
     async function checkForPriorCameraDenial() {
