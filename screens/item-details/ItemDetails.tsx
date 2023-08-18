@@ -53,16 +53,16 @@ export default function ItemDetails(props: ItemDetailsProps) {
             setIsClearingSightings(false)
         }
 
-        if (reports.length > 0) {
+        if (selectedReport && reports.length > 0) {
+            // handles a new report coming in when there are already reports
             displayNewestReport()
         }
-
-        if (!selectedReport && reports.length) {
+        else if (!selectedReport && reports.length > 0) {
             // handles the first report coming in
             const newReport = getInitialState(reports)
             changeSelectedReportTo(newReport?.report ?? null, newReport?.reportIndex ?? 0)
         }
-        else if (selectedReport && !reports.length) {
+        else if (selectedReport && reports.length === 0) {
             // handles reports being removed
             changeSelectedReportTo(null, 0)
         }

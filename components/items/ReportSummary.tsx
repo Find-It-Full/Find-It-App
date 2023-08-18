@@ -23,7 +23,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const location = isExactLocation(props.report.fields.EXACT_LOCATION) ? props.report.fields.EXACT_LOCATION : null
     const [height, setHeight] = useState(0)
     const [contentSize, setContentSize] = useState(0)
-    const newReports = useAppSelector(state => state.items.newReports[props.report.itemID])
+    const newReports = useAppSelector(state => state.items.newReports[props.report.itemID]) ?? { }
 
     useEffect(() => {
         // if this summary is currently being shown, and its reportID is a new report, try to view it
