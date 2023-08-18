@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Animated, FlatList, LayoutAnimation, Modal, NativeScrollEvent, NativeSyntheticEvent, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Alert, Animated, FlatList, LayoutAnimation, Modal, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { ExactLocationReportField, isExactLocation, Report } from "../../backend/databaseTypes";
@@ -148,24 +148,29 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const updateScrollHeight = (newHeight: number) => {
         if (Math.abs(newHeight - scrollHeight) > 1) {
-            LayoutAnimation.configureNext({ 
-                duration: 0,
-                create: {
-                    type: LayoutAnimation.Types.linear,
+            if (Platform.OS === 'android') {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+            }
+            else {
+                LayoutAnimation.configureNext({
                     duration: 0,
-                    property: LayoutAnimation.Properties.opacity
-                },
-                update: {
-                    type: LayoutAnimation.Types.easeInEaseOut,
-                    duration: 350,
-                    property: LayoutAnimation.Properties.opacity
-                },
-                delete: {
-                    type: LayoutAnimation.Types.linear,
-                    duration: 0,
-                    property: LayoutAnimation.Properties.opacity
-                }
-            })
+                    create: {
+                        type: LayoutAnimation.Types.linear,
+                        duration: 0,
+                        property: LayoutAnimation.Properties.opacity
+                    },
+                    update: {
+                        type: LayoutAnimation.Types.easeInEaseOut,
+                        duration: 350,
+                        property: LayoutAnimation.Properties.opacity
+                    },
+                    delete: {
+                        type: LayoutAnimation.Types.linear,
+                        duration: 0,
+                        property: LayoutAnimation.Properties.opacity
+                    }
+                })
+            }
             setScrollHeight(newHeight)
         }
     }
