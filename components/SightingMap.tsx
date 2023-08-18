@@ -162,10 +162,6 @@ function determineReportRegion(locations: LatLng[]): Region {
 
     const latitudeDelta = Math.max(Math.abs(maxLat - minLat) * 1.3, 0.01)
     const longitudeDelta = Math.max(Math.abs(maxLng - minLng) * 1.3, 0.01)
-    console.log({latitude: (minLat + maxLat) / 2.0,
-    longitude: (minLng + maxLng) / 2.0,
-    latitudeDelta,
-    longitudeDelta})
     return {
         latitude: (minLat + maxLat) / 2.0,
         longitude: (minLng + maxLng) / 2.0,
