@@ -35,7 +35,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const reports = item ? Object.values(rawReports) : []
     reports.sort((a, b) => b.timeOfCreation - a.timeOfCreation)
     const locations = getAllLocations(reports)
-    const [selectedReport, setSelectedReport] = useState<{
+    const [selectedReport, setSelectedReportDirectly] = useState<{
             reportID: string;
             reportIndex: number;
             location: LatLng | null;
@@ -60,14 +60,11 @@ export default function ItemDetails(props: ItemDetailsProps) {
         if (!selectedReport && reports.length) {
             // handles the first report coming in
             const newReport = getInitialState(reports)
-            setSelectedReport(newReport)
-            if (newReport) {
-                setReportAsViewed(newReport?.report)
-            }
+            changeSelectedReportTo(newReport?.report ?? null, newReport?.reportIndex ?? 0)
         }
         else if (selectedReport && !reports.length) {
             // handles reports being removed
-            setSelectedReport(null)
+            changeSelectedReportTo(null, 0)
         }
 
     }, [reports.length])
@@ -87,7 +84,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
     const updateSelectedReportOnScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
         if (reports.length === 0) {
-            setSelectedReport(null)
+            changeSelectedReportTo(null, 0)
             return
         }
 
@@ -101,7 +98,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             if (reports.length > 0) {
                 index = 0
             } else {
-                setSelectedReport(null)
+                changeSelectedReportTo(null, 0)
                 return
             }
         }
@@ -111,15 +108,21 @@ export default function ItemDetails(props: ItemDetailsProps) {
         analytics().logEvent('new_selected_report')
     }
 
-    const changeSelectedReportTo = (report: Report, index: number) => {
-        const locationField = report.fields.EXACT_LOCATION
-        const newSelectedReport = {
+    const changeSelectedReportTo = (report: Report | null, index: number) => {
+        const locationField = report?.fields.EXACT_LOCATION
+        const newSelectedReport = report == null ? null : {
             reportID: report.reportID,
             reportIndex: index,
             location: isExactLocation(locationField) ? locationField : null
         }
-        setSelectedReport(newSelectedReport)
-        setReportAsViewed(report)
+        setSelectedReportDirectly(newSelectedReport)
+        if (report != null) {
+            setReportAsViewed(report)
+        }
+        else {
+            index = 0
+        }
+        scrollToIndex(index)
     }
 
     const displayNewestReport = () => {
@@ -148,29 +151,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
 
     const updateScrollHeight = (newHeight: number) => {
         if (Math.abs(newHeight - scrollHeight) > 1) {
-            if (Platform.OS === 'android') {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-            }
-            else {
-                LayoutAnimation.configureNext({
-                    duration: 0,
-                    create: {
-                        type: LayoutAnimation.Types.linear,
-                        duration: 0,
-                        property: LayoutAnimation.Properties.opacity
-                    },
-                    update: {
-                        type: LayoutAnimation.Types.easeInEaseOut,
-                        duration: 350,
-                        property: LayoutAnimation.Properties.opacity
-                    },
-                    delete: {
-                        type: LayoutAnimation.Types.linear,
-                        duration: 0,
-                        property: LayoutAnimation.Properties.opacity
-                    }
-                })
-            }
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
             setScrollHeight(newHeight)
         }
     }
@@ -254,7 +235,7 @@ export default function ItemDetails(props: ItemDetailsProps) {
             />
             <BackButton />
             <View 
-                style={{ backgroundColor: Colors.Background, borderRadius: 8, flexShrink: 1 }}
+                style={{ backgroundColor: Colors.Background, borderTopRightRadius: 8, borderTopLeftRadius: 8, flexShrink: 1 }}
                 onLayout={(event) => handleFooterHeightUpdate(event.nativeEvent.layout.height)}
             >
                 <View style={{ paddingTop: Spacing.Gap, paddingHorizontal: Spacing.ScreenPadding, flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>

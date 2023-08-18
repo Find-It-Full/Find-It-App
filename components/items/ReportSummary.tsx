@@ -18,7 +18,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     const [message, hasMessage] = isMessage(messageField) ? [`"${messageField.message}"`, true] : ['Your spotter did not include a message', false]
     const locationString = isExactLocation(props.report.fields.EXACT_LOCATION) ? '' : 'No location provided'
     const location = isExactLocation(props.report.fields.EXACT_LOCATION) ? props.report.fields.EXACT_LOCATION : null
-    const [height, setHeight] = useState(200)
+    const [height, setHeight] = useState(0)
     const [contentSize, setContentSize] = useState(0)
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
     }, [props.isSelected, height])
 
     const updateHeight = (newHeight: number) => {
-        setHeight(Math.max(newHeight, contentSize))
+        setHeight(newHeight)
     }
 
     const windowWidth = useWindowDimensions().width
@@ -111,6 +111,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.PanelColor,
         padding: Spacing.Gap,
         borderRadius: 10,
+        position: 'absolute',
+        marginLeft: Spacing.Gap
     },
     buttonContainer: {
         width: '100%',
