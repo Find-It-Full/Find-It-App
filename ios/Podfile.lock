@@ -1118,7 +1118,7 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
-  - react-native-context-menu-view (1.10.0):
+  - react-native-context-menu-view (1.11.0):
     - React
   - react-native-ios-context-menu (1.15.3):
     - React-Core
@@ -1515,7 +1515,7 @@ SPEC CHECKSUMS:
   React-jsinspector: d5ce2ef3eb8fd30c28389d0bc577918c70821bd6
   React-logger: 9332c3e7b4ef007a0211c0a9868253aac3e1da82
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
-  react-native-context-menu-view: 4cd5ecaabd2cbb420018b3242ca1eef5efa0a629
+  react-native-context-menu-view: c13b66d44f85b7e7d791a6fbc1e6218c6047eb90
   react-native-ios-context-menu: e529171ba760a1af7f2ef0729f5a7f4d226171c5
   react-native-maps: 7135a33610202745d08fdf151ce6b0d01952a99c
   react-native-safe-area-context: f5549f36508b1b7497434baa0cd97d7e470920d4
@@ -1549,4 +1549,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 42e3da2424e15ff4ab83f2efb2f737f3b8f6be60
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.3
