@@ -69,6 +69,7 @@ export function FormScreenBase(props: { children?: React.ReactNode, externalChil
                 <ScrollView keyboardDismissMode='interactive' contentContainerStyle={{ flex: 1 }}>
                     {props.children}
                 </ScrollView>
+                <Spacer size={Spacing.HalfGap} />
                 {props.buttons}
                 <Spacer size={Spacing.HalfGap} />
             </KeyboardAvoidingView>
@@ -119,7 +120,7 @@ export function PopoverFormScreenbase(props: { children?: React.ReactNode, exter
                 style={{ 
                     padding: Spacing.ScreenPadding,
                     paddingBottom: 0,
-                    marginTop: Spacing.BigGap * 2,
+                    marginTop: Spacing.BigGap * 2.5,
                     marginBottom: (safeAreaInsets?.bottom) ? safeAreaInsets.bottom : Spacing.ScreenPadding, 
                     flex: 1, 
                     justifyContent: 'center',

@@ -50,7 +50,8 @@ export default function EditAccountDetails( props: EditAccountDetailsProps) {
     return (
         <FormScreenBase externalChildren={<BackButton />} buttons={buttons}>
             <View style={{ flex: 1, marginTop: Spacing.BigGap * 2 }}>
-                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: 0 }]}>Edit Account Info</Text>
+                <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: 0 }]}>Account Information</Text>
+                <Text style={[TextStyles.h4, { marginBottom: Spacing.HalfGap }]}>First Name</Text>
                 <TextField
                     placeholder='First Name'
                     value={untrimmedFirstName}
@@ -58,6 +59,7 @@ export default function EditAccountDetails( props: EditAccountDetailsProps) {
                         setFirstName(text)
                     }}
                 />
+                <Text style={[TextStyles.h4, { marginBottom: Spacing.HalfGap, marginTop: Spacing.QuarterGap }]}>Last Name</Text>
                 <TextField
                     placeholder='Last Name'
                     value={untrimmedLastName}

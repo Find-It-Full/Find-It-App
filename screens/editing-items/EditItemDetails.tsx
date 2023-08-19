@@ -70,15 +70,17 @@ export default function EditItemDetails(props: EditItemProps) {
     return (
         <FormScreenBase externalChildren={<BackButton />} buttons={buttons}>
             <View style={{ flex: 1, paddingTop: Spacing.BigGap }}>
-                <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.Gap }]}>Item Info</Text>
+                <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.Gap }]}>Item Information</Text>
+                <Text style={[TextStyles.h4, { marginBottom: Spacing.HalfGap, marginTop: Spacing.QuarterGap }]}>Name</Text>
                 <TextField
-                    placeholder='Item Name'
+                    placeholder='Name'
                     value={untrimmedName}
                     onChangeText={(text) => {
                         setUntrimmedName(text)
                     }}
                     style={{ marginBottom: Spacing.ThreeQuartersGap }}
                 />
+                <Text style={[TextStyles.h4, { marginBottom: Spacing.HalfGap, marginTop: Spacing.QuarterGap }]}>Icon</Text>
                 <EmojiPickerComponent currentValue={icon} onSelect={setIcon} />          
                 
                 <Text style={[TextStyles.h3, { marginBottom: Spacing.Gap, marginTop: Spacing.BigGap }]}>Notification Settings</Text>

@@ -30,7 +30,7 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <UserProfile />
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-            <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Info' onPress={editAccountDetails} />
+            <ActionButtonListItem icon={<PlatformIcon icon={Icons.ACCOUNT_DETAILS} />} label='Edit Account Information' onPress={editAccountDetails} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOG_OUT} />} label='Log Out' onPress={async () => {
                     setLogoutLoading(true)
                     await dispatch(signOut())
