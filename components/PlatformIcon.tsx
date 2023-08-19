@@ -28,6 +28,7 @@ export namespace Icons {
     export const DOWN = ios ? '􀆈' : 'chevron-down'
     export const NAVIGATE = ios ? '􀙟' : 'navigate-circle-outline'
     export const NEXT = ios ? 'Next  􀰑' : 'Next'
+    export const LIFE_PRESERVER = ios ? '􀡦' : ENVELOPE
 }
 
 export default function PlatformIcon(props: { icon: string, style?: StyleProp<TextStyle> }) {

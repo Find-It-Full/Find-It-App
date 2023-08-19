@@ -42,6 +42,7 @@ export default function AccountSettings(props: AccountSettingsProps) {
             <ActionButtonList>
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.TOS} />} label='Terms of Service' onPress={() => Linking.openURL("https://docs.google.com/document/d/1ADa4cqyyv6kZRBu4bHC1CvfNxGd8KaTdHQaCYVlZWfg/edit?usp=sharing")} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOCK} />} label='Privacy Policy' onPress={() => Linking.openURL("https://docs.google.com/document/d/1qciVUlpEBy3Pzk7LQfCNo_VKVw1xymsOAGgz71yoF14/edit?usp=sharing")} />
+                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LIFE_PRESERVER} />} label='Contact Support' onPress={() => Linking.openURL(`mailto:support@beacontags.com`)} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>

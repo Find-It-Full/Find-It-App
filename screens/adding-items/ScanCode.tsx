@@ -273,7 +273,7 @@ export default function ScanCode({ navigation }: ScanCodeProps) {
                 <View style={{ width: '100%', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)' }}/>
             </View>
             <View style={{ position: 'absolute', top: '66%', width: '100%', alignItems: 'center' }}>
-                <Text style={[TextStyles.h2, { color: 'white', marginVertical: Spacing.Gap * 2 }]}>Scan a tag to add</Text>
+                <Text style={[TextStyles.h2, { color: 'white', marginTop: Spacing.Gap * 4, textAlign: 'center' }]}>{`Position your Beacon Tag \nin the frame`}</Text>
                 {
                     isCheckingTag ?
                         <ActivityIndicator size={'large'} />
