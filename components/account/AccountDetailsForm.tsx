@@ -36,7 +36,7 @@ export default function AccountDetailsForm(props: { onboarding:boolean, onSubmit
         <>
             <View style={{ flex: 1, marginTop: Spacing.BigGap * 2 }}>
                 <>
-                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Account Info' : 'Account Info'}</Text>
+                    <Text style={[TextStyles.h2, { marginBottom: Spacing.BigGap, marginTop: props.currentValues ? 0 : Spacing.BigGap }]}>{ props.currentValues ? 'Edit Account Information' : 'Account Information'}</Text>
                     <TextField
                         placeholder='First Name'
                         value={firstName}

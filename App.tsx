@@ -15,6 +15,7 @@ import type {PropsWithChildren} from 'react';
 import EmojiManager from './backend/EmojiManager'
 import { FirestoreBackend } from './backend/firestoreBackend'
 import messaging from '@react-native-firebase/messaging'
+import appCheck from '@react-native-firebase/app-check'
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -56,11 +57,30 @@ function subscribeToAuthStateChanges(onChange: (isAuthenticated: boolean) => voi
     return unsubscribe
 }
 
+function enableAppCheck() {
+    const rnfbProvider = appCheck().newReactNativeFirebaseAppCheckProvider();
+    rnfbProvider.configure({
+        android: {
+            provider: __DEV__ ? 'debug' : 'playIntegrity',
+            debugToken: 'some token you have configured for your project firebase web console',
+        },
+        apple: {
+            provider: __DEV__ ? 'debug' : 'appAttest',
+            debugToken: 'some token you have configured for your project firebase web console',
+        },
+        web: {
+            provider: 'reCaptchaV3',
+            siteKey: 'unknown',
+        },
+    });
 
+    appCheck().initializeAppCheck({ provider: rnfbProvider, isTokenAutoRefreshEnabled: true });
+}
 
 export default function App() {
 
     const [isAuthenticated, setIsAuthenticated] = useState(auth().currentUser !== null)
+    enableAppCheck()
     conditionallyEnableEmulation()
     useEffect(() => {
         return subscribeToAuthStateChanges(setIsAuthenticated)
