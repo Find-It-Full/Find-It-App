@@ -74,7 +74,7 @@ export default function EmailSignIn(props: EmailSignInProps) {
                 <Text style={TextStyles.p2}>Having trouble signing in? </Text>
                 <Text onPress={async () => {
                     const canOpen = await Linking.canOpenURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
-                    console.warn(canOpen)
+
                     if (canOpen) {
                         Linking.openURL("mailto:support@beacontags.com?subject=Trouble%20Signing%20In")
                     }

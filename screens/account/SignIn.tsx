@@ -10,7 +10,7 @@ import {
 import { ScreenBase } from "../../ui-base/containers"
 import { TextStyles } from "../../ui-base/text"
 import { SignInProps } from "../Navigator"
-import { Spacer } from "../../ui-base/layouts"
+import { Spacer, VerticallyCenteringGroupedRow } from "../../ui-base/layouts"
 import { Spacing } from "../../ui-base/spacing"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import BigPrimaryActionButton from "../../components/BigPrimaryActionButton"
@@ -20,6 +20,8 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import PlatformIcon, { Icons } from "../../components/PlatformIcon"
 import { FirestoreBackend } from "../../backend/firestoreBackend"
 import { Colors } from "../../ui-base/colors"
+import SmallLink from "../../components/SmallLink"
+import { Links } from "../../backend/links"
 
 
 export default function SignIn(props: SignInProps) {
@@ -153,6 +155,15 @@ export default function SignIn(props: SignInProps) {
                     isInColumn
                     hideShadow
                 />
+                <Spacer size={Spacing.Gap} />
+                <VerticallyCenteringGroupedRow>
+                    <Text style={[TextStyles.p2, { fontSize: 12 }]}>By continuing, you agree to our</Text>
+                    <SmallLink link={Links.TERMS_OF_SERVICE} text=" Terms of Service " />
+                </VerticallyCenteringGroupedRow>
+                <VerticallyCenteringGroupedRow>
+                    <Text style={[TextStyles.p2, { fontSize: 12 }]}>and our</Text>
+                    <SmallLink link={Links.PRIVACY_POLICY} text=" Privacy Policy." />
+                </VerticallyCenteringGroupedRow>
             </ScreenBase>
             <InAppNotificationManager 
                 shouldShowMiscError={showMiscError}

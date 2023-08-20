@@ -12,6 +12,7 @@ import DeleteAccountForm from './DeleteAccountForm'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { signOut } from '../../reducers/userData'
 import PlatformIcon, { Icons } from '../../components/PlatformIcon'
+import { Links } from '../../backend/links'
 export default function AccountSettings(props: AccountSettingsProps) {
 
     const [isPresentingModal, setIsPresentingModal] = React.useState(false)
@@ -40,8 +41,8 @@ export default function AccountSettings(props: AccountSettingsProps) {
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
             <ActionButtonList>
-                <ActionButtonListItem icon={<PlatformIcon icon={Icons.TOS} />} label='Terms of Service' onPress={() => Linking.openURL("https://docs.google.com/document/d/1ADa4cqyyv6kZRBu4bHC1CvfNxGd8KaTdHQaCYVlZWfg/edit?usp=sharing")} />
-                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOCK} />} label='Privacy Policy' onPress={() => Linking.openURL("https://docs.google.com/document/d/1qciVUlpEBy3Pzk7LQfCNo_VKVw1xymsOAGgz71yoF14/edit?usp=sharing")} />
+                <ActionButtonListItem icon={<PlatformIcon icon={Icons.TOS} />} label='Terms of Service' onPress={() => Linking.openURL(Links.TERMS_OF_SERVICE)} />
+                <ActionButtonListItem icon={<PlatformIcon icon={Icons.LOCK} />} label='Privacy Policy' onPress={() => Linking.openURL(Links.PRIVACY_POLICY)} />
                 <ActionButtonListItem icon={<PlatformIcon icon={Icons.LIFE_PRESERVER} />} label='Contact Support' onPress={() => Linking.openURL(`mailto:support@beacontags.com`)} />
             </ActionButtonList>
             <Spacer size={Spacing.BigGap} />
