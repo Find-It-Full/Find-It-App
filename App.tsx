@@ -15,6 +15,7 @@ import type {PropsWithChildren} from 'react';
 import EmojiManager from './backend/EmojiManager'
 import { FirestoreBackend } from './backend/firestoreBackend'
 import messaging from '@react-native-firebase/messaging'
+import appCheck from '@react-native-firebase/app-check'
 const USE_EMULATORS = false
 
 function conditionallyEnableEmulation() {
@@ -55,13 +56,43 @@ function subscribeToAuthStateChanges(onChange: (isAuthenticated: boolean) => voi
 
     return unsubscribe
 }
+const checkToken = async () =>{
+    try {
+        const { token } = await appCheck().getToken(true);
+        if (token.length > 0) {
+          console.log('AppCheck verification passed');
+        }
+      } catch (error) {
+        console.log('AppCheck verification failed');
+      }
+}
 
+function enableAppCheck() {
+    const rnfbProvider = appCheck().newReactNativeFirebaseAppCheckProvider();
+    rnfbProvider.configure({
+        android: {
+            provider: __DEV__ ? 'debug' : 'playIntegrity',
+            debugToken: 'some token you have configured for your project firebase web console',
+        },
+        apple: {
+            provider: __DEV__ ? 'debug' : 'appAttest',
+            debugToken: 'some token you have configured for your project firebase web console',
+        },
+        web: {
+            provider: 'reCaptchaV3',
+            siteKey: 'unknown',
+        },
+    });
 
+    appCheck().initializeAppCheck({ provider: rnfbProvider, isTokenAutoRefreshEnabled: true });
+    checkToken()
+}
 
 export default function App() {
 
     const [isAuthenticated, setIsAuthenticated] = useState(auth().currentUser !== null)
     conditionallyEnableEmulation()
+    enableAppCheck()
     useEffect(() => {
         return subscribeToAuthStateChanges(setIsAuthenticated)
     }, [isAuthenticated])

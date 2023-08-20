@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-
+#import "RNFBAppCheckModule.h"
 #import <React/RCTBundleURLProvider.h>
 #import <Firebase.h>
 
@@ -9,6 +9,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   if ([FIRApp defaultApp] == nil){
+    [RNFBAppCheckModule sharedInstance];
     [FIRApp configure];
   }
   self.moduleName = @"Whereisit";
