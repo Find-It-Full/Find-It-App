@@ -194,10 +194,10 @@ export function isReport(obj: any): obj is Report {
         'viewStatus' in obj &&
         Object.entries(obj.viewStatus).map(([id, status]) => (
             typeof id === 'string' && ReportViewStatusValues.includes(status as any)
-        )).reduce((a, b) => a && b) &&
+        )).reduce((a, b) => a && b, true) &&
         Object.entries(obj.fields).map(([type, field]) => (
             type && (field as any).type && isReportField(field) && type === field.type
-        )).reduce((a, b) => a && b)
+        )).reduce((a, b) => a && b, true)
     )
 }
 

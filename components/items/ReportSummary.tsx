@@ -15,7 +15,7 @@ export default function ReportSummary(props: { report: Report, isSelected: strin
 
     const dispatch = useAppDispatch()
     const reportDate = new Date(props.report.timeOfCreation)
-    const time = reportDate.toLocaleTimeString([], {timeZone: "America/New_York", month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit'})?.replace(',', ' at') ?? 'unknown'
+    const time = reportDate.toLocaleTimeString([], {timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit'})?.replace(',', ' at') ?? 'unknown'
     const contactPhoneNumber = isContactInformation(props.report.fields.CONTACT_INFORMATION) ? props.report.fields.CONTACT_INFORMATION.contactInfo : null
     const messageField = props.report.fields.MESSAGE
     const [message, hasMessage] = isMessage(messageField) ? [`"${messageField.message}"`, true] : ['Your spotter did not include a message', false]
