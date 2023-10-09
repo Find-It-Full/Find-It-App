@@ -1297,7 +1297,7 @@ PODS:
   - RNGoogleSignin (9.1.0):
     - GoogleSignIn (~> 6.2)
     - React-Core
-  - RNPermissions (3.9.3):
+  - RNPermissions (3.8.0):
     - React-Core
   - RNScreens (3.25.0):
     - React-Core
@@ -1594,11 +1594,11 @@ SPEC CHECKSUMS:
   RNFBFunctions: e224b9c0165ae4fd275ab65f49b827372cbf91fd
   RNFBMessaging: b167065ee2fcc7fe43a32b35d79d5eb23bceb4ad
   RNGoogleSignin: c15bdaa7e8a9e190b6169d9c96a4e8380a740f22
-  RNPermissions: ac5991487ad04ad1888b26896d44d969e65531b7
+  RNPermissions: 06845210af313594dc3fe5e8ae6afc820d791409
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
 
 PODFILE CHECKSUM: b49b61982711b9dd5811a4776ac047176a999698
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.11.3
